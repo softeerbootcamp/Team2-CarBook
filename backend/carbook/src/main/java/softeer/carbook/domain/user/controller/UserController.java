@@ -1,5 +1,6 @@
 package softeer.carbook.domain.user.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -8,6 +9,13 @@ import softeer.carbook.domain.user.service.UserService;
 
 @Controller
 public class UserController {
+    UserService userService;
+
+    @Autowired
+    public UserController(UserService userService){
+        this.userService = userService;
+    }
+
     // 회원가입
     @PostMapping("/signup")
     public String signup(SignupForm signupForm){
