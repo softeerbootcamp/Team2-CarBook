@@ -12,8 +12,7 @@ public class UserController {
     @PostMapping("/signup")
     public String signup(SignupForm signupForm){
         UserService.signup(signupForm);
-
-
+        return "result";
     }
     // 로그인
 
