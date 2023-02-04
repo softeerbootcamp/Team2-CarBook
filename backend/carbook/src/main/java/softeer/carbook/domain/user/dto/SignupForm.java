@@ -30,4 +30,8 @@ public class SignupForm {
     public String getNickname() {
         return nickname;
     }
+
+    public String getPassword() {
+        return password;
+    }
 }

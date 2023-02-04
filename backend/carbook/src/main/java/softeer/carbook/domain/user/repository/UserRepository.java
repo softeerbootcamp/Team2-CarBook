@@ -10,6 +10,7 @@ import softeer.carbook.domain.user.model.User;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 @Repository
 public class UserRepository {
@@ -21,8 +22,22 @@ public class UserRepository {
     }
 
     public void addUser(SignupForm signupForm) {
-        jdbcTemplate.query("insert into user values(?, ?, ?)", userRowMapper());
+        jdbcTemplate.update("insert into user values(?, ?, ?)",
+                signupForm.getEmail(),
+                signupForm.getNickname(),
+                signupForm.getPassword());
     }
+
+    public boolean isEmailDuplicated(String email) {
+        List<User> result = jdbcTemplate.query("select * from user where email = ?", userRowMapper(), email);
+        return !result.isEmpty();
+    }
+
+    public boolean isNicknameDuplicated(String nickname) {
+        List<User> result = jdbcTemplate.query("select * from user where nickname = ?", userRowMapper(), nickname);
+        return !result.isEmpty();
+    }
+
 
     private RowMapper<User> userRowMapper(){
         return (rs, rowNum) -> {
