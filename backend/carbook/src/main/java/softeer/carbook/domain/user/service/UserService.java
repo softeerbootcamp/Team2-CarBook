@@ -16,13 +16,13 @@ public class UserService {
 
     public void signup(SignupForm signupForm){
         if(isDuplicated(signupForm)) return; // 중복일 경우 처리
-        //userRepository.addUser(signupForm);
+        userRepository.addUser(signupForm);
     }
 
     private boolean isDuplicated(SignupForm signupForm){
         boolean isDuplicated = false;
-        //isDuplicated = userRepository.isEmailDuplicated(signupForm.getEmail());
-        //isDuplicated = userRepository.isNicknameDuplicated(signupForm.getNickname());
+        isDuplicated = userRepository.isEmailDuplicated(signupForm.getEmail());
+        isDuplicated = userRepository.isNicknameDuplicated(signupForm.getNickname());
         return isDuplicated;
     }
 
