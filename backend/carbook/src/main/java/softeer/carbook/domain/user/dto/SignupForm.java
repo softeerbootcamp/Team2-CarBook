@@ -22,4 +22,12 @@ public class SignupForm {
         this.nickname = nickname;
         this.password = password;
     }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
 }
