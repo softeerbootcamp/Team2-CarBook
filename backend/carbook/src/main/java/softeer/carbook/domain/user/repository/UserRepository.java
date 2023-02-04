@@ -25,16 +25,13 @@ public class UserRepository {
     }
 
     private RowMapper<User> userRowMapper(){
-        return new RowMapper<User>() {
-            @Override
-            public User mapRow(ResultSet rs, int rowNum) throws SQLException {
-                User user = new User(
-                        rs.getString("email");
-                        rs.getString("nickname");
-                        rs.getString("password");
-                );
-                return user;
-            }
+        return (rs, rowNum) -> {
+            User user = new User(
+                    rs.getString("email"),
+                    rs.getString("nickname"),
+                    rs.getString("password")
+            );
+            return user;
         };
     }
 
