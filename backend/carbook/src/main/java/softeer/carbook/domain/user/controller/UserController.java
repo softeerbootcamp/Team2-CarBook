@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import softeer.carbook.domain.user.dto.Message;
+import softeer.carbook.domain.user.dto.LoginForm;
 import softeer.carbook.domain.user.dto.SignupForm;
 import softeer.carbook.domain.user.service.UserService;
 
@@ -29,7 +30,7 @@ public class UserController {
     }
 
     // 로그인
-    @PostMapping("/user/login")
+    @PostMapping("/login")
     public String login(LoginForm loginForm, HttpSession session) {
         if (userService.isLoginSuccess(loginForm, session)) {
             return "로그인 성공";
