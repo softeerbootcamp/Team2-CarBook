@@ -10,6 +10,7 @@ import softeer.carbook.domain.user.dto.Message;
 import softeer.carbook.domain.user.dto.SignupForm;
 import softeer.carbook.domain.user.service.UserService;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 @RestController
@@ -28,7 +29,13 @@ public class UserController {
     }
 
     // 로그인
-
+    @PostMapping("/user/login")
+    public String login(LoginForm loginForm, HttpSession session) {
+        if (userService.isLoginSuccess(loginForm, session)) {
+            return "로그인 성공";
+        }
+        return "로그인 실패";
+    }
 
     // 로그아웃
 
