@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import softeer.carbook.domain.user.dto.SignupForm;
 import softeer.carbook.domain.user.service.UserService;
 
+import javax.validation.Valid;
+
 @Controller
 public class UserController {
     UserService userService;
@@ -18,7 +20,7 @@ public class UserController {
 
     // 회원가입
     @PostMapping("/signup")
-    public String signup(SignupForm signupForm){
+    public String signup(@Valid SignupForm signupForm){
         userService.signup(signupForm);
         return "result";
     }
