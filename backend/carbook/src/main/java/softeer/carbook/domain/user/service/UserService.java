@@ -63,7 +63,7 @@ public class UserService {
     }
 
     public boolean isLoginSuccess(LoginForm loginForm, HttpSession session) {
-        User user = UserRepository.findUserByEmail(loginForm.getEmail());
+        User user = userRepository.findUserByEmail(loginForm.getEmail());
         boolean isSuccess = Objects.equals(user.getPassword(), loginForm.getPassword());
         if (isSuccess) session.setAttribute("user", user);
         return isSuccess;
