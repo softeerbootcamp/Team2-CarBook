@@ -9,7 +9,7 @@ import softeer.carbook.domain.user.service.UserService;
 
 @Controller
 public class UserController {
-    private final UserService userService;
+    UserService userService;
 
     @Autowired
     public UserController(UserService userService){

@@ -1,6 +1,7 @@
 package softeer.carbook.domain.user.dto;
 
 public class SignupForm {
+    @Email()
     private final String email;
     private final String nickname;
     private final String password;

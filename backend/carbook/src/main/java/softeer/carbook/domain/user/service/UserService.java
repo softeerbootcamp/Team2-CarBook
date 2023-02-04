@@ -7,7 +7,7 @@ import softeer.carbook.domain.user.repository.UserRepository;
 
 @Service
 public class UserService {
-    private final UserRepository userRepository;
+    UserRepository userRepository;
 
     @Autowired
     public UserService(UserRepository userRepository){
