@@ -9,7 +9,7 @@ import softeer.carbook.domain.user.service.UserService;
 
 @Controller
 public class UserController {
-    UserService userService;
+    private final UserService userService;
 
     @Autowired
     public UserController(UserService userService){
@@ -19,7 +19,7 @@ public class UserController {
     // 회원가입
     @PostMapping("/signup")
     public String signup(SignupForm signupForm){
-        UserService.signup(signupForm);
+        userService.signup(signupForm);
         return "result";
     }
 
