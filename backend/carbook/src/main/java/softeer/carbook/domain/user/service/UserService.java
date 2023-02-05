@@ -15,6 +15,7 @@ import softeer.carbook.domain.user.exception.SignupNicknameDuplicateException;
 import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.repository.UserRepository;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Objects;
 import java.util.Optional;
@@ -78,5 +79,9 @@ public class UserService {
             logger.debug(emailNE.getMessage());
             return false;
         }
+    }
+
+    public static boolean isLogin(HttpServletRequest httpServletRequest){
+        return httpServletRequest.getSession(false) != null;
     }
 }
