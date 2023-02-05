@@ -67,9 +67,12 @@ public class UserService {
     public boolean isLoginSuccess(LoginForm loginForm, HttpSession session) {
         try{
             User user = userRepository.findUserByEmail(loginForm.getEmail());
-            boolean isSuccess = Objects.equals(user.getPassword(), loginForm.getPassword());
-            if (isSuccess) session.setAttribute("user", user);
-            return isSuccess;
+            if(Objects.equals(user.getPassword(), loginForm.getPassword())){
+                // 성공했을 경우 세션에 추가
+                session.setAttribute("user", user);
+                return true;
+            }
+            return false;
         } catch (LoginEmailNotExistException emailNE){
             // 등록된 이메일 없는 경우 예외 처리
             logger.debug(emailNE.getMessage());
