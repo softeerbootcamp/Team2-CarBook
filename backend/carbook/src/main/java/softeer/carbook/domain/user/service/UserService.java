@@ -65,19 +65,28 @@ public class UserService {
             throw new SignupNicknameDuplicateException("중복된 닉네임입니다.");
     }
 
-    public boolean isLoginSuccess(LoginForm loginForm, HttpSession session) {
+    public ResponseEntity<Message> isLoginSuccess(LoginForm loginForm, HttpSession session) {
         try{
             User user = userRepository.findUserByEmail(loginForm.getEmail());
             if(Objects.equals(user.getPassword(), loginForm.getPassword())){
                 // 성공했을 경우 세션에 추가
                 session.setAttribute("user", user);
-                return true;
+                return new ResponseEntity<>(
+                        new Message("Login Success"),
+                        HttpStatus.OK
+                );
             }
-            return false;
+            return new ResponseEntity<>(
+                    new Message("ERROR: Password not match"),
+                    HttpStatus.BAD_REQUEST
+            );
         } catch (LoginEmailNotExistException emailNE){
             // 등록된 이메일 없는 경우 예외 처리
             logger.debug(emailNE.getMessage());
-            return false;
+            return new ResponseEntity<>(
+                    new Message("ERROR: Email not exist"),
+                    HttpStatus.BAD_REQUEST
+            );
         }
     }
 

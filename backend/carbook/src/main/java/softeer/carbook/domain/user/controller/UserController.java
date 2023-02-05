@@ -31,11 +31,8 @@ public class UserController {
 
     // 로그인
     @PostMapping("/login")
-    public String login(LoginForm loginForm, HttpSession session) {
-        if (userService.isLoginSuccess(loginForm, session)) {
-            return "로그인 성공";
-        }
-        return "로그인 실패";
+    public ResponseEntity<Message> login(@Valid LoginForm loginForm, HttpSession session) {
+        return userService.isLoginSuccess(loginForm, session);
     }
 
     // 로그아웃
