@@ -7,7 +7,7 @@ export const axiosAppFormInstance = axios.create({
   baseURL: BASEURL,
   timeout: 3000,
   headers: {
-    'Content-Type': 'application/x-www-form-urlencoded;',
+    'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
     Accept: '*/*',
   },
 });
@@ -17,7 +17,7 @@ export const axiosMultiFormInstance = axios.create({
   baseURL: BASEURL,
   timeout: 3000,
   headers: {
-    'Content-Type': 'multipart/form-data;',
+    'Content-Type': 'multipart/form-data;charset=UTF-8',
     Accept: '*/*',
   },
 });
