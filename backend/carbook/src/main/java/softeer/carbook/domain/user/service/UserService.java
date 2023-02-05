@@ -20,7 +20,7 @@ public class UserService {
     }
 
     private boolean isDuplicated(SignupForm signupForm){
-        boolean isDuplicated = false;
+        boolean isDuplicated;
         isDuplicated = userRepository.isEmailDuplicated(signupForm.getEmail());
         isDuplicated = userRepository.isNicknameDuplicated(signupForm.getNickname());
         return isDuplicated;
