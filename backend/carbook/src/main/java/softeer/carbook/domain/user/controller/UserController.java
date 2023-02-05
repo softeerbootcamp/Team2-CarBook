@@ -32,9 +32,9 @@ public class UserController {
     // 로그인
     @PostMapping("/login")
     public String login(LoginForm loginForm, HttpSession session) {
-        if (userService.isLoginSuccess(loginForm, session)) {
-            return "로그인 성공";
-        }
+//        if (userService.isLoginSuccess(loginForm, session)) {
+//            return "로그인 성공";
+//        }
         return "로그인 실패";
     }
 
