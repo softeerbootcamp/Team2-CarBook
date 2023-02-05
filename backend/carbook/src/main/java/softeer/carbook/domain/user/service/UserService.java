@@ -16,6 +16,7 @@ import softeer.carbook.domain.user.repository.UserRepository;
 
 import javax.servlet.http.HttpSession;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -63,8 +64,8 @@ public class UserService {
     }
 
     public boolean isLoginSuccess(LoginForm loginForm, HttpSession session) {
-        User user = userRepository.findUserByEmail(loginForm.getEmail());
-        boolean isSuccess = Objects.equals(user.getPassword(), loginForm.getPassword());
+        Optional<User> user = userRepository.findUserByEmail(loginForm.getEmail());
+        boolean isSuccess = Objects.equals(user.get().getPassword(), loginForm.getPassword());
         if (isSuccess) session.setAttribute("user", user);
         return isSuccess;
     }
