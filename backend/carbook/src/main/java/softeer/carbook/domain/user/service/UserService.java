@@ -7,10 +7,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import softeer.carbook.domain.user.dto.Message;
+import softeer.carbook.domain.user.dto.LoginForm;
 import softeer.carbook.domain.user.dto.SignupForm;
 import softeer.carbook.domain.user.exception.SignupEmailDuplicateException;
 import softeer.carbook.domain.user.exception.SignupNicknameDuplicateException;
+import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.repository.UserRepository;
+
+import javax.servlet.http.HttpSession;
+import java.util.Objects;
 
 @Service
 public class UserService {
@@ -57,4 +62,10 @@ public class UserService {
             throw new SignupNicknameDuplicateException("중복된 닉네임입니다.");
     }
 
+    public boolean isLoginSuccess(LoginForm loginForm, HttpSession session) {
+        User user = UserRepository.findUserByEmail(loginForm.getEmail());
+        boolean isSuccess = Objects.equals(user.getPassword(), loginForm.getPassword());
+        if (isSuccess) session.setAttribute("user", user);
+        return isSuccess;
+    }
 }
