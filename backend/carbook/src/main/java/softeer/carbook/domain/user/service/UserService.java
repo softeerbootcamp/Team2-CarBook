@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import softeer.carbook.domain.user.dto.Message;
 import softeer.carbook.domain.user.dto.LoginForm;
 import softeer.carbook.domain.user.dto.SignupForm;
+import softeer.carbook.domain.user.exception.LoginEmailNotExistException;
 import softeer.carbook.domain.user.exception.SignupEmailDuplicateException;
 import softeer.carbook.domain.user.exception.SignupNicknameDuplicateException;
 import softeer.carbook.domain.user.model.User;
@@ -64,9 +65,15 @@ public class UserService {
     }
 
     public boolean isLoginSuccess(LoginForm loginForm, HttpSession session) {
-        Optional<User> user = userRepository.findUserByEmail(loginForm.getEmail());
-        boolean isSuccess = Objects.equals(user.get().getPassword(), loginForm.getPassword());
-        if (isSuccess) session.setAttribute("user", user);
-        return isSuccess;
+        try{
+            User user = userRepository.findUserByEmail(loginForm.getEmail());
+            boolean isSuccess = Objects.equals(user.getPassword(), loginForm.getPassword());
+            if (isSuccess) session.setAttribute("user", user);
+            return isSuccess;
+        } catch (LoginEmailNotExistException emailNE){
+            // 등록된 이메일 없는 경우 예외 처리
+            logger.debug(emailNE.getMessage());
+            return false;
+        }
     }
 }
