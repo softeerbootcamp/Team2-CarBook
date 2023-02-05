@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASEURL = 'https://reqres.in';
+const BASEURL = '';
 
 export const axiosInstance = axios.create({
   withCredentials: true,
