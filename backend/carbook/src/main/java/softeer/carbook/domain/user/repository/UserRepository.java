@@ -23,8 +23,9 @@ public class UserRepository {
     public void addUser(SignupForm signupForm) {
         jdbcTemplate.update("insert into USER(email, password, nickname) values(?, ?, ?)",
                 signupForm.getEmail(),
-                signupForm.getNickname(),
-                signupForm.getPassword());
+                signupForm.getPassword(),
+                signupForm.getNickname()
+                );
     }
 
     public boolean isEmailDuplicated(String email) {
@@ -38,9 +39,9 @@ public class UserRepository {
     }
 
     public User findUserByEmail(String email){
-        List<User> result = jdbcTemplate.query("select * from USER where email = ?", userRowMapper());
+        List<User> result = jdbcTemplate.query("select * from USER where email = ?", userRowMapper(), email);
         return result.stream().findAny().orElseThrow(
-                () -> new LoginEmailNotExistException("등록된 이메일이 없습니다.")
+                () -> new LoginEmailNotExistException("ERROR: Email not exist")
         );
     }
 
