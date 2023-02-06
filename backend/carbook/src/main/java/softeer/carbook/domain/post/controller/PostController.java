@@ -17,6 +17,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import softeer.carbook.domain.post.dto.GuestPostsResponse;
 import softeer.carbook.domain.post.dto.LoginPostsResponse;
 import softeer.carbook.domain.post.service.PostService;
+import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -80,7 +81,17 @@ public class PostController {
         // todo 해당 사용자의 게시물 조회
     @GetMapping("/profile")
     public ResponseEntity<?> profile(@RequestParam String nickname, HttpServletRequest httpServletRequest){
-        userService.isLogin()
+        // 현재 접속한 사용자가 누구인가요?
+        User loginUser = userService.findLoginedUser(httpServletRequest);
+
+        // 현재 접속한 사용자가 해당 프로필 유저 인가요? >> 내 프로필 페이지
+        if(loginUser.getNickname().equals(nickname)){
+
+        }
+
+        // 현재 접속한 사용자가 다른 사람의 프로필을 들어 갔나요 >> 타인의 프로필 페이지
+
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
