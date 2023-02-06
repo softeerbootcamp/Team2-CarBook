@@ -5,6 +5,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -12,6 +18,8 @@ import softeer.carbook.domain.post.dto.GuestPostsResponse;
 import softeer.carbook.domain.post.dto.LoginPostsResponse;
 import softeer.carbook.domain.post.service.PostService;
 import softeer.carbook.domain.user.service.UserService;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 public class PostController {
@@ -70,6 +78,11 @@ public class PostController {
         // 해당 사용자 조회 > user 로
 
         // todo 해당 사용자의 게시물 조회
+    @GetMapping("/profile")
+    public ResponseEntity<?> profile(@RequestParam String nickname, HttpServletRequest httpServletRequest){
+        userService.isLogin()
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
         // 닉네임 변경 ( 자신 프로필 페이지) > user 로
 
