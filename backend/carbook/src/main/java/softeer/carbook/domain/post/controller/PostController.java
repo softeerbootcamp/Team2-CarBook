@@ -32,13 +32,9 @@ public class PostController {
         return null;
     }
 
-
-
-
     private ResponseEntity<GuestPostsResponse> getGuestPosts(int index){
         return new ResponseEntity<>(postService.getRecentPosts(index), HttpStatus.OK);
     }
-
 
         // todo 로그인한 사람의 게시물 조회 ( 팔로우 )
             // mainpage url  + cookie
