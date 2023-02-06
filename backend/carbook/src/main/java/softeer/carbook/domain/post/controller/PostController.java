@@ -1,16 +1,43 @@
 package softeer.carbook.domain.post.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import softeer.carbook.domain.post.dto.GuestPostsResponse;
 import softeer.carbook.domain.post.service.PostService;
 import softeer.carbook.domain.user.service.UserService;
 
 @RestController
 public class PostController {
-    // 메인 페이지
-    //private final PostService postService;
-    //private final UserService userService;
-        // todo 로그인하지 않은 사람의 게시물 조회
+    private final UserService userService;
+    private final PostService postService;
 
+    @Autowired
+    public PostController(UserService userService, PostService postService) {
+        this.userService = userService;
+        this.postService = postService;
+    }
+
+
+    @GetMapping("/posts/m")
+    public ResponseEntity<GuestPostsResponse> getPosts(@RequestParam int index){
+        if (!userService.isLogin(((ServletRequestAttributes) RequestContextHolder
+                .getRequestAttributes()).getRequest()))
+            return getGuestPosts(index);
+        return null;
+    }
+
+
+
+
+    private ResponseEntity<GuestPostsResponse> getGuestPosts(int index){
+        return new ResponseEntity<>(postService.getRecentPosts(index), HttpStatus.OK);
+    }
 
 
         // todo 로그인한 사람의 게시물 조회 ( 팔로우 )
