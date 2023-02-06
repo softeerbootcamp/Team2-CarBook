@@ -1,6 +1,6 @@
 import { Component } from '@/core';
 import './Signup.scss';
-import car from '@/assets/car.svg';
+import car from '@/assets/images/car.svg';
 
 export default class SignupPage extends Component {
   template(): string {
