@@ -20,7 +20,7 @@ public class PostRepository {
     public PostRepository(DataSource dataSource) { this.jdbcTemplate = new JdbcTemplate(dataSource); }
 
     public List<Post> getPosts(int size, int index){
-        List<Post> posts = jdbcTemplate.query("select * from POST where  ORDER BY create_date DESC LIMIT ?, ?",
+        List<Post> posts = jdbcTemplate.query("select * from POST ORDER BY create_date DESC LIMIT ?, ?",
                 postRowMapper(), index, size);
         return posts;
     }
