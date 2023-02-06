@@ -13,6 +13,13 @@ public class Post {
         this.content = content;
     }
 
+    public Post(int userId, Timestamp createDate, Timestamp updateDate, String content) {
+        this.userId = userId;
+        this.createDate = createDate;
+        this.updateDate = updateDate;
+        this.content = content;
+    }
+
     public int getUserId() {
         return userId;
     }
