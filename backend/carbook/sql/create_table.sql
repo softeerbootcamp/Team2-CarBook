@@ -14,7 +14,7 @@ CREATE TABLE `POST` (
 	`content`	varchar(500)	NULL,
     primary key (id),
     constraint post_user_id_fk
-        foreign key (user_id) references user (id)
+        foreign key (user_id) references USER (id)
             on update cascade on delete cascade
 );
 
@@ -24,10 +24,10 @@ CREATE TABLE `POST_LIKE` (
 	`post_id`	int	NOT NULL,
     primary key (id),
     constraint post_like_user_id_fk
-        foreign key (user_id) references user (id)
+        foreign key (user_id) references USER (id)
             on update cascade on delete cascade,
     constraint post_like_post_id_fk
-        foreign key (post_id) references post (id)
+        foreign key (post_id) references POST (id)
             on update cascade on delete cascade
 );
 
@@ -37,10 +37,10 @@ CREATE TABLE `Follow` (
 	`following_id`	int	NOT NULL,
     primary key (id),
     constraint follow_follower_id_fk
-        foreign key (follower_id) references user (id)
+        foreign key (follower_id) references USER (id)
             on update cascade on delete cascade,
 	constraint follow_following_id_fk
-        foreign key (following_id) references user (id)
+        foreign key (following_id) references USER (id)
             on update cascade on delete cascade
 );
 
@@ -56,10 +56,10 @@ CREATE TABLE `POST_HASHTAG` (
 	`tag_id`	int	NOT NULL,
     primary key (id),
     constraint post_hashtag_post_id_fk
-        foreign key (post_id) references post (id)
+        foreign key (post_id) references POST (id)
             on update cascade on delete cascade,
 	constraint post_hashtag_tag_id_fk
-        foreign key (tag_id) references hashtag (id)
+        foreign key (tag_id) references HASHTAG (id)
             on update cascade on delete cascade
 );
 
@@ -70,6 +70,6 @@ CREATE TABLE `IMAGE` (
 	`file_path`	varchar(255)	NOT NULL,
     primary key (id),
     constraint image_post_id_fk
-        foreign key (post_id) references post (id)
+        foreign key (post_id) references POST (id)
             on update cascade on delete cascade
 );
