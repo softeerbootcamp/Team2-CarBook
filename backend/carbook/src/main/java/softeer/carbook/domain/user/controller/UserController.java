@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -49,6 +50,14 @@ public class UserController {
     // 로그인한 사용자인지
 
     // exception handling
+
+    // Valid 어노테이션 예외 처리
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Message> processValidationError(MethodArgumentNotValidException ex) {
+        logger.debug(ex.getMessage());
+        return Message.make400Response(ex.getMessage());
+    }
+
 
     // 회원가입 시 이메일 중복 처리
     @ExceptionHandler(SignupEmailDuplicateException.class)
