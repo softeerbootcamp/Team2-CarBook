@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import softeer.carbook.domain.post.dto.GuestPostsResponse;
+import softeer.carbook.domain.post.dto.LoginPostsResponse;
 import softeer.carbook.domain.post.service.PostService;
 import softeer.carbook.domain.user.service.UserService;
 
@@ -35,6 +36,13 @@ public class PostController {
     private ResponseEntity<GuestPostsResponse> getGuestPosts(int index){
         return new ResponseEntity<>(postService.getRecentPosts(index), HttpStatus.OK);
     }
+
+    /*
+    private ResponseEntity<LoginPostsResponse> getLoginPosts(int index){
+        return new ResponseEntity<>(postService.getRecentPosts(index), HttpStatus.OK);
+    }
+
+     */
 
         // todo 로그인한 사람의 게시물 조회 ( 팔로우 )
             // mainpage url  + cookie

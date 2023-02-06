@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import softeer.carbook.domain.post.dto.GuestPostsResponse;
+import softeer.carbook.domain.post.dto.LoginPostsResponse;
 import softeer.carbook.domain.post.model.Image;
 import softeer.carbook.domain.post.model.Post;
 import softeer.carbook.domain.post.repository.ImageRepository;
@@ -34,5 +35,12 @@ public class PostService {
         }
         return new GuestPostsResponse(false, images);
     }
+
+    /*
+    public LoginPostsResponse getRecentFollowerPosts(int index){
+
+    }
+
+     */
 
 }
