@@ -3,11 +3,12 @@ package softeer.carbook.domain.post.model;
 import java.sql.Timestamp;
 
 public class Post {
+
     private int id;
     private final int userId;
     private Timestamp createDate;
     private Timestamp updateDate;
-    private final String content;
+    private String content;
 
     public Post(int userId, String content) {
         this.userId = userId;
@@ -21,6 +22,11 @@ public class Post {
         this.updateDate = updateDate;
         this.content = content;
     }
+
+    public int getId() {
+        return id;
+    }
+
 
     public int getUserId() {
         return userId;
