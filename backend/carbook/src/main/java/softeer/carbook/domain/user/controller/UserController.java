@@ -40,7 +40,7 @@ public class UserController {
     // 로그인
     @PostMapping("/login")
     public ResponseEntity<Message> login(@Valid LoginForm loginForm, HttpSession session) {
-        Message resultMsg = userService.isLoginSuccess(loginForm, session);
+        Message resultMsg = userService.login(loginForm, session);
         return Message.make200Response(resultMsg.getMessage());
     }
 

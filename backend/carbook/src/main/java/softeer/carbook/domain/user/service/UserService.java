@@ -45,14 +45,20 @@ public class UserService {
             throw new SignupNicknameDuplicateException("중복된 닉네임입니다.");
     }
 
-    public Message isLoginSuccess(LoginForm loginForm, HttpSession session) {
+    public Message login(LoginForm loginForm, HttpSession session) {
         User user = userRepository.findUserByEmail(loginForm.getEmail());
-        if(Objects.equals(user.getPassword(), loginForm.getPassword())) {
+        if(isLoginSuccess(user, loginForm)) {
             // 성공했을 경우 세션에 추가
             session.setAttribute("user", user);
+            // 세션에 추가 후 성공 메세지 반환
             return new Message("Login Success");
         }
+        // 패스워드 불일치
         return new Message("ERROR: Password not match");
+    }
+
+    private boolean isLoginSuccess(User user, LoginForm loginForm){
+        return user.getPassword().equals(loginForm.getPassword());
     }
 
     public boolean isLogin(HttpServletRequest httpServletRequest){
