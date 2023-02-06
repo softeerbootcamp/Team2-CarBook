@@ -23,8 +23,9 @@ public class UserRepository {
     public void addUser(SignupForm signupForm) {
         jdbcTemplate.update("insert into USER(email, password, nickname) values(?, ?, ?)",
                 signupForm.getEmail(),
-                signupForm.getNickname(),
-                signupForm.getPassword());
+                signupForm.getPassword(),
+                signupForm.getNickname()
+                );
     }
 
     public boolean isEmailDuplicated(String email) {
