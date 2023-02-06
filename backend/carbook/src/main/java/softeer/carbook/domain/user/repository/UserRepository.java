@@ -5,11 +5,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import softeer.carbook.domain.user.dto.SignupForm;
+import softeer.carbook.domain.user.exception.LoginEmailNotExistException;
 import softeer.carbook.domain.user.model.User;
 
 import javax.sql.DataSource;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 @Repository
@@ -38,6 +37,12 @@ public class UserRepository {
         return !result.isEmpty();
     }
 
+    public User findUserByEmail(String email){
+        List<User> result = jdbcTemplate.query("select * from user where email = ?", userRowMapper());
+        return result.stream().findAny().orElseThrow(
+                () -> new LoginEmailNotExistException("등록된 이메일이 없습니다.")
+        );
+    }
 
     private RowMapper<User> userRowMapper(){
         return (rs, rowNum) -> {
