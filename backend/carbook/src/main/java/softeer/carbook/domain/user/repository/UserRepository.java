@@ -47,10 +47,14 @@ public class UserRepository {
     }
 
     public String findEmailByNickname(String nickname) {
-        List<User> result = jdbcTemplate.query("select * from USER where nickname = ?", userRowMapper(), nickname);
+        List<String> result = jdbcTemplate.query("select email from USER where nickname = ?", emailRowMapper(), nickname);
         return result.stream().findAny().orElseThrow(
                 () -> new NicknameNotExistException("ERROR: Nickname not exist")
-        ).getEmail();
+        );
+    }
+
+    private RowMapper<String> emailRowMapper(){
+        return (rs, rowNum) -> rs.getString("email");
     }
 
     private RowMapper<User> userRowMapper(){
