@@ -31,18 +31,8 @@ public class UserService {
     }
 
     public ResponseEntity<Message> signup(SignupForm signupForm){
-        try {
-            // 중복 체크
-            checkDuplicated(signupForm);
-        } catch (SignupEmailDuplicateException emailDE){
-            // 이메일 중복 처리
-            logger.debug(emailDE.getMessage());
-            return Message.make400Response(emailDE.getMessage());
-        } catch (SignupNicknameDuplicateException nicknameDE){
-            // 닉네임 중복 처리
-            logger.debug(nicknameDE.getMessage());
-            return Message.make400Response(nicknameDE.getMessage());
-        }
+        // 중복 체크
+        checkDuplicated(signupForm);
         // 데이터베이스에 유저 추가
         userRepository.addUser(signupForm);
         return Message.make200Response("SignUp Success");
@@ -56,25 +46,17 @@ public class UserService {
     }
 
     public ResponseEntity<Message> isLoginSuccess(LoginForm loginForm, HttpSession session) {
-        try{
-            User user = userRepository.findUserByEmail(loginForm.getEmail());
-            if(Objects.equals(user.getPassword(), loginForm.getPassword())){
-                // 성공했을 경우 세션에 추가
-                session.setAttribute("user", user);
-                return Message.make200Response("Login Success");
-            }
-            return Message.make400Response("ERROR: Password not match");
-        } catch (LoginEmailNotExistException emailNE){
-            // 등록된 이메일 없는 경우 예외 처리
-            logger.debug(emailNE.getMessage());
-            return Message.make400Response("ERROR: Email not exist");
+        User user = userRepository.findUserByEmail(loginForm.getEmail());
+        if(Objects.equals(user.getPassword(), loginForm.getPassword())) {
+            // 성공했을 경우 세션에 추가
+            session.setAttribute("user", user);
+            return Message.make200Response("Login Success");
         }
+        return Message.make400Response("ERROR: Password not match");
     }
 
-    public static boolean isLogin(HttpServletRequest httpServletRequest){
+    public boolean isLogin(HttpServletRequest httpServletRequest){
         return httpServletRequest.getSession(false) != null;
     }
-
-
 
 }
