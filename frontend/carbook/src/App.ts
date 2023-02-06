@@ -5,4 +5,5 @@ export default class App extends Component {
   setup(): void {
     new Router(this.$target);
   }
+  render(): void {}
 }
