@@ -30,12 +30,12 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public ResponseEntity<Message> signup(SignupForm signupForm){
+    public Message signup(SignupForm signupForm){
         // 중복 체크
         checkDuplicated(signupForm);
         // 데이터베이스에 유저 추가
         userRepository.addUser(signupForm);
-        return Message.make200Response("SignUp Success");
+        return new Message("SignUp Success");
     }
 
     private void checkDuplicated(SignupForm signupForm){
@@ -45,14 +45,14 @@ public class UserService {
             throw new SignupNicknameDuplicateException("중복된 닉네임입니다.");
     }
 
-    public ResponseEntity<Message> isLoginSuccess(LoginForm loginForm, HttpSession session) {
+    public Message isLoginSuccess(LoginForm loginForm, HttpSession session) {
         User user = userRepository.findUserByEmail(loginForm.getEmail());
         if(Objects.equals(user.getPassword(), loginForm.getPassword())) {
             // 성공했을 경우 세션에 추가
             session.setAttribute("user", user);
-            return Message.make200Response("Login Success");
+            return new Message("Login Success");
         }
-        return Message.make400Response("ERROR: Password not match");
+        return new Message("ERROR: Password not match");
     }
 
     public boolean isLogin(HttpServletRequest httpServletRequest){

@@ -33,13 +33,15 @@ public class UserController {
     // 회원가입
     @PostMapping("/signup")
     public ResponseEntity<Message> signup(@Valid SignupForm signupForm){
-        return userService.signup(signupForm);
+        Message resultMsg = userService.signup(signupForm);
+        return Message.make200Response(resultMsg.getMessage());
     }
 
     // 로그인
     @PostMapping("/login")
     public ResponseEntity<Message> login(@Valid LoginForm loginForm, HttpSession session) {
-        return userService.isLoginSuccess(loginForm, session);
+        Message resultMsg = userService.isLoginSuccess(loginForm, session);
+        return Message.make200Response(resultMsg.getMessage());
     }
 
     // 로그아웃
