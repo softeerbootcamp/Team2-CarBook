@@ -23,4 +23,8 @@ public class Message {
                 HttpStatus.BAD_REQUEST
         );
     }
+
+    public String getMessage() {
+        return message;
+    }
 }

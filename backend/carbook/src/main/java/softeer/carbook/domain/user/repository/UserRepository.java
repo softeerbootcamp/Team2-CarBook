@@ -21,24 +21,24 @@ public class UserRepository {
     }
 
     public void addUser(SignupForm signupForm) {
-        jdbcTemplate.update("insert into user values(?, ?, ?)",
+        jdbcTemplate.update("insert into USER(email, password, nickname) values(?, ?, ?)",
                 signupForm.getEmail(),
                 signupForm.getNickname(),
                 signupForm.getPassword());
     }
 
     public boolean isEmailDuplicated(String email) {
-        List<User> result = jdbcTemplate.query("select * from user where email = ?", userRowMapper(), email);
+        List<User> result = jdbcTemplate.query("select * from USER where email = ?", userRowMapper(), email);
         return !result.isEmpty();
     }
 
     public boolean isNicknameDuplicated(String nickname) {
-        List<User> result = jdbcTemplate.query("select * from user where nickname = ?", userRowMapper(), nickname);
+        List<User> result = jdbcTemplate.query("select * from USER where nickname = ?", userRowMapper(), nickname);
         return !result.isEmpty();
     }
 
     public User findUserByEmail(String email){
-        List<User> result = jdbcTemplate.query("select * from user where email = ?", userRowMapper());
+        List<User> result = jdbcTemplate.query("select * from USER where email = ?", userRowMapper());
         return result.stream().findAny().orElseThrow(
                 () -> new LoginEmailNotExistException("등록된 이메일이 없습니다.")
         );
