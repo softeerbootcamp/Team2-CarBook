@@ -3,22 +3,17 @@ package softeer.carbook.domain.user.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import softeer.carbook.domain.user.dto.Message;
 import softeer.carbook.domain.user.dto.LoginForm;
 import softeer.carbook.domain.user.dto.SignupForm;
-import softeer.carbook.domain.user.exception.LoginEmailNotExistException;
 import softeer.carbook.domain.user.exception.SignupEmailDuplicateException;
-import softeer.carbook.domain.user.exception.SignupNicknameDuplicateException;
+import softeer.carbook.domain.user.exception.NicknameDuplicateException;
 import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.repository.UserRepository;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.Objects;
-import java.util.Optional;
 
 @Service
 public class UserService {
@@ -42,7 +37,7 @@ public class UserService {
         if(userRepository.isEmailDuplicated(signupForm.getEmail()))
             throw new SignupEmailDuplicateException("중복된 이메일입니다.");
         if(userRepository.isNicknameDuplicated(signupForm.getNickname()))
-            throw new SignupNicknameDuplicateException("중복된 닉네임입니다.");
+            throw new NicknameDuplicateException("중복된 닉네임입니다.");
     }
 
     public Message login(LoginForm loginForm, HttpSession session) {

@@ -3,9 +3,7 @@ package softeer.carbook.domain.user.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,7 +13,7 @@ import softeer.carbook.domain.user.dto.LoginForm;
 import softeer.carbook.domain.user.dto.SignupForm;
 import softeer.carbook.domain.user.exception.LoginEmailNotExistException;
 import softeer.carbook.domain.user.exception.SignupEmailDuplicateException;
-import softeer.carbook.domain.user.exception.SignupNicknameDuplicateException;
+import softeer.carbook.domain.user.exception.NicknameDuplicateException;
 import softeer.carbook.domain.user.service.UserService;
 
 import javax.servlet.http.HttpSession;
@@ -67,8 +65,8 @@ public class UserController {
     }
 
     // 회원가입 시 닉네임 중복 처리
-    @ExceptionHandler(SignupNicknameDuplicateException.class)
-    public ResponseEntity<Message> signupNicknameDuplicateException(SignupNicknameDuplicateException nicknameDE){
+    @ExceptionHandler(NicknameDuplicateException.class)
+    public ResponseEntity<Message> nicknameDuplicateException(NicknameDuplicateException nicknameDE){
         logger.debug(nicknameDE.getMessage());
         return Message.make400Response("ERROR: Duplicated nickname");
     }
