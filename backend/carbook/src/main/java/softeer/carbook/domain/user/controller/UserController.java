@@ -4,10 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.BindingResultUtils;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import softeer.carbook.domain.user.dto.Message;
 import softeer.carbook.domain.user.dto.LoginForm;
 import softeer.carbook.domain.user.dto.SignupForm;
@@ -20,6 +21,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 @RestController
+@RestControllerAdvice
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     private final UserService userService;
@@ -50,10 +52,12 @@ public class UserController {
     // exception handling
 
     // Valid 어노테이션 예외 처리
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Message> processValidationError(MethodArgumentNotValidException ex) {
-        logger.debug(ex.getMessage());
-        return Message.make400Response(ex.getMessage());
+    @ExceptionHandler(BindException.class)
+    public ResponseEntity<Message> processValidationError(BindException ex) {
+        BindingResult bindingResult = ex.getBindingResult();
+        String errorMsg = bindingResult.getFieldError().getDefaultMessage();
+        logger.warn(errorMsg);
+        return Message.make400Response(errorMsg);
     }
 
 
