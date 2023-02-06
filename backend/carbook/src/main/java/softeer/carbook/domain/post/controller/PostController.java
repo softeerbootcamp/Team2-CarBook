@@ -81,12 +81,11 @@ public class PostController {
 
         // 현재 접속한 사용자가 해당 프로필 유저 인가요? >> 내 프로필 페이지
         if(loginUser.getNickname().equals(nickname)){
-
+            postService.myProfile(loginUser);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
-
         // 현재 접속한 사용자가 다른 사람의 프로필을 들어 갔나요 >> 타인의 프로필 페이지
-
-
+        postService.otherProfile(loginUser);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
