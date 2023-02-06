@@ -1,5 +1,5 @@
 import { Component } from '@/core';
-import './LoginPage.scss';
+import './Login.scss';
 import car from '@/assets/car.svg';
 
 export default class LoginPage extends Component {
