@@ -16,7 +16,7 @@ export default class LoginPage extends Component {
         <input type = 'text' placeholder='id를 입력해주세요' class ='input-box' name ='login-id'/>
         <div class ='login-password'> Password</div>
         <input type = 'password' class ='input-box' name = 'login-password' placeholder='비밀번호를 입력해주세요'/>
-        <button class ='input-form-button'>로그인</button>
+        <button type = 'submit' class ='input-form-button'>로그인</button>
       </form>
     </div>
     <footer>
