@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import softeer.carbook.domain.user.dto.SignupForm;
 import softeer.carbook.domain.user.exception.LoginEmailNotExistException;
+import softeer.carbook.domain.user.exception.NicknameNotExistException;
 import softeer.carbook.domain.user.model.User;
 
 import javax.sql.DataSource;
@@ -47,7 +48,9 @@ public class UserRepository {
 
     public String findEmailByNickname(String nickname) {
         List<User> result = jdbcTemplate.query("select * from USER where nickname = ?", userRowMapper(), nickname);
-        return result.stream().findAny().orElseThrow().getNickname();
+        return result.stream().findAny().orElseThrow(
+                () -> new NicknameNotExistException("ERROR: Nickname not exist")
+        ).getEmail();
     }
 
     private RowMapper<User> userRowMapper(){
