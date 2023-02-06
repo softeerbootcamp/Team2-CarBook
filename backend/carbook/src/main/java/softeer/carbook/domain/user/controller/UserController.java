@@ -22,7 +22,7 @@ import javax.validation.Valid;
 @RestController
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
-    UserService userService;
+    private final UserService userService;
 
     @Autowired
     public UserController(UserService userService){

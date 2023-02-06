@@ -17,7 +17,7 @@ import javax.servlet.http.HttpSession;
 
 @Service
 public class UserService {
-    UserRepository userRepository;
+    private final UserRepository userRepository;
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
