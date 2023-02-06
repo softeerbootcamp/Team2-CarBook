@@ -28,6 +28,7 @@ public class PostRepository {
     private RowMapper<Post> postRowMapper(){
         return (rs, rowNum) -> {
             Post post = new Post(
+                    rs.getInt("id"),
                     rs.getInt("user_id"),
                     rs.getTimestamp("create_date"),
                     rs.getTimestamp("update_date"),
