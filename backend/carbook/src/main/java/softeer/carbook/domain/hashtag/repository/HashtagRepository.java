@@ -3,12 +3,14 @@ package softeer.carbook.domain.hashtag.repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
 import softeer.carbook.domain.hashtag.exception.HashtagNotExistException;
 import softeer.carbook.domain.hashtag.model.Hashtag;
 
 import javax.sql.DataSource;
 import java.util.List;
 
+@Repository
 public class HashtagRepository {
 
     private final JdbcTemplate jdbcTemplate;
