@@ -2,14 +2,19 @@ package softeer.carbook.domain.user.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
+import softeer.carbook.domain.user.dto.Message;
 import softeer.carbook.domain.user.dto.SignupForm;
 import softeer.carbook.domain.user.service.UserService;
 
-@Controller
+import javax.validation.Valid;
+
+@RestController
 public class UserController {
-    private final UserService userService;
+    UserService userService;
 
     @Autowired
     public UserController(UserService userService){
@@ -18,9 +23,8 @@ public class UserController {
 
     // 회원가입
     @PostMapping("/signup")
-    public String signup(SignupForm signupForm){
-        userService.signup(signupForm);
-        return "result";
+    public ResponseEntity<Message> signup(@Valid SignupForm signupForm){
+        return userService.signup(signupForm);
     }
 
     // 로그인
