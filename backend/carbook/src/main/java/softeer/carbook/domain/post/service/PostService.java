@@ -38,8 +38,8 @@ public class PostService {
         return new GuestPostsResponse(false, images);
     }
 
-    public PostsSearchResponse searchByTags(String tagParams) {
-        String[] tagNames = tagParams.split("\\+");
+    public PostsSearchResponse searchByTags(String hashtags, int index) {
+        String[] tagNames = hashtags.split("\\+");
 
         List<Integer> hashtagIds = new ArrayList<>();
         for (String tagName : tagNames) {
@@ -47,7 +47,7 @@ public class PostService {
             hashtagIds.add(hashtag.getId());
         }
 
-        List<Post> posts = postRepository.searchByHashtags(hashtagIds);
+        List<Post> posts = postRepository.searchByHashtags(hashtagIds, POST_COUNT, index);
 
         List<Image> images = new ArrayList<>();
         for (Post post : posts) {
