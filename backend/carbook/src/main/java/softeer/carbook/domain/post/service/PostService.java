@@ -11,18 +11,19 @@ import softeer.carbook.domain.post.repository.PostRepository;
 import softeer.carbook.domain.user.dto.Message;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class PostService {
-    PostRepository postRepository;
-    ImageRepository imageRepository;
+    private final PostRepository postRepository;
+    private final ImageRepository imageRepository;
     private final int POST_COUNT = 10;
 
     @Autowired
-    public PostService(PostRepository postRepository) { this.postRepository = postRepository; }
+    public PostService(PostRepository postRepository, ImageRepository imageRepository) {
+        this.postRepository = postRepository;
+        this.imageRepository = imageRepository;
+    }
 
     public GuestPostsResponse getRecentPosts(int index){
         List<Post> posts = postRepository.getPosts(POST_COUNT, index);
