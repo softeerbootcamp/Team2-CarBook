@@ -11,6 +11,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import softeer.carbook.domain.post.dto.GuestPostsResponse;
 import softeer.carbook.domain.post.dto.LoginPostsResponse;
 import softeer.carbook.domain.post.dto.PostsSearchResponse;
+import softeer.carbook.domain.post.dto.MyProfileResponse;
+import softeer.carbook.domain.post.dto.OtherProfileResponse;
 import softeer.carbook.domain.post.service.PostService;
 import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.service.UserService;
@@ -81,12 +83,12 @@ public class PostController {
 
         // 현재 접속한 사용자가 해당 프로필 유저 인가요? >> 내 프로필 페이지
         if(loginUser.getNickname().equals(nickname)){
-            postService.myProfile(loginUser);
-            return new ResponseEntity<>(HttpStatus.OK);
+            MyProfileResponse myProfileResponse = postService.myProfile(loginUser);
+            return new ResponseEntity<>(myProfileResponse, HttpStatus.OK);
         }
         // 현재 접속한 사용자가 다른 사람의 프로필을 들어 갔나요 >> 타인의 프로필 페이지
-        postService.otherProfile(loginUser);
-        return new ResponseEntity<>(HttpStatus.OK);
+        OtherProfileResponse otherProfileResponse = postService.otherProfile(loginUser, nickname);
+        return new ResponseEntity<>(otherProfileResponse, HttpStatus.OK);
     }
 
         // 닉네임 변경 ( 자신 프로필 페이지) > user 로

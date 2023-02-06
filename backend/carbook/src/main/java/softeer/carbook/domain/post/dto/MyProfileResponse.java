@@ -16,6 +16,30 @@ public class MyProfileResponse {
         this.nickname = nickname;
     }
 
+    public boolean isMyProfile() {
+        return isMyProfile;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public int getFollower() {
+        return follower;
+    }
+
+    public int getFollowing() {
+        return following;
+    }
+
+    public List<Image> getImages() {
+        return images;
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }

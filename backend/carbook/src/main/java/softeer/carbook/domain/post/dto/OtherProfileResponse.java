@@ -17,6 +17,10 @@ public class OtherProfileResponse {
         this.nickname = nickname;
     }
 
+    public boolean isMyProfile() {
+        return isMyProfile;
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }

@@ -45,6 +45,11 @@ public class UserRepository {
         );
     }
 
+    public String findEmailByNickname(String nickname) {
+        List<User> result = jdbcTemplate.query("select * from USER where nickname = ?", userRowMapper(), nickname);
+        return result.stream().findAny().orElseThrow().getNickname();
+    }
+
     private RowMapper<User> userRowMapper(){
         return (rs, rowNum) -> {
             User user = new User(
@@ -56,5 +61,6 @@ public class UserRepository {
             return user;
         };
     }
+
 
 }

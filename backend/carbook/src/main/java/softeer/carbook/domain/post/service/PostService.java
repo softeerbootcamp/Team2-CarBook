@@ -7,12 +7,15 @@ import softeer.carbook.domain.hashtag.repository.HashtagRepository;
 import softeer.carbook.domain.post.dto.GuestPostsResponse;
 import softeer.carbook.domain.post.dto.LoginPostsResponse;
 import softeer.carbook.domain.post.dto.PostsSearchResponse;
+import softeer.carbook.domain.post.dto.MyProfileResponse;
+import softeer.carbook.domain.post.dto.OtherProfileResponse;
 import softeer.carbook.domain.post.model.Image;
 import softeer.carbook.domain.post.model.Post;
 import softeer.carbook.domain.post.repository.ImageRepository;
 import softeer.carbook.domain.post.repository.PostRepository;
 import softeer.carbook.domain.user.dto.Message;
 import softeer.carbook.domain.user.model.User;
+import softeer.carbook.domain.user.repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,13 +25,19 @@ public class PostService {
     private final PostRepository postRepository;
     private final ImageRepository imageRepository;
     private final HashtagRepository hashtagRepository;
+    private final UserRepository userRepository;
     private final int POST_COUNT = 10;
 
     @Autowired
-    public PostService(PostRepository postRepository, ImageRepository imageRepository, HashtagRepository hashtagRepository) {
+    public PostService(
+            PostRepository postRepository,
+            ImageRepository imageRepository,
+            HashtagRepository hashtagRepository,
+            UserRepository userRepository) {
         this.postRepository = postRepository;
         this.imageRepository = imageRepository;
         this.hashtagRepository = hashtagRepository;
+        this.userRepository = userRepository;
     }
 
     public GuestPostsResponse getRecentPosts(int index) {
@@ -61,4 +70,25 @@ public class PostService {
         return new PostsSearchResponse(images);
     }
 
+    public MyProfileResponse myProfile(User loginUser) {
+        MyProfileResponse myProfileResponse = new MyProfileResponse();
+        myProfileResponse.setNickname(loginUser.getNickname());
+        myProfileResponse.setEmail(loginUser.getEmail());
+        myProfileResponse.setFollower(123); // todo
+        myProfileResponse.setFollowing(1234); // todo
+        myProfileResponse.setImages(null); // todo
+        return myProfileResponse;
+    }
+
+    public OtherProfileResponse otherProfile(User loginUser, String profileUserNickname) {
+        OtherProfileResponse otherProfileResponse = new OtherProfileResponse();
+        otherProfileResponse.setNickname(profileUserNickname);
+        otherProfileResponse.setEmail(userRepository.findEmailByNickname(profileUserNickname));
+        otherProfileResponse.setFollow(true); // todo
+        otherProfileResponse.setFollower(123); // todo
+        otherProfileResponse.setFollowing(1235); // todo
+        otherProfileResponse.setImages(null); // todo
+
+        return otherProfileResponse;
+    }
 }
