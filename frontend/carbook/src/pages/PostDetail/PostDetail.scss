@@ -54,6 +54,25 @@ $backgroundImg : '@/assets/images/Postdetail2.svg';
                     font-size: 20px;
                 }
             }
+
+            .info-menu{
+                position: relative;
+
+                .info-menu-items{
+                    position: absolute;
+                    right: 0;
+                    width: 93px;
+                    height: 98px;
+                    border-radius: 4px;
+                    box-shadow: 2px 3px 3px 0;
+                    padding: 8px 0;
+                    background-color: white;
+
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-around;
+                }
+            }
         }
 
         .info-contents{

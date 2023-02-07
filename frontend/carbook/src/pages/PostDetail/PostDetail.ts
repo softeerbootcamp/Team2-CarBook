@@ -19,6 +19,11 @@ export default class PostDetailPage extends Component {
             <h2 class = 'user-nickname'>유저 닉네임</h2>
           </div>
           <div class ='info-menu'><img src = "${menu}"/>
+            <ul class = 'info-menu-items'>
+              <li>메뉴</li>
+              <li>수정</li>
+              <li>삭제</li>
+            </ul>
           </div>
         </div>
         <div class = 'info-contents'>
