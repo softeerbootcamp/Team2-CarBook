@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import softeer.carbook.domain.post.dto.GuestPostsResponse;
+import softeer.carbook.domain.post.dto.PostsSearchResponse;
 import softeer.carbook.domain.post.service.PostService;
 import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.service.UserService;
@@ -62,10 +63,10 @@ public class PostController {
         // 해시태그 검색 > 해시태그 폴더로
 
     // todo 해시태그의 게시물 조회
-//    @GetMapping("/posts/m")
-//    public ResponseEntity<PostsSearchResponse> searchPostsByTags(@RequestParam int index, @RequestParam String hashtag){
-//        return new ResponseEntity<>(postService.searchByTags(hashtag, index), HttpStatus.OK);
-//    }
+    @GetMapping("/posts/m/search")
+    public ResponseEntity<PostsSearchResponse> searchPostsByTags(@RequestParam int index, @RequestParam String hashtag){
+        return new ResponseEntity<>(postService.searchByTags(hashtag, index), HttpStatus.OK);
+    }
 
     // 프로필 페이지
 
