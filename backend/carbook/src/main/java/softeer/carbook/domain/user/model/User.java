@@ -13,6 +13,8 @@ public class User {
         this.nickname = nickname;
     }
 
+    public int getId() { return id; }
+
     public String getEmail() {
         return email;
     }
@@ -24,4 +26,5 @@ public class User {
     public String getPassword() {
         return password;
     }
+
 }
