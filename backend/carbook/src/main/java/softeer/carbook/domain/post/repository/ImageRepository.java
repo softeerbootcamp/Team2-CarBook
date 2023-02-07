@@ -41,7 +41,7 @@ public class ImageRepository {
 
     public List<Image> findImagesByUserId(int id) {
         List<Image> images = jdbcTemplate.query(
-                "select * from POST INNER JOIN IMAGE " +
+                "select IMAGE.post_id, IMAGE.image_url from POST INNER JOIN IMAGE " +
                         "ON POST.id = IMAGE.post_id " +
                         "WHERE POST.user_id = ? " +
                         "ORDER BY create_date ",
@@ -51,7 +51,7 @@ public class ImageRepository {
 
     public List<Image> findImagesByNickName(String profileUserNickname) {
         List<Image> images = jdbcTemplate.query(
-                "select * from USER, POST, IMAGE " +
+                "select IMAGE.post_id, IMAGE.image_url from USER, POST, IMAGE " +
                         "WHERE USER.id = POST.user_id and POST.id = IMAGE.post_id " +
                         "and USER.nickname = ?" +
                         "ORDER BY create_date ",
