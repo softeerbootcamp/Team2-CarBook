@@ -33,32 +33,32 @@ public class OtherProfileResponse {
         public OtherProfileResponseBuilder() {
         }
 
-        public OtherProfileResponseBuilder setNickname(String nickname) {
+        public OtherProfileResponseBuilder nickname(String nickname) {
             this.nickname = nickname;
             return this;
         }
 
-        public OtherProfileResponseBuilder setEmail(String email) {
+        public OtherProfileResponseBuilder email(String email) {
             this.email = email;
             return this;
         }
 
-        public OtherProfileResponseBuilder setFollow(boolean follow) {
+        public OtherProfileResponseBuilder follow(boolean follow) {
             isFollow = follow;
             return this;
         }
 
-        public OtherProfileResponseBuilder setFollower(int follower) {
+        public OtherProfileResponseBuilder follower(int follower) {
             this.follower = follower;
             return this;
         }
 
-        public OtherProfileResponseBuilder setFollowing(int following) {
+        public OtherProfileResponseBuilder following(int following) {
             this.following = following;
             return this;
         }
 
-        public OtherProfileResponseBuilder setImages(List<Image> images) {
+        public OtherProfileResponseBuilder images(List<Image> images) {
             this.images = images;
             return this;
         }

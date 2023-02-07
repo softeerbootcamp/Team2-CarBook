@@ -54,27 +54,27 @@ public class MyProfileResponse {
         public MyProfileResponseBuilder() {
         }
 
-        public MyProfileResponseBuilder setNickname(String nickname) {
+        public MyProfileResponseBuilder nickname(String nickname) {
             this.nickname = nickname;
             return this;
         }
 
-        public MyProfileResponseBuilder setEmail(String email) {
+        public MyProfileResponseBuilder email(String email) {
             this.email = email;
             return this;
         }
 
-        public MyProfileResponseBuilder setFollower(int follower) {
+        public MyProfileResponseBuilder follower(int follower) {
             this.follower = follower;
             return this;
         }
 
-        public MyProfileResponseBuilder setFollowing(int following) {
+        public MyProfileResponseBuilder following(int following) {
             this.following = following;
             return this;
         }
 
-        public MyProfileResponseBuilder setImages(List<Image> images) {
+        public MyProfileResponseBuilder images(List<Image> images) {
             this.images = images;
             return this;
         }
