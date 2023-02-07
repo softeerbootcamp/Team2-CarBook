@@ -55,7 +55,9 @@ public class PostService {
         String[] tagNames = hashtags.split("\\+");
 
         List<Image> images = imageRepository.getImagesOfRecentPostsByTags(tagNames, POST_COUNT, index);
-        return new PostsSearchResponse(images);
+        return new PostsSearchResponse.PostsSearchResponseBuilder()
+                .images(images)
+                .build();
     }
 
     public MyProfileResponse myProfile(User loginUser) {
