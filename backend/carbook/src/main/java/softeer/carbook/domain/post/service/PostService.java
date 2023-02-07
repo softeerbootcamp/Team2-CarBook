@@ -76,7 +76,7 @@ public class PostService {
         myProfileResponse.setEmail(loginUser.getEmail());
         myProfileResponse.setFollower(123); // todo
         myProfileResponse.setFollowing(1234); // todo
-        myProfileResponse.setImages(PostRepository.findPostsByUserId(loginUser.getId())); // todo id로 변경
+        myProfileResponse.setImages(imageRepository.findImagesByUserId(loginUser.getId()));
         return myProfileResponse;
     }
 
@@ -87,7 +87,7 @@ public class PostService {
         otherProfileResponse.setFollow(true); // todo
         otherProfileResponse.setFollower(123); // todo
         otherProfileResponse.setFollowing(1235); // todo
-        otherProfileResponse.setImages(null); // todo
+        otherProfileResponse.setImages(imageRepository.findImagesByNickName(profileUserNickname));
 
         return otherProfileResponse;
     }

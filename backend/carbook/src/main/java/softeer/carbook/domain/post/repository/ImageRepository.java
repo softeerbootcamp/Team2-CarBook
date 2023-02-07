@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import softeer.carbook.domain.post.model.Image;
+import softeer.carbook.domain.post.model.Post;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -36,6 +37,26 @@ public class ImageRepository {
                         "and p.id = img.post_id " +
                 "ORDER BY p.create_date DESC LIMIT ?, ?",
                 imageRowMapper(), followerId, index, size);
+    }
+
+    public List<Image> findImagesByUserId(int id) {
+        List<Image> images = jdbcTemplate.query(
+                "select * from POST INNER JOIN IMAGE " +
+                        "ON POST.id = IMAGE.post_id " +
+                        "WHERE POST.user_id = ? " +
+                        "ORDER BY create_date ",
+                imageRowMapper(), id);
+        return images;
+    }
+
+    public List<Image> findImagesByNickName(String profileUserNickname) {
+        List<Image> images = jdbcTemplate.query(
+                "select * from USER, POST, IMAGE " +
+                        "WHERE USER.id = POST.user_id and POST.id = IMAGE.post_id " +
+                        "and USER.nickname = ?" +
+                        "ORDER BY create_date ",
+                imageRowMapper(), profileUserNickname);
+        return images;
     }
 
     private RowMapper<Image> imageRowMapper(){

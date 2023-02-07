@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import softeer.carbook.domain.post.model.Image;
 import softeer.carbook.domain.post.model.Post;
 
 import javax.sql.DataSource;
