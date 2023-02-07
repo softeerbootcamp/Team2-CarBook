@@ -28,11 +28,10 @@ public class PostController {
     }
 
     @GetMapping("/posts/m")
-    public ResponseEntity<?> getPosts(@RequestParam int index){
-        if (!userService.isLogin(((ServletRequestAttributes) RequestContextHolder
-                .getRequestAttributes()).getRequest()))
-            return getGuestPosts(index);
-        return getLoginPosts(index);
+    public ResponseEntity<?> getPosts(@RequestParam int index, HttpServletRequest httpServletRequest){
+        if (userService.isLogin(httpServletRequest))
+            return getLoginPosts(index, httpServletRequest);
+        return getGuestPosts(index);
     }
 
     private ResponseEntity<GuestPostsResponse> getGuestPosts(int index){
@@ -40,10 +39,8 @@ public class PostController {
     }
 
 
-    private ResponseEntity<LoginPostsResponse> getLoginPosts(int index){
-        return new ResponseEntity<>(postService.getRecentFollowerPosts(index, userService.findLoginedUser(
-                ((ServletRequestAttributes) RequestContextHolder
-                .getRequestAttributes()).getRequest())), HttpStatus.OK);
+    private ResponseEntity<LoginPostsResponse> getLoginPosts(int index, HttpServletRequest httpServletRequest){
+        return new ResponseEntity<>(postService.getRecentFollowerPosts(index, userService.findLoginedUser(httpServletRequest)), HttpStatus.OK);
     }
 
         // todo 로그인한 사람의 게시물 조회 ( 팔로우 )
