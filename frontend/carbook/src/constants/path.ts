@@ -7,5 +7,6 @@ export const routes = [
   { path: /^\/post\/[\d]+$/, element: PostDetailPage },
   { path: /^\/post\/[\d]+\/edit$/, element: PostPage },
   { path: /^\/post\/[a-z]+$/, element: PostPage },
+  // { path: /^\/profile$/, element: ProfilePage },
   { path: /^\/profile\/[\w]+$/, element: ProfilePage },
 ];

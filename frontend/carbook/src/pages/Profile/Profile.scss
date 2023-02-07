@@ -1,0 +1,104 @@
+@import '@/styles/color.scss';
+
+.profile__container{
+    height: 100vh;
+    background-color: $main-blue;
+
+    header{
+        color: white;
+        padding: 8%;
+        padding-bottom: 1%;
+
+        .header-info{
+            // display: flex;
+            justify-content: space-between;
+            // margin-bottom: 16px;
+            padding: 16px;
+
+            &-header{
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 8px;
+            }
+
+            &-menu{
+                width: 17px;
+                height: 13px;
+                background-image: url("@/assets/icons/profile_menu.svg");
+                background-size: cover;
+                background-position: center;
+            }
+
+            .user-nickname{
+                font-family: 'LINESeedKR-Rg';
+                font-size: 24px;
+                color: $main-white;
+            }
+
+            .user-email{
+                color: #DCDCDC;
+                font-size: 14px;
+                font-family: 'Pretendard Variable';
+            }
+        }
+
+        .header-contents{
+            display: flex;
+            padding: 24px;
+            justify-content: space-between;
+            text-align: center;
+
+            font-size: 14px;
+            color: $main-white;
+
+            .profile-posts-count, .profile-follower-count, .profile-following-count{
+                font-size: 32px;
+                font-weight: 700;
+                color: $main-white
+            }
+        }
+    }
+
+    .profile__contents{
+        background-color: $main-white;
+        height: 100%;
+        border-radius: 20px 20px 0 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 24px 35px;
+        gap: 30px;
+        font-family: 'LINESeedKR-Rg';
+        position: relative;
+
+        &-header{
+            font-size: 20px; 
+        }
+
+        .main__gallery {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            overflow-y: scroll;
+            -ms-overflow-style: none;
+            scrollbar-width: none; 
+
+            &::-webkit-scrollbar {
+              display: none; 
+            }
+      
+            &--image {
+              min-width: 150px;
+              width: 25vw;
+              height: 18vh;
+              border-radius: 10px;
+              background-color: rgb(215, 215, 215);
+              cursor: pointer;
+              background-image: url("@/assets/images/car.jpg");
+              background-size: cover;
+              background-position: center;
+            }
+          }
+    }
+}
