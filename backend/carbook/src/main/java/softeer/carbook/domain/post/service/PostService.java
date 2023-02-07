@@ -2,6 +2,7 @@ package softeer.carbook.domain.post.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import softeer.carbook.domain.follow.repository.FollowRepository;
 import softeer.carbook.domain.hashtag.model.Hashtag;
 import softeer.carbook.domain.hashtag.repository.HashtagRepository;
 import softeer.carbook.domain.post.dto.GuestPostsResponse;
@@ -26,6 +27,7 @@ public class PostService {
     private final ImageRepository imageRepository;
     private final HashtagRepository hashtagRepository;
     private final UserRepository userRepository;
+    private final FollowRepository followRepository;
     private final int POST_COUNT = 10;
 
     @Autowired
@@ -33,11 +35,13 @@ public class PostService {
             PostRepository postRepository,
             ImageRepository imageRepository,
             HashtagRepository hashtagRepository,
-            UserRepository userRepository) {
+            UserRepository userRepository,
+            FollowRepository followRepository) {
         this.postRepository = postRepository;
         this.imageRepository = imageRepository;
         this.hashtagRepository = hashtagRepository;
         this.userRepository = userRepository;
+        this.followRepository = followRepository;
     }
 
     public GuestPostsResponse getRecentPosts(int index) {
@@ -74,21 +78,21 @@ public class PostService {
         MyProfileResponse myProfileResponse = new MyProfileResponse();
         myProfileResponse.setNickname(loginUser.getNickname());
         myProfileResponse.setEmail(loginUser.getEmail());
-        myProfileResponse.setFollower(123); // todo
-        myProfileResponse.setFollowing(1234); // todo
+        myProfileResponse.setFollower(followRepository.getFollowerCount(loginUser.getId()));
+        myProfileResponse.setFollowing(followRepository.getFollowingCount(loginUser.getId()));
         myProfileResponse.setImages(imageRepository.findImagesByUserId(loginUser.getId()));
         return myProfileResponse;
     }
 
     public OtherProfileResponse otherProfile(User loginUser, String profileUserNickname) {
         OtherProfileResponse otherProfileResponse = new OtherProfileResponse();
+        int profileUserId = userRepository.findUserIdByNickname(profileUserNickname);
         otherProfileResponse.setNickname(profileUserNickname);
         otherProfileResponse.setEmail(userRepository.findEmailByNickname(profileUserNickname));
-        otherProfileResponse.setFollow(true); // todo
-        otherProfileResponse.setFollower(123); // todo
-        otherProfileResponse.setFollowing(1235); // todo
+        otherProfileResponse.setFollow(followRepository.isFollow(loginUser.getId(), profileUserId));
+        otherProfileResponse.setFollower(followRepository.getFollowerCount(profileUserId));
+        otherProfileResponse.setFollowing(followRepository.getFollowingCount(profileUserId));
         otherProfileResponse.setImages(imageRepository.findImagesByNickName(profileUserNickname));
-
         return otherProfileResponse;
     }
 }

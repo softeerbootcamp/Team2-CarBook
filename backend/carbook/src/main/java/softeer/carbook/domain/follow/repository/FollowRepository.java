@@ -31,6 +31,12 @@ public class FollowRepository {
         return jdbcTemplate.queryForObject("select count(*) from FOLLOW where follower_id = ?", Integer.class, followerId);
     }
 
+    public boolean isFollow(int id, int followingId) {
+        return jdbcTemplate.queryForObject(
+                "select count(*) from FOLLOW where follower_id = ? and following_id = ?",
+                Integer.class, id, followingId) != 0;
+    }
+
     private RowMapper<Integer> followerIdRowMapper(){
         return (rs, rowNum) -> {
             Integer followerId = rs.getInt("follower_id");
@@ -44,5 +50,6 @@ public class FollowRepository {
             return followingId;
         };
     }
+
 
 }
