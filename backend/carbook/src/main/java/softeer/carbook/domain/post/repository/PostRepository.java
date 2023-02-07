@@ -19,13 +19,13 @@ public class PostRepository {
     }
 
     public List<Post> getPosts(int size, int index) {
-        return jdbcTemplate.query("select * from POST ORDER BY create_date DESC LIMIT ?, ?",
+        return jdbcTemplate.query("SELECT * from POST ORDER BY create_date DESC LIMIT ?, ?",
                 postRowMapper(), index, size);
     }
 
     public List<Post> searchByHashtags(List<Integer> hashtagIds, int size, int index) {
         String whereStatement = createWhereStatement(hashtagIds);
-        String query = "select p.id, p.user_id, p.create_date, p.update_date, p.content " +
+        String query = "SELECT p.id, p.user_id, p.create_date, p.update_date, p.content " +
                 "FROM POST AS p " +
                 "INNER JOIN POST_HASHTAG AS ph " +
                 "ON p.id = ph.post_id WHERE " + whereStatement + " ORDER BY p.create_date DESC LIMIT ?, ?";
@@ -44,16 +44,13 @@ public class PostRepository {
     }
 
     private RowMapper<Post> postRowMapper() {
-        return (rs, rowNum) -> {
-            Post post = new Post(
-                    rs.getInt("id"),
-                    rs.getInt("user_id"),
-                    rs.getTimestamp("create_date"),
-                    rs.getTimestamp("update_date"),
-                    rs.getString("content")
-            );
-            return post;
-        };
+        return (rs, rowNum) -> new Post(
+                rs.getInt("id"),
+                rs.getInt("user_id"),
+                rs.getTimestamp("create_date"),
+                rs.getTimestamp("update_date"),
+                rs.getString("content")
+        );
     }
 
 }
