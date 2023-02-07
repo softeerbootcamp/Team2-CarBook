@@ -60,4 +60,9 @@ public class UserService {
         return httpServletRequest.getSession(false) != null;
     }
 
+    public User findLoginedUser(HttpServletRequest httpServletRequest){
+        HttpSession session = httpServletRequest.getSession(false);
+        return (User) session.getAttribute("user");
+    }
+
 }

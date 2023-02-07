@@ -9,8 +9,8 @@ CREATE TABLE `USER` (
 CREATE TABLE `POST` (
 	`id`	int	NOT NULL auto_increment,
 	`user_id`	int	NOT NULL,
-	`create_date`	timestamp	NOT NULL,
-	`update_date`	timestamp	NOT NULL,
+	`create_date`	timestamp	NOT NULL default current_timestamp,
+	`update_date`	timestamp	NOT NULL default current_timestamp,
 	`content`	varchar(500)	NULL,
     primary key (id),
     constraint post_user_id_fk
