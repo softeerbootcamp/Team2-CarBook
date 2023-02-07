@@ -33,7 +33,7 @@ public class FollowRepository {
 
     public boolean isFollow(int id, int followingId) {
         return jdbcTemplate.queryForObject(
-                "select count(*) from FOLLOW where follower_id = ? and following_id = ?",
+                "select EXISTS (select * from FOLLOW where follower_id = ? and following_id = ? limit 1) as success",
                 Integer.class, id, followingId) != 0;
     }
 
