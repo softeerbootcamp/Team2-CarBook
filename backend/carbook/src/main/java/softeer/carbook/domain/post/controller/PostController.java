@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import softeer.carbook.domain.post.dto.GuestPostsResponse;
+import softeer.carbook.domain.post.dto.LoginPostsResponse;
 import softeer.carbook.domain.post.dto.PostsSearchResponse;
 import softeer.carbook.domain.post.service.PostService;
 import softeer.carbook.domain.user.model.User;
