@@ -48,6 +48,7 @@ public class UserRepository {
     private RowMapper<User> userRowMapper(){
         return (rs, rowNum) -> {
             User user = new User(
+                    rs.getInt("id"),
                     rs.getString("email"),
                     rs.getString("nickname"),
                     rs.getString("password")

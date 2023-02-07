@@ -5,11 +5,14 @@ import org.springframework.stereotype.Service;
 import softeer.carbook.domain.hashtag.model.Hashtag;
 import softeer.carbook.domain.hashtag.repository.HashtagRepository;
 import softeer.carbook.domain.post.dto.GuestPostsResponse;
+import softeer.carbook.domain.post.dto.LoginPostsResponse;
 import softeer.carbook.domain.post.dto.PostsSearchResponse;
 import softeer.carbook.domain.post.model.Image;
 import softeer.carbook.domain.post.model.Post;
 import softeer.carbook.domain.post.repository.ImageRepository;
 import softeer.carbook.domain.post.repository.PostRepository;
+import softeer.carbook.domain.user.dto.Message;
+import softeer.carbook.domain.user.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +36,11 @@ public class PostService {
         return new GuestPostsResponse(false, images);
     }
 
+    public LoginPostsResponse getRecentFollowerPosts(int index, User user){
+        List<Image> images = imageRepository.getImagesOfRecentFollowingPosts(POST_COUNT, index, user.getId());
+        return new LoginPostsResponse(true, user.getNickname(), images);
+    }
+
     public PostsSearchResponse searchByTags(String hashtags, int index) {
         String[] tagNames = hashtags.split("\\+");
 
@@ -52,13 +60,5 @@ public class PostService {
 
         return new PostsSearchResponse(images);
     }
-
-
-    /*
-    public LoginPostsResponse getRecentFollowerPosts(int index){
-
-    }
-
-     */
 
 }

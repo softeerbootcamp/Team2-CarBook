@@ -28,6 +28,16 @@ public class ImageRepository {
                 imageRowMapper(), index, size);
     }
 
+    public List<Image> getImagesOfRecentFollowingPosts(int size, int index, int followerId){
+        return jdbcTemplate.query("SELECT img.post_id, img.image_url " +
+                "FROM POST AS p, IMAGE AS img, FOLLOW AS f " +
+                        "where f.follower_id = ?" +
+                        "and f.following_id = p.user_id " +
+                        "and p.id = img.post_id " +
+                "ORDER BY p.create_date DESC LIMIT ?, ?",
+                imageRowMapper(), followerId, index, size);
+    }
+
     private RowMapper<Image> imageRowMapper(){
         return (rs, rowNum) -> new Image(
                 rs.getInt("post_id"),
