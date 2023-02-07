@@ -40,12 +40,7 @@ public class PostRepository {
             whereStatement.append((" OR "));
         }
 
-        whereStatement.deleteCharAt(whereStatement.length()-1);
-        whereStatement.deleteCharAt(whereStatement.length()-1);
-        whereStatement.deleteCharAt(whereStatement.length()-1);
-        whereStatement.deleteCharAt(whereStatement.length()-1);
-
-        return whereStatement.toString();
+        return whereStatement.substring(0, whereStatement.length() - 4);
     }
 
     private RowMapper<Post> postRowMapper() {
