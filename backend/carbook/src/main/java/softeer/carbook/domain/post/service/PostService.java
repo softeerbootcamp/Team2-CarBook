@@ -37,18 +37,8 @@ public class PostService {
     }
 
     public LoginPostsResponse getRecentFollowerPosts(int index, User user){
-        List<Post> posts = postRepository.getFollowingPosts(POST_COUNT, index, user.getId());
-        List<Image> images = getImagesByPosts(posts);
+        List<Image> images = imageRepository.getImagesOfRecentFollowingPosts(POST_COUNT, index, user.getId());
         return new LoginPostsResponse(true, user.getNickname(), images);
-    }
-
-    private List<Image> getImagesByPosts(List<Post> posts){
-        List<Image> images = new ArrayList<>();
-        for (Post post: posts){
-            Image image = imageRepository.getImageByPostId(post.getId());
-            images.add(image);
-        }
-        return images;
     }
 
     public PostsSearchResponse searchByTags(String hashtags, int index) {
