@@ -76,7 +76,7 @@ public class PostService {
         myProfileResponse.setEmail(loginUser.getEmail());
         myProfileResponse.setFollower(123); // todo
         myProfileResponse.setFollowing(1234); // todo
-        myProfileResponse.setImages(null); // todo
+        myProfileResponse.setImages(PostRepository.findPostsByUserId(loginUser.getId())); // todo id로 변경
         return myProfileResponse;
     }
 
