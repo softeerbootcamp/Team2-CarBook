@@ -43,6 +43,18 @@ public class PostRepository {
         return whereStatement.substring(0, whereStatement.length() - 4);
     }
 
+    public List<Post> getPostsByUserId(int size, int index, int userId){
+        List<Post> posts = jdbcTemplate.query("select * from POST where user_id = ? ORDER BY create_date DESC LIMIT ?, ?",
+                postRowMapper(), userId, index, size);
+        return posts;
+    }
+
+    public List<Post> getFollowingPosts(int size, int index, int followerId){
+        List<Post> posts = jdbcTemplate.query("select * from POST where user_id in (select following from FOLLOW where follower = ?) ORDER BY create_date DESC LIMIT ?, ?",
+                postRowMapper(), followerId, index, size);
+        return posts;
+    }
+
     private RowMapper<Post> postRowMapper() {
         return (rs, rowNum) -> new Post(
                 rs.getInt("id"),
