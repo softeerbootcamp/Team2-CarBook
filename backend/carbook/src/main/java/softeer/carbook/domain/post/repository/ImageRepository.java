@@ -5,7 +5,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import softeer.carbook.domain.post.model.Image;
-import softeer.carbook.domain.post.model.Post;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -57,6 +56,28 @@ public class ImageRepository {
                         "ORDER BY create_date DESC",
                 imageRowMapper(), profileUserNickname);
         return images;
+    }
+
+    public List<Image> getImagesOfRecentPostsByTags(String[] tagNames, int size, int index) {
+        String conditionalStatement = createTagNameConditionalStatement(tagNames);
+        String query = "SELECT img.post_id, img.image_url " +
+                "FROM POST p " +
+                "INNER JOIN POST_HASHTAG ph ON p.id = ph.post_id " +
+                "INNER JOIN HASHTAG h ON ph.tag_id = h.id "+
+                "INNER JOIN IMAGE img ON p.id = img.post_id " +
+                "WHERE (" + conditionalStatement + ") ORDER BY p.create_date DESC LIMIT ?, ?";
+
+        return jdbcTemplate.query(query, imageRowMapper(), index, size);
+    }
+
+    private String createTagNameConditionalStatement(String[] tagNames) {
+        StringBuilder conditionalStatement = new StringBuilder();
+        for (String tagName: tagNames) {
+            conditionalStatement.append("h.tag = ").append(tagName);
+            conditionalStatement.append((" OR "));
+        }
+
+        return conditionalStatement.substring(0, conditionalStatement.length() - 4);
     }
 
     private RowMapper<Image> imageRowMapper(){

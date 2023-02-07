@@ -3,7 +3,6 @@ package softeer.carbook.domain.post.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import softeer.carbook.domain.follow.repository.FollowRepository;
-import softeer.carbook.domain.hashtag.model.Hashtag;
 import softeer.carbook.domain.hashtag.repository.HashtagRepository;
 import softeer.carbook.domain.post.dto.GuestPostsResponse;
 import softeer.carbook.domain.post.dto.LoginPostsResponse;
@@ -17,7 +16,6 @@ import softeer.carbook.domain.post.repository.PostRepository;
 import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.repository.UserRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -56,20 +54,7 @@ public class PostService {
     public PostsSearchResponse searchByTags(String hashtags, int index) {
         String[] tagNames = hashtags.split("\\+");
 
-        List<Integer> hashtagIds = new ArrayList<>();
-        for (String tagName : tagNames) {
-            Hashtag hashtag = hashtagRepository.findHashtagByName(tagName);
-            hashtagIds.add(hashtag.getId());
-        }
-
-        List<Post> posts = postRepository.searchByHashtags(hashtagIds, POST_COUNT, index);
-
-        List<Image> images = new ArrayList<>();
-        for (Post post : posts) {
-            Image image = imageRepository.getImageByPostId(post.getId());
-            images.add(image);
-        }
-
+        List<Image> images = imageRepository.getImagesOfRecentPostsByTags(tagNames, POST_COUNT, index);
         return new PostsSearchResponse(images);
     }
 
