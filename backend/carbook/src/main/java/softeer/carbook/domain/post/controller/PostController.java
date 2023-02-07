@@ -28,23 +28,23 @@ public class PostController {
     }
 
     @GetMapping("/posts/m")
-    public ResponseEntity<GuestPostsResponse> getPosts(@RequestParam int index){
+    public ResponseEntity<?> getPosts(@RequestParam int index){
         if (!userService.isLogin(((ServletRequestAttributes) RequestContextHolder
                 .getRequestAttributes()).getRequest()))
             return getGuestPosts(index);
-        return null;
+        return getLoginPosts(index);
     }
 
     private ResponseEntity<GuestPostsResponse> getGuestPosts(int index){
         return new ResponseEntity<>(postService.getRecentPosts(index), HttpStatus.OK);
     }
 
-    /*
-    private ResponseEntity<LoginPostsResponse> getLoginPosts(int index){
-        return new ResponseEntity<>(postService.getRecentPosts(index), HttpStatus.OK);
-    }
 
-     */
+    private ResponseEntity<LoginPostsResponse> getLoginPosts(int index){
+        return new ResponseEntity<>(postService.getRecentFollowerPosts(index, userService.findLoginedUser(
+                ((ServletRequestAttributes) RequestContextHolder
+                .getRequestAttributes()).getRequest())), HttpStatus.OK);
+    }
 
         // todo 로그인한 사람의 게시물 조회 ( 팔로우 )
             // mainpage url  + cookie
