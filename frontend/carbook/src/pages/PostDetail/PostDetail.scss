@@ -1,0 +1,140 @@
+@import '@/styles/color';
+
+$backgroundImg : '@/assets/images/Postdetail2.svg';
+
+.postdetail-container{
+    width: 100%;
+    max-width: 500px;
+    min-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    height: 100vh;
+    text-align: center;
+
+    .header{
+        background-color: pink;
+        height: 60vh;        
+
+        background: linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0) 100%) , url($backgroundImg) no-repeat center center;
+        .detailImg{
+            width: 100%;
+            height: 100%;
+        }
+        background-size: cover
+    }
+    
+    .postdetail-info{
+        position: fixed;
+        width: 100%;
+        max-width: 500px;
+        min-width: 400px;
+        top: 40vh;
+        padding: 3vh 10%;
+
+        background-color: #FFFFFF;
+
+        border-radius: 16px 16px 0 0;
+
+        .info-header{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid $main-light-blue;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            .info-profile{
+                display: flex;
+                align-items: center;
+                .user-img{
+                    margin-right: 16px;
+                }
+
+                .user-nickname{
+                    line-height: 100%;
+                    font-size: 20px;
+                }
+            }
+        }
+
+        .info-contents{
+            .info-tag-cards{
+                display: flex;
+                margin: 16px 0;
+                padding-left: 4px;
+
+                .info-model-card, .info-type-card{
+                    margin-right: 10px;
+                    padding: 6px 16px;
+                    border-radius: 5px;
+                    font-size: 12px;
+                }
+
+                .info-model-card{
+                    background-color: $main-light-blue;
+                }
+
+                .info-type-card{
+                    background-color: $main-dark-blue;
+                    color: $main-white;
+                }
+            }
+
+            .info-hashtags{
+                display: flex;
+                margin-bottom: 8px;
+                color: $main-blue;
+                .info-hashtag{
+                    justify-content: flex-start;
+                    margin-right: 10px;
+                    font-size: 16px;
+                    font-family: 'LINESeedKR-Rg';
+                }
+            }
+
+            .info-description{
+                font-size: 16px;
+            }
+        }
+    }
+    
+    .postdetail-footer{
+        position: fixed;
+        width: 100%;
+        max-width: 500px;
+        min-width: 400px;
+        bottom: 0;
+        padding: 2vh 10%;
+        justify-content: space-between;
+
+        display: flex;
+        align-items: center;
+        border-top: 1px solid $main-light-blue;
+
+        .like-info{
+            display: flex;
+            align-items: center;
+
+            .like-button{
+                margin-right: 8px;
+            }
+            .like-count{
+                font-size: 16px;
+            }
+        }
+        .posted-time{
+            color: $main-blue;
+            font-size: 12px;
+        }
+    }
+
+    .back-button{
+        position: fixed;
+        top:4px;
+        left:4px;
+        width: 53px;
+        height: 42px;
+
+    }
+}
+
+
