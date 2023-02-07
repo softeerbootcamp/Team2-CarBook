@@ -1,5 +1,6 @@
 @import '@/styles/color.scss';
 
+
 .login__container {
   background: #FFFFFF;
   text-align:  center;
@@ -59,7 +60,7 @@ header{
 }
 
 
-footer{
+.login-footer{
     display: flex;
     margin: 8px 5vw;
     justify-content:flex-end;
