@@ -13,31 +13,59 @@ public class OtherProfileResponse {
     private int following;
     private List<Image> images;
 
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
+    public OtherProfileResponse(OtherProfileResponseBuilder otherProfileResponseBuilder) {
+        this.nickname = otherProfileResponseBuilder.nickname;
+        this.email = otherProfileResponseBuilder.email;
+        this.isFollow = otherProfileResponseBuilder.isFollow;
+        this.follower = otherProfileResponseBuilder.follower;
+        this.following = otherProfileResponseBuilder.following;
+        this.images = otherProfileResponseBuilder.images;
     }
 
-    public boolean isMyProfile() {
-        return isMyProfile;
-    }
+    public static class OtherProfileResponseBuilder {
+        private String nickname;
+        private String email;
+        private boolean isFollow;
+        private int follower;
+        private int following;
+        private List<Image> images;
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+        public OtherProfileResponseBuilder() {
+        }
 
-    public void setFollow(boolean follow) {
-        isFollow = follow;
-    }
+        public OtherProfileResponseBuilder setNickname(String nickname) {
+            this.nickname = nickname;
+            return this;
+        }
 
-    public void setFollower(int follower) {
-        this.follower = follower;
-    }
+        public OtherProfileResponseBuilder setEmail(String email) {
+            this.email = email;
+            return this;
+        }
 
-    public void setFollowing(int following) {
-        this.following = following;
-    }
+        public OtherProfileResponseBuilder setFollow(boolean follow) {
+            isFollow = follow;
+            return this;
+        }
 
-    public void setImages(List<Image> images) {
-        this.images = images;
+        public OtherProfileResponseBuilder setFollower(int follower) {
+            this.follower = follower;
+            return this;
+        }
+
+        public OtherProfileResponseBuilder setFollowing(int following) {
+            this.following = following;
+            return this;
+        }
+
+        public OtherProfileResponseBuilder setImages(List<Image> images) {
+            this.images = images;
+            return this;
+        }
+
+        public OtherProfileResponse build(){
+            return new OtherProfileResponse(this);
+        }
+
     }
 }

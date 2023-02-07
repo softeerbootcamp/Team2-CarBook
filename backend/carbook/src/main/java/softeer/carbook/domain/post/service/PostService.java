@@ -75,24 +75,24 @@ public class PostService {
     }
 
     public MyProfileResponse myProfile(User loginUser) {
-        MyProfileResponse myProfileResponse = new MyProfileResponse();
-        myProfileResponse.setNickname(loginUser.getNickname());
-        myProfileResponse.setEmail(loginUser.getEmail());
-        myProfileResponse.setFollower(followRepository.getFollowerCount(loginUser.getId()));
-        myProfileResponse.setFollowing(followRepository.getFollowingCount(loginUser.getId()));
-        myProfileResponse.setImages(imageRepository.findImagesByUserId(loginUser.getId()));
-        return myProfileResponse;
+        return new MyProfileResponse.MyProfileResponseBuilder()
+                .setNickname(loginUser.getNickname())
+                .setEmail(loginUser.getEmail())
+                .setFollower(followRepository.getFollowerCount(loginUser.getId()))
+                .setFollowing(followRepository.getFollowingCount(loginUser.getId()))
+                .setImages(imageRepository.findImagesByUserId(loginUser.getId()))
+                .build();
     }
 
     public OtherProfileResponse otherProfile(User loginUser, String profileUserNickname) {
-        OtherProfileResponse otherProfileResponse = new OtherProfileResponse();
         int profileUserId = userRepository.findUserIdByNickname(profileUserNickname);
-        otherProfileResponse.setNickname(profileUserNickname);
-        otherProfileResponse.setEmail(userRepository.findEmailByNickname(profileUserNickname));
-        otherProfileResponse.setFollow(followRepository.isFollow(loginUser.getId(), profileUserId));
-        otherProfileResponse.setFollower(followRepository.getFollowerCount(profileUserId));
-        otherProfileResponse.setFollowing(followRepository.getFollowingCount(profileUserId));
-        otherProfileResponse.setImages(imageRepository.findImagesByNickName(profileUserNickname));
-        return otherProfileResponse;
+        return new OtherProfileResponse.OtherProfileResponseBuilder()
+                .setNickname(profileUserNickname)
+                .setEmail(userRepository.findEmailByNickname(profileUserNickname))
+                .setFollow(followRepository.isFollow(loginUser.getId(), profileUserId))
+                .setFollower(followRepository.getFollowerCount(profileUserId))
+                .setFollowing(followRepository.getFollowingCount(profileUserId))
+                .setImages(imageRepository.findImagesByNickName(profileUserNickname))
+                .build();
     }
 }

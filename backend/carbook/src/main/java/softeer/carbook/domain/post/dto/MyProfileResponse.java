@@ -12,8 +12,12 @@ public class MyProfileResponse {
     private int following;
     private List<Image> images;
 
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
+    public MyProfileResponse(MyProfileResponseBuilder myProfileResponseBuilder) {
+        this.nickname = myProfileResponseBuilder.nickname;
+        this.email = myProfileResponseBuilder.email;
+        this.follower = myProfileResponseBuilder.follower;
+        this.following = myProfileResponseBuilder.following;
+        this.images = myProfileResponseBuilder.images;
     }
 
     public boolean isMyProfile() {
@@ -40,19 +44,44 @@ public class MyProfileResponse {
         return images;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public static class MyProfileResponseBuilder{
+        private String nickname;
+        private String email;
+        private int follower;
+        private int following;
+        private List<Image> images;
+
+        public MyProfileResponseBuilder() {
+        }
+
+        public MyProfileResponseBuilder setNickname(String nickname) {
+            this.nickname = nickname;
+            return this;
+        }
+
+        public MyProfileResponseBuilder setEmail(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public MyProfileResponseBuilder setFollower(int follower) {
+            this.follower = follower;
+            return this;
+        }
+
+        public MyProfileResponseBuilder setFollowing(int following) {
+            this.following = following;
+            return this;
+        }
+
+        public MyProfileResponseBuilder setImages(List<Image> images) {
+            this.images = images;
+            return this;
+        }
+
+        public MyProfileResponse build(){
+            return new MyProfileResponse(this);
+        }
     }
 
-    public void setFollower(int follower) {
-        this.follower = follower;
-    }
-
-    public void setFollowing(int following) {
-        this.following = following;
-    }
-
-    public void setImages(List<Image> images) {
-        this.images = images;
-    }
 }
