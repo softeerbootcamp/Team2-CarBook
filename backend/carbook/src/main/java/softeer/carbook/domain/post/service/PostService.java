@@ -29,12 +29,7 @@ public class PostService {
     }
 
     public GuestPostsResponse getRecentPosts(int index) {
-        List<Post> posts = postRepository.getPosts(POST_COUNT, index);
-        List<Image> images = new ArrayList<>();
-        for (Post post : posts) {
-            Image image = imageRepository.getImageByPostId(post.getId());
-            images.add(image);
-        }
+        List<Image> images = imageRepository.getImagesOfRecentPosts(POST_COUNT, index);
         return new GuestPostsResponse(false, images);
     }
 
