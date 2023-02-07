@@ -49,4 +49,6 @@ export default class HomePage extends Component {
     </div>
     `;
   }
+
+  setEvent(): void {}
 }
