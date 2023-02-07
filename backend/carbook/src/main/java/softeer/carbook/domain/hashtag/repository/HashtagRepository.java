@@ -24,7 +24,7 @@ public class HashtagRepository {
         List<Hashtag> hashtags = jdbcTemplate.query("select * from HASHTAG where tag = ?", tagRowMapper(), tag);
         return hashtags.stream()
                 .findAny()
-                .orElseThrow(() -> new HashtagNotExistException("해당 이름의 해시태그가 없습니다."));
+                .orElseThrow(() -> new HashtagNotExistException("ERROR: Hashtag not exist"));
     }
 
     private RowMapper<Hashtag> tagRowMapper() {
