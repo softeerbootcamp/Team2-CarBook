@@ -64,21 +64,21 @@ public class UserController {
     @ExceptionHandler(SignupEmailDuplicateException.class)
     public ResponseEntity<Message> signupEmailDuplicateException(SignupEmailDuplicateException emailDE){
         logger.debug(emailDE.getMessage());
-        return Message.make400Response("ERROR: Duplicated email");
+        return Message.make400Response(emailDE.getMessage());
     }
 
     // 회원가입 시 닉네임 중복 처리
     @ExceptionHandler(NicknameDuplicateException.class)
     public ResponseEntity<Message> nicknameDuplicateException(NicknameDuplicateException nicknameDE){
         logger.debug(nicknameDE.getMessage());
-        return Message.make400Response("ERROR: Duplicated nickname");
+        return Message.make400Response(nicknameDE.getMessage());
     }
 
     // 로그인 시 등록된 이메일이 없는 경우 처리
     @ExceptionHandler(LoginEmailNotExistException.class)
     public ResponseEntity<Message> loginEmailNotExistException(LoginEmailNotExistException emailNE){
         logger.debug(emailNE.getMessage());
-        return Message.make400Response("ERROR: Email not exist");
+        return Message.make400Response(emailNE.getMessage());
     }
 
 

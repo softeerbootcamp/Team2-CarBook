@@ -35,9 +35,9 @@ public class UserService {
 
     private void checkDuplicated(SignupForm signupForm){
         if(userRepository.isEmailDuplicated(signupForm.getEmail()))
-            throw new SignupEmailDuplicateException("ERROR: Duplicated email");
+            throw new SignupEmailDuplicateException();
         if(userRepository.isNicknameDuplicated(signupForm.getNickname()))
-            throw new NicknameDuplicateException("ERROR: Duplicated nickname");
+            throw new NicknameDuplicateException();
     }
 
     public Message login(LoginForm loginForm, HttpSession session) {

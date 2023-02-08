@@ -10,7 +10,6 @@ import softeer.carbook.domain.post.dto.PostsSearchResponse;
 import softeer.carbook.domain.post.dto.MyProfileResponse;
 import softeer.carbook.domain.post.dto.OtherProfileResponse;
 import softeer.carbook.domain.post.model.Image;
-import softeer.carbook.domain.post.model.Post;
 import softeer.carbook.domain.post.repository.ImageRepository;
 import softeer.carbook.domain.post.repository.PostRepository;
 import softeer.carbook.domain.user.model.User;
@@ -43,12 +42,17 @@ public class PostService {
 
     public GuestPostsResponse getRecentPosts(int index) {
         List<Image> images = imageRepository.getImagesOfRecentPosts(POST_COUNT, index);
-        return new GuestPostsResponse(false, images);
+        return new GuestPostsResponse.GuestPostsResponseBuilder()
+                .images(images)
+                .build();
     }
 
     public LoginPostsResponse getRecentFollowerPosts(int index, User user){
         List<Image> images = imageRepository.getImagesOfRecentFollowingPosts(POST_COUNT, index, user.getId());
-        return new LoginPostsResponse(true, user.getNickname(), images);
+        return new LoginPostsResponse.LoginPostsResponseBuilder()
+                .nickname(user.getNickname())
+                .images(images)
+                .build();
     }
 
     public PostsSearchResponse searchByTags(String hashtags, int index) {
@@ -71,13 +75,13 @@ public class PostService {
     }
 
     public OtherProfileResponse otherProfile(User loginUser, String profileUserNickname) {
-        int profileUserId = userRepository.findUserIdByNickname(profileUserNickname);
+        User profileUser = userRepository.findUserByNickname(profileUserNickname);
         return new OtherProfileResponse.OtherProfileResponseBuilder()
                 .nickname(profileUserNickname)
-                .email(userRepository.findEmailByNickname(profileUserNickname))
-                .follow(followRepository.isFollow(loginUser.getId(), profileUserId))
-                .follower(followRepository.getFollowerCount(profileUserId))
-                .following(followRepository.getFollowingCount(profileUserId))
+                .email(profileUser.getEmail())
+                .follow(followRepository.isFollow(loginUser.getId(), profileUser.getId()))
+                .follower(followRepository.getFollowerCount(profileUser.getId()))
+                .following(followRepository.getFollowingCount(profileUser.getId()))
                 .images(imageRepository.findImagesByNickName(profileUserNickname))
                 .build();
     }

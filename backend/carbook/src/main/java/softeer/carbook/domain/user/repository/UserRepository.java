@@ -43,10 +43,18 @@ public class UserRepository {
     public User findUserByEmail(String email){
         List<User> result = jdbcTemplate.query("select * from USER where email = ?", userRowMapper(), email);
         return result.stream().findAny().orElseThrow(
-                () -> new LoginEmailNotExistException("ERROR: Email not exist")
+                () -> new LoginEmailNotExistException()
         );
     }
 
+    public User findUserByNickname(String nickname){
+        List<User> result = jdbcTemplate.query("select * from USER where nickname = ?", userRowMapper(), nickname);
+        return result.stream().findAny().orElseThrow(
+                () -> new NicknameNotExistException()
+        );
+    }
+
+    /* deprecated
     public String findEmailByNickname(String nickname) {
         List<String> result = jdbcTemplate.query("select email from USER where nickname = ?", emailRowMapper(), nickname);
         return result.stream().findAny().orElseThrow(
@@ -68,7 +76,7 @@ public class UserRepository {
     private RowMapper<Integer> idRowMapper(){
         return (rs, rowNum) -> rs.getInt("id");
     }
-
+    */
 
     private RowMapper<User> userRowMapper(){
         return (rs, rowNum) -> {
