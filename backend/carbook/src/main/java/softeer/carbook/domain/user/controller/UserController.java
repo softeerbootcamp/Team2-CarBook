@@ -18,6 +18,7 @@ import softeer.carbook.domain.user.exception.SignupEmailDuplicateException;
 import softeer.carbook.domain.user.exception.NicknameDuplicateException;
 import softeer.carbook.domain.user.service.UserService;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -45,16 +46,21 @@ public class UserController {
         return Message.make200Response(resultMsg.getMessage());
     }
 
-    // 로그아웃
+    // todo 로그아웃
 
     // 로그인한 사용자인지
 
-    // 닉네임 변경 ( 자신 프로필 페이지) > user 로
+    // 닉네임 변경 ( 자신 프로필 페이지 )
     @PatchMapping("/profile/modify/{nickname}")
     public ResponseEntity<?> modifyNickname(
             @PathVariable("nickname") String nickname,
-            @Valid NewNickNameForm newNickNameForm){
-        Message resultMsg = userService.modifyNickname(nickname, newNickNameForm.getNewNickname());
+            @Valid NewNickNameForm newNickNameForm,
+            HttpServletRequest httpServletRequest
+    ){
+        Message resultMsg = userService.modifyNickname(
+                nickname,
+                newNickNameForm.getNewNickname(),
+                httpServletRequest);
         return Message.make200Response(resultMsg.getMessage());
     }
 

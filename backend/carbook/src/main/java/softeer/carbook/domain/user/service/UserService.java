@@ -65,7 +65,14 @@ public class UserService {
         return (User) session.getAttribute("user");
     }
 
-    public Message modifyNickname(String nickname, String newNickname) {
+    public Message modifyNickname(String nickname, String newNickname, HttpServletRequest httpServletRequest) {
+        // 로그인 체크
+        if(!isLogin(httpServletRequest))
+            return new Message("ERROR: Session Has Expired");
+
+        // 새로운 닉네임 중복 체크
+
+
         return new Message("Nickname modified successfully");
     }
 }
