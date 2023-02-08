@@ -1,48 +1,52 @@
-import { Component } from '@/core';
 import './Home.scss';
+import { Component } from '@/core';
+import Header from '@/components/common/Header';
+import { SearchForm, HashTagList, PostList } from '@/components/Home';
+import { push } from '@/utils/router/navigate';
 
 export default class HomePage extends Component {
+  setup(): void {
+    this.setState({
+      // 더미 데이터
+      isLogin: true,
+      nickname: '카북닉네임',
+      images: [
+        { postid: 1, imageUrl: '스트링' },
+        { postid: 2, imageUrl: '2번째 이미지' },
+        { postid: 3, imageUrl: '3번째 이미지' },
+      ],
+      hashtags: [
+        {
+          id: '1',
+          category: 'model',
+          tag: '경차',
+        },
+        {
+          id: '2',
+          category: 'type',
+          tag: 'sonata',
+        },
+        {
+          id: '3',
+          category: 'hashtag',
+          tag: '내부',
+        },
+      ],
+    });
+  }
+
   template(): string {
     return `
     <div class="home-container">
       <header class="header">
-        <div class="header__left-box">
-          <div class="header__logo">CarBook</div>
-          <div class="header__sub">차 사진의 모든 것</div>
-        </div>
-        <div class="header__right-box">
-        </div>
       </header>
       <section class="section">
-        <input class="section__input" type="text" placeholder="키워드를 입력해주세요"/>
-        <div class="section__search-img" alt="search-icon"></div>
-        <div class="section__dropdown">
-          <div class="dropdown__card">
-            <div class="dropdown__card--icon"></div>
-            <div class="dropdown__card--text">차 종류</div>
-            <div class="dropdown__card--type">태그</div>
-          </div>
-        </div>
       </section>  
       <main class="main">
         <div class="main__title">My Feed</div>
-        <div class="main__hashtage">
-          <div class="hashtage"># car</div>
-          <div class="hashtage"># car</div>
-          <div class="hashtage"># car</div>
-          <div class="hashtage"># car</div>
-          <div class="hashtage"># car</div>
-          <div class="hashtage"># car</div>
+        <div class="main__hashtags">
         </div>
         <div class="main__gallery">
-          <div class="main__gallery--image"></div>
-          <div class="main__gallery--image"></div>
-          <div class="main__gallery--image"></div>
-          <div class="main__gallery--image"></div>
-          <div class="main__gallery--image"></div>
-          <div class="main__gallery--image"></div>
-          <div class="main__gallery--image"></div>
-          <div class="main__gallery--image"></div>
         </div>
         <div class="main__button">+</div>
       </main>
@@ -50,5 +54,24 @@ export default class HomePage extends Component {
     `;
   }
 
-  setEvent(): void {}
+  mounted(): void {
+    const header = this.$target.querySelector('.header') as HTMLElement;
+    const section = this.$target.querySelector('.section') as HTMLElement;
+    const hastagList = this.$target.querySelector('.main__hashtags') as HTMLElement;
+    const postList = this.$target.querySelector('.main__gallery') as HTMLElement;
+
+    new Header(header);
+    new SearchForm(section);
+    new HashTagList(hastagList, { hashtagList: this.state.hashtags });
+    new PostList(postList, { postList: this.state.images });
+  }
+
+  setEvent(): void {
+    this.$target.addEventListener('click', (e: Event) => {
+      const target = e.target as HTMLElement;
+
+      const profileBtn = target.closest('.header__right-box');
+      if (profileBtn) push(`/profile/${this.state.nickname}`);
+    });
+  }
 }
