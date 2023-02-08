@@ -10,7 +10,6 @@ import softeer.carbook.domain.post.dto.PostsSearchResponse;
 import softeer.carbook.domain.post.dto.MyProfileResponse;
 import softeer.carbook.domain.post.dto.OtherProfileResponse;
 import softeer.carbook.domain.post.model.Image;
-import softeer.carbook.domain.post.model.Post;
 import softeer.carbook.domain.post.repository.ImageRepository;
 import softeer.carbook.domain.post.repository.PostRepository;
 import softeer.carbook.domain.user.model.User;
@@ -76,10 +75,10 @@ public class PostService {
     }
 
     public OtherProfileResponse otherProfile(User loginUser, String profileUserNickname) {
-        int profileUserId = userRepository.findUserIdByNickname(profileUserNickname);
+        int profileUserId = userRepository.findUserByNickname(profileUserNickname).getId();
         return new OtherProfileResponse.OtherProfileResponseBuilder()
                 .nickname(profileUserNickname)
-                .email(userRepository.findEmailByNickname(profileUserNickname))
+                .email(userRepository.findUserByNickname(profileUserNickname).getEmail())
                 .follow(followRepository.isFollow(loginUser.getId(), profileUserId))
                 .follower(followRepository.getFollowerCount(profileUserId))
                 .following(followRepository.getFollowingCount(profileUserId))
