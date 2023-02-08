@@ -63,7 +63,7 @@ public class UserController {
     // 비밀번호 변경 ( 자신 프로필 페이지 )
     @PatchMapping("/profile/modify/password")
     public ResponseEntity<Message> modifyPassword(
-            @Valid ModifyPasswordForm modifyPasswordForm,
+            @RequestBody @Valid ModifyPasswordForm modifyPasswordForm,
             HttpServletRequest httpServletRequest
     ){
         Message resultMsg = userService.modifyPassword(

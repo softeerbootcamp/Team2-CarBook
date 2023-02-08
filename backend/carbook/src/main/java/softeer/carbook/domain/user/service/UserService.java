@@ -46,7 +46,7 @@ public class UserService {
         User user = userRepository.findUserByEmail(loginForm.getEmail());
         if(checkPassword(user, loginForm.getPassword())) {
             // 로그인 성공했을 경우 세션에 추가
-            session.setAttribute("user", user);
+            session.setAttribute("user", user.getId());
             // 세션에 추가 후 성공 메세지 반환
             return new Message("Login Success");
         }
@@ -63,8 +63,8 @@ public class UserService {
     }
 
     public User findLoginedUser(HttpServletRequest httpServletRequest){
-        HttpSession session = httpServletRequest.getSession(false);
-        return (User) session.getAttribute("user");
+        int userId = getUserIdBySession(httpServletRequest.getSession(false));
+        return userRepository.findUserById(userId);
     }
 
     public Message modifyNickname(String nickname, String newNickname, HttpServletRequest httpServletRequest) {
@@ -92,7 +92,10 @@ public class UserService {
             return new Message("ERROR: Session Has Expired");
 
         // 기존 비밀번호와 맞는지 확인
-        User modifyUser = findLoginedUser(httpServletRequest);
+        // 세션에서 로그인 유저 id 불러오기
+        int userId = getUserIdBySession(httpServletRequest.getSession(false));
+        // 불러온 id를 통해 유저 불러오기
+        User modifyUser = userRepository.findUserById(userId);
         if(!checkPassword(modifyUser, modifyPasswordForm.getPassword()))
             // 기존 비밀번호와 맞지 않을 경우 = 패스워드 불일치
             return new Message("ERROR: Password not match");
@@ -101,5 +104,9 @@ public class UserService {
         userRepository.modifyPassword(modifyPasswordForm.getPassword(), modifyPasswordForm.getNewPassword());
 
         return new Message("Password modified successfully");
+    }
+
+    private int getUserIdBySession(HttpSession session){
+        return (int) session.getAttribute("user");
     }
 }
