@@ -135,7 +135,7 @@
       font-size: 20px;
     }
 
-    &__hashtage {
+    &__hashtags {
       display: flex;
       align-items: center;
       width: 100%;
@@ -148,7 +148,10 @@
         display: none; 
       }
 
-      .hashtage {
+      .hashtag {
+        display: flex;
+        gap: 8px;
+        align-items: center;
         background: $main-light-blue;
         padding: 5px 10px;
         border-radius: 5px;
