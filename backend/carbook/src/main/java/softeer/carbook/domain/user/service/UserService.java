@@ -59,7 +59,7 @@ public class UserService {
         HttpSession session = httpServletRequest.getSession(false);
 
         // 로그인 상태 확인
-        checkLogin(session);
+        checkLoginException(session);
 
         // 세션으로부터 userId를 받아서 user 조회
         return userRepository.findUserById(getUserIdBySession(session));
@@ -67,7 +67,7 @@ public class UserService {
 
     public Message modifyNickname(String nickname, String newNickname, HttpServletRequest httpServletRequest) {
         // 로그인 체크
-        checkLogin(httpServletRequest.getSession(false));
+        checkLoginException(httpServletRequest.getSession(false));
 
         // 기존 닉네임이 데이터베이스에 없다??
         if(!userRepository.isNicknameDuplicated(nickname))
@@ -101,7 +101,7 @@ public class UserService {
         return (int) session.getAttribute("user");
     }
 
-    public void checkLogin(HttpSession session){
+    public void checkLoginException(HttpSession session){
         if(!isLogin(session)) throw new NotLoginStatementException();
     }
 
