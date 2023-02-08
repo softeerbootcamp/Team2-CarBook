@@ -44,8 +44,8 @@ public class UserService {
 
     public Message login(LoginForm loginForm, HttpSession session) {
         User user = userRepository.findUserByEmail(loginForm.getEmail());
-        if(isLoginSuccess(user, loginForm)) {
-            // 성공했을 경우 세션에 추가
+        if(checkPassword(user, loginForm.getPassword())) {
+            // 로그인 성공했을 경우 세션에 추가
             session.setAttribute("user", user);
             // 세션에 추가 후 성공 메세지 반환
             return new Message("Login Success");
@@ -54,8 +54,8 @@ public class UserService {
         return new Message("ERROR: Password not match");
     }
 
-    private boolean isLoginSuccess(User user, LoginForm loginForm){
-        return user.getPassword().equals(loginForm.getPassword());
+    private boolean checkPassword(User user, String password){
+        return user.getPassword().equals(password);
     }
 
     public boolean isLogin(HttpServletRequest httpServletRequest){
@@ -90,6 +90,12 @@ public class UserService {
         // 로그인 체크
         if(!isLogin(httpServletRequest))
             return new Message("ERROR: Session Has Expired");
+
+        // 기존 비밀번호와 맞는지 확인
+        User modifyUser = findLoginedUser(httpServletRequest);
+        if(!checkPassword(modifyUser, modifyPasswordForm.getPassword()))
+            // 기존 비밀번호와 맞지 않을 경우 = 패스워드 불일치
+            return new Message("ERROR: Password not match");
 
         // 새로운 비밀번호 반영
         userRepository.modifyPassword(modifyPasswordForm.getPassword(), modifyPasswordForm.getNewPassword());
