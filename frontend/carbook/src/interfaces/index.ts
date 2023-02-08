@@ -1,7 +1,7 @@
-type Category = 'type' | 'model' | 'hashtag';
+export type CategoryType = 'type' | 'model' | 'hashtag';
 
 export interface IHashTag {
   id: string;
-  category: Category;
+  category: CategoryType;
   tag: string;
 }
