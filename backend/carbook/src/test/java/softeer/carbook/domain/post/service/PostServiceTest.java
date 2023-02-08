@@ -134,8 +134,4 @@ class PostServiceTest {
         assertThat(result.get(3).getImageUrl()).isEqualTo("/second/image.jpg");
     }
 
-    @Test
-    void myProfile() {
-    }
-
 }
