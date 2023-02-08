@@ -80,7 +80,7 @@ public class UserService {
             throw new NicknameDuplicateException();
 
         // 새로운 닉네임 반영
-        userRepository.modifyNicknameByNewNickname(nickname, newNickname);
+        userRepository.modifyNickname(nickname, newNickname);
 
         return new Message("Nickname modified successfully");
     }

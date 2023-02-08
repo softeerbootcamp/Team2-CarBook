@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 import softeer.carbook.domain.user.dto.SignupForm;
 import softeer.carbook.domain.user.exception.LoginEmailNotExistException;
 import softeer.carbook.domain.user.exception.NicknameNotExistException;
-import softeer.carbook.domain.user.exception.idNotExistException;
 import softeer.carbook.domain.user.model.User;
 
 import javax.sql.DataSource;
@@ -30,7 +29,7 @@ public class UserRepository {
         );
     }
 
-    public void modifyNicknameByNewNickname(String nickname, String newNickname) {
+    public void modifyNickname(String nickname, String newNickname) {
         jdbcTemplate.update("update USER SET nickname = ? where nickname = ?",
                 newNickname,
                 nickname
