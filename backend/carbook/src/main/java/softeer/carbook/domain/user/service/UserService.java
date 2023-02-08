@@ -9,6 +9,7 @@ import softeer.carbook.domain.user.dto.LoginForm;
 import softeer.carbook.domain.user.dto.ModifyPasswordForm;
 import softeer.carbook.domain.user.dto.SignupForm;
 import softeer.carbook.domain.user.exception.NicknameNotExistException;
+import softeer.carbook.domain.user.exception.NotLoginStatementException;
 import softeer.carbook.domain.user.exception.SignupEmailDuplicateException;
 import softeer.carbook.domain.user.exception.NicknameDuplicateException;
 import softeer.carbook.domain.user.model.User;
@@ -54,23 +55,19 @@ public class UserService {
         return new Message("ERROR: Password not match");
     }
 
-    private boolean checkPassword(User user, String password){
-        return user.getPassword().equals(password);
-    }
-
-    public boolean isLogin(HttpServletRequest httpServletRequest){
-        return httpServletRequest.getSession(false) != null;
-    }
-
     public User findLoginedUser(HttpServletRequest httpServletRequest){
-        int userId = getUserIdBySession(httpServletRequest.getSession(false));
-        return userRepository.findUserById(userId);
+        HttpSession session = httpServletRequest.getSession(false);
+
+        // 로그인 상태 확인
+        checkLogin(session);
+
+        // 세션으로부터 userId를 받아서 user 조회
+        return userRepository.findUserById(getUserIdBySession(session));
     }
 
     public Message modifyNickname(String nickname, String newNickname, HttpServletRequest httpServletRequest) {
         // 로그인 체크
-        if(!isLogin(httpServletRequest))
-            return new Message("ERROR: Session Has Expired");
+        checkLogin(httpServletRequest.getSession(false));
 
         // 기존 닉네임이 데이터베이스에 없다??
         if(!userRepository.isNicknameDuplicated(nickname))
@@ -87,12 +84,8 @@ public class UserService {
     }
 
     public Message modifyPassword(ModifyPasswordForm modifyPasswordForm, HttpServletRequest httpServletRequest) {
-        // 로그인 체크
-        if(!isLogin(httpServletRequest))
-            return new Message("ERROR: Session Has Expired");
-
         // 기존 비밀번호와 맞는지 확인
-        // 세션을 통해 유저 불러오기
+        // 세션을 통해 유저 불러오기 >> 함수 내에서 로그인 체크
         User modifyUser = findLoginedUser(httpServletRequest);
         if(!checkPassword(modifyUser, modifyPasswordForm.getPassword()))
             // 기존 비밀번호와 맞지 않을 경우 = 패스워드 불일치
@@ -106,5 +99,17 @@ public class UserService {
 
     private int getUserIdBySession(HttpSession session){
         return (int) session.getAttribute("user");
+    }
+
+    public void checkLogin(HttpSession session){
+        if(!isLogin(session)) throw new NotLoginStatementException();
+    }
+
+    public boolean isLogin(HttpSession session){
+        return session != null;
+    }
+
+    private boolean checkPassword(User user, String password){
+        return user.getPassword().equals(password);
     }
 }
