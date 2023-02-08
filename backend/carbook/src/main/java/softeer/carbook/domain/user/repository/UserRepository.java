@@ -50,7 +50,7 @@ public class UserRepository {
     public User findUserByNickname(String nickname){
         List<User> result = jdbcTemplate.query("select * from USER where nickname = ?", userRowMapper(), nickname);
         return result.stream().findAny().orElseThrow(
-                () -> new LoginEmailNotExistException("ERROR: Nickname not exist")
+                () -> new NicknameNotExistException("ERROR: Nickname not exist")
         );
     }
 
