@@ -73,7 +73,7 @@ public class ImageRepository {
     private String createTagNameConditionalStatement(String[] tagNames) {
         StringBuilder conditionalStatement = new StringBuilder();
         for (String tagName: tagNames) {
-            conditionalStatement.append("h.tag = ").append(tagName);
+            conditionalStatement.append("h.tag = '").append(tagName).append("'");
             conditionalStatement.append((" OR "));
         }
 
