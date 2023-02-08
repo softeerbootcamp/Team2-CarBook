@@ -8,10 +8,7 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import softeer.carbook.domain.user.dto.*;
-import softeer.carbook.domain.user.exception.LoginEmailNotExistException;
-import softeer.carbook.domain.user.exception.NicknameNotExistException;
-import softeer.carbook.domain.user.exception.SignupEmailDuplicateException;
-import softeer.carbook.domain.user.exception.NicknameDuplicateException;
+import softeer.carbook.domain.user.exception.*;
 import softeer.carbook.domain.user.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -110,6 +107,13 @@ public class UserController {
     public ResponseEntity<Message> nicknameNotExistException(NicknameNotExistException nicknameNE){
         logger.debug(nicknameNE.getMessage());
         return Message.make400Response(nicknameNE.getMessage());
+    }
+
+    // 로그인 상태가 아닌 경우 처리
+    @ExceptionHandler(NotLoginStatementException.class)
+    public ResponseEntity<Message> notLoginStatementException(NotLoginStatementException notLoginE){
+        logger.debug(notLoginE.getMessage());
+        return Message.make400Response(notLoginE.getMessage());
     }
 
 
