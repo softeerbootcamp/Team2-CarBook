@@ -92,10 +92,8 @@ public class UserService {
             return new Message("ERROR: Session Has Expired");
 
         // 기존 비밀번호와 맞는지 확인
-        // 세션에서 로그인 유저 id 불러오기
-        int userId = getUserIdBySession(httpServletRequest.getSession(false));
-        // 불러온 id를 통해 유저 불러오기
-        User modifyUser = userRepository.findUserById(userId);
+        // 세션을 통해 유저 불러오기
+        User modifyUser = findLoginedUser(httpServletRequest);
         if(!checkPassword(modifyUser, modifyPasswordForm.getPassword()))
             // 기존 비밀번호와 맞지 않을 경우 = 패스워드 불일치
             return new Message("ERROR: Password not match");
