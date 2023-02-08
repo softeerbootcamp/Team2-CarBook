@@ -57,7 +57,7 @@ class PostServiceTest {
 
     @Test
     @DisplayName("비로그인 상태 메인 페이지 테스트")
-    private void getRecentPostsTest() {
+    void getRecentPostsTest() {
         //given
         int index = 0;
         //when
@@ -70,16 +70,46 @@ class PostServiceTest {
     }
 
     @Test
+    @DisplayName("더 이상 불러올 게시글이 없을 때 테스트")
+    void getNoPostsTest(){
+        //given
+        int index = 10;
+        //when
+        GuestPostsResponse guestPostsResponse = postService.getRecentPosts(index);
+        //then
+        GuestPostsResponse expectedResult = new GuestPostsResponse.GuestPostsResponseBuilder()
+                .images(new ArrayList<Image>())
+                .build();
+        assertThat(guestPostsResponse).usingRecursiveComparison().isEqualTo(expectedResult);
+    }
+
+    @Test
     @DisplayName("로그인 상태 메인 페이지 테스트")
     void getRecentFollowerPostsTest() {
         //given
         int index = 0;
         User user = new User(15,"user15@exam.com","15번유저","pw15");
         //when
-        LoginPostsResponse loginPostsResponse = postService.getRecentFollowerPosts(0, user);
+        LoginPostsResponse loginPostsResponse = postService.getRecentFollowerPosts(index, user);
         //then
         LoginPostsResponse expectedResult = new LoginPostsResponse.LoginPostsResponseBuilder()
                 .images(user15FollowingImages)
+                .nickname(user.getNickname())
+                .build();
+        assertThat(loginPostsResponse).usingRecursiveComparison().isEqualTo(expectedResult);
+    }
+
+    @Test
+    @DisplayName("팔로잉중인 게시글이 없는 경우 테스트")
+    void getNoFollowingPostsTest(){
+        //given
+        int index = 0;
+        User user = new User(17,"user17@email.com","사용자17","pw17");
+        //when
+        LoginPostsResponse loginPostsResponse = postService.getRecentFollowerPosts(index, user);
+        //then
+        LoginPostsResponse expectedResult = new LoginPostsResponse.LoginPostsResponseBuilder()
+                .images(new ArrayList<Image>())
                 .nickname(user.getNickname())
                 .build();
         assertThat(loginPostsResponse).usingRecursiveComparison().isEqualTo(expectedResult);
@@ -108,7 +138,4 @@ class PostServiceTest {
     void myProfile() {
     }
 
-    @Test
-    void otherProfile() {
-    }
 }
