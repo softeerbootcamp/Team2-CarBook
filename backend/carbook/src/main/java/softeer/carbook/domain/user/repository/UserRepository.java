@@ -43,14 +43,14 @@ public class UserRepository {
     public User findUserByEmail(String email){
         List<User> result = jdbcTemplate.query("select * from USER where email = ?", userRowMapper(), email);
         return result.stream().findAny().orElseThrow(
-                () -> new LoginEmailNotExistException("ERROR: Email not exist")
+                () -> new LoginEmailNotExistException()
         );
     }
 
     public User findUserByNickname(String nickname){
         List<User> result = jdbcTemplate.query("select * from USER where nickname = ?", userRowMapper(), nickname);
         return result.stream().findAny().orElseThrow(
-                () -> new NicknameNotExistException("ERROR: Nickname not exist")
+                () -> new NicknameNotExistException()
         );
     }
 
