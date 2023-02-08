@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import softeer.carbook.domain.user.dto.Message;
 import softeer.carbook.domain.user.dto.LoginForm;
 import softeer.carbook.domain.user.dto.SignupForm;
+import softeer.carbook.domain.user.exception.NicknameNotExistException;
 import softeer.carbook.domain.user.exception.SignupEmailDuplicateException;
 import softeer.carbook.domain.user.exception.NicknameDuplicateException;
 import softeer.carbook.domain.user.model.User;
@@ -65,4 +66,22 @@ public class UserService {
         return (User) session.getAttribute("user");
     }
 
+    public Message modifyNickname(String nickname, String newNickname, HttpServletRequest httpServletRequest) {
+        // 로그인 체크
+        if(!isLogin(httpServletRequest))
+            return new Message("ERROR: Session Has Expired");
+
+        // 기존 닉네임이 데이터베이스에 없다??
+        if(!userRepository.isNicknameDuplicated(nickname))
+            throw new NicknameNotExistException();
+
+        // 새로운 닉네임 중복 체크
+        if(userRepository.isNicknameDuplicated(newNickname))
+            throw new NicknameDuplicateException();
+
+        // 새로운 닉네임 반영
+        userRepository.modifyNickname(nickname, newNickname);
+
+        return new Message("Nickname modified successfully");
+    }
 }
