@@ -1,0 +1,83 @@
+@import "@/styles/color.scss";
+
+.signup-container {
+  background: #ffffff;
+  margin: 0 auto;
+  text-align: center;
+  padding: 15vh 10vw;
+  max-width: 500px;
+
+  header {
+    margin-bottom: 20px;
+
+    .header-image,
+    .header-logo,
+    .header-message {
+      margin: 8px;
+    }
+
+    .header-image {
+      width: 86px;
+      height: 50px;
+    }
+    .header-logo {
+      font-family: "netmarbleB";
+      font-size: 30px;
+      height: 30px;
+    }
+    .header-message {
+      font-family: "LINESeedKR-Rg";
+      font-size: 14px;
+      height: 36px;
+    }
+  }
+
+  .input-box {
+    font-family: "LINESeedKR-Rg";
+    width: 297px;
+    height: 48px;
+    border: 1px solid $main-blue;
+    border-radius: 4px;
+    margin: 8px;
+    padding: 0 16px;
+  }
+
+  .signup-contents {
+    .signup-id,
+    .signup-password,
+    .signup-nickname {
+      font-family: "Pretendard-Regular";
+      padding-left: 20px;
+      text-align: start;
+    }
+
+    .input-form-button {
+      font-family: "LINESeedKR-Rg";
+      width: 297px;
+      height: 48px;
+      background-color: $main-blue;
+      color: $main-white;
+      border-radius: 8px;
+      margin: 16px 8px;
+    }
+  }
+
+  footer {
+    display: flex;
+    margin: 8px 5vw;
+    justify-content: flex-end;
+
+    h3 {
+      margin-right: 10px;
+    }
+
+    h3.footer-login {
+      font-family: "LINESeedKR-Bd";
+      font-weight: 700;
+    }
+
+    h3.footer-message {
+      font-family: "LINESeedKR-Rg";
+    }
+  }
+}
