@@ -32,7 +32,7 @@ public class PostController {
 
     @GetMapping("/posts/m")
     public ResponseEntity<?> getPosts(@RequestParam int index, HttpServletRequest httpServletRequest){
-        if (userService.isLogin(httpServletRequest))
+        if (userService.isLogin(httpServletRequest.getSession(false)))
             return getLoginPosts(index, httpServletRequest);
         return getGuestPosts(index);
     }

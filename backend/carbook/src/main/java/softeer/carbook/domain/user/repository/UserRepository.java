@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import softeer.carbook.domain.user.dto.SignupForm;
+import softeer.carbook.domain.user.exception.IdNotExistException;
 import softeer.carbook.domain.user.exception.LoginEmailNotExistException;
 import softeer.carbook.domain.user.exception.NicknameNotExistException;
 import softeer.carbook.domain.user.model.User;
@@ -36,6 +37,13 @@ public class UserRepository {
         );
     }
 
+    public void modifyPassword(String password, String newPassword) {
+        jdbcTemplate.update("update USER SET password = ? where password = ?",
+                newPassword,
+                password
+        );
+    }
+
     public boolean isEmailDuplicated(String email) {
         List<User> result = jdbcTemplate.query("select * from USER where email = ?", userRowMapper(), email);
         return !result.isEmpty();
@@ -44,6 +52,13 @@ public class UserRepository {
     public boolean isNicknameDuplicated(String nickname) {
         List<User> result = jdbcTemplate.query("select * from USER where nickname = ?", userRowMapper(), nickname);
         return !result.isEmpty();
+    }
+
+    public User findUserById(int id){
+        List<User> result = jdbcTemplate.query("select * from USER where id = ?", userRowMapper(), id);
+        return result.stream().findAny().orElseThrow(
+                () -> new IdNotExistException()
+        );
     }
 
     public User findUserByEmail(String email){
