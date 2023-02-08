@@ -87,6 +87,13 @@ public class UserService {
     }
 
     public Message modifyPassword(ModifyPasswordForm modifyPasswordForm, HttpServletRequest httpServletRequest) {
+        // 로그인 체크
+        if(!isLogin(httpServletRequest))
+            return new Message("ERROR: Session Has Expired");
+
+        // 새로운 비밀번호 반영
+        userRepository.modifyPassword(modifyPasswordForm.getPassword(), modifyPasswordForm.getNewPassword());
+
         return new Message("Password modified successfully");
     }
 }

@@ -36,6 +36,13 @@ public class UserRepository {
         );
     }
 
+    public void modifyPassword(String password, String newPassword) {
+        jdbcTemplate.update("update USER SET password = ? where password = ?",
+                newPassword,
+                password
+        );
+    }
+
     public boolean isEmailDuplicated(String email) {
         List<User> result = jdbcTemplate.query("select * from USER where email = ?", userRowMapper(), email);
         return !result.isEmpty();
