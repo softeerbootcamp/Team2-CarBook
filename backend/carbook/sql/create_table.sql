@@ -12,10 +12,15 @@ CREATE TABLE `POST` (
 	`create_date`	timestamp	NOT NULL default current_timestamp,
 	`update_date`	timestamp	NOT NULL default current_timestamp,
 	`content`	varchar(500)	NULL,
+	`model_id` int NOT NULL,
     primary key (id),
+    INDEX    `POST_create_date_index` (`create_date`),
     constraint post_user_id_fk
         foreign key (user_id) references USER (id)
-            on update cascade on delete cascade
+            on update cascade on delete cascade,
+    constraint post_model_id_fk
+        foreign key (model_id) references MODEL (id)
+            on update cascade on delete cascade,
 );
 
 CREATE TABLE `POST_LIKE` (
@@ -31,7 +36,7 @@ CREATE TABLE `POST_LIKE` (
             on update cascade on delete cascade
 );
 
-CREATE TABLE `Follow` (
+CREATE TABLE `FOLLOW` (
 	`id`	int	NOT NULL auto_increment,
 	`follower_id`	int	NOT NULL,
 	`following_id`	int	NOT NULL,
@@ -72,4 +77,20 @@ CREATE TABLE `IMAGE` (
     constraint image_post_id_fk
         foreign key (post_id) references POST (id)
             on update cascade on delete cascade
+);
+
+CREATE TABLE `TYPE` (
+                        `id`    int NOT NULL auto_increment,
+                        `type`  varchar(16) NOT NULL unique,
+                        primary key (id)
+);
+
+CREATE TABLE `MODEL` (
+                        `id`    int NOT NULL auto_increment,
+                        `type_id`   int NOT NULL,
+                        `model` varchar(16) NOT NULL unique,
+                        primary key (id),
+                        constraint model_type_id_fk
+                            foreign key (type_id) references TYPE (id)
+                                on update cascade on delete cascade
 );
