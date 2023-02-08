@@ -71,7 +71,11 @@ public class UserService {
             return new Message("ERROR: Session Has Expired");
 
         // 새로운 닉네임 중복 체크
+        if(userRepository.isNicknameDuplicated(newNickname))
+            throw new NicknameDuplicateException();
 
+        // 새로운 닉네임 반영
+        userRepository.modifyNicknameByNewNickname(nickname, newNickname);
 
         return new Message("Nickname modified successfully");
     }

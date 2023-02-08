@@ -83,7 +83,7 @@ public class UserController {
         return Message.make400Response(emailDE.getMessage());
     }
 
-    // 회원가입 시 닉네임 중복 처리
+    // 회원가입, 닉네임 변경 시 닉네임 중복 처리
     @ExceptionHandler(NicknameDuplicateException.class)
     public ResponseEntity<Message> nicknameDuplicateException(NicknameDuplicateException nicknameDE){
         logger.debug(nicknameDE.getMessage());

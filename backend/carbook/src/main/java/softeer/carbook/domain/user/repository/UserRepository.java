@@ -27,7 +27,14 @@ public class UserRepository {
                 signupForm.getEmail(),
                 signupForm.getPassword(),
                 signupForm.getNickname()
-                );
+        );
+    }
+
+    public void modifyNicknameByNewNickname(String nickname, String newNickname) {
+        jdbcTemplate.update("update USER SET nickname = ? where nickname = ?",
+                newNickname,
+                nickname
+        );
     }
 
     public boolean isEmailDuplicated(String email) {
