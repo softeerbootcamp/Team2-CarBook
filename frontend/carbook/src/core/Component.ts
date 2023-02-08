@@ -1,13 +1,18 @@
+interface IObject {
+  [property: string]: any;
+}
+
 export default class Component {
   $target: HTMLElement;
-  props: object;
-  state: object = {};
+  props: IObject;
+  state: IObject = {};
 
   constructor($target: HTMLElement, props: object = {}) {
     this.$target = $target;
     this.props = props;
     this.setup();
     this.render();
+    this.mounted();
   }
   setup() {}
   template() {
@@ -17,6 +22,7 @@ export default class Component {
     this.$target.innerHTML = this.template();
     this.setEvent();
   }
+  mounted() {}
   setEvent() {}
   setState(newState: object) {
     this.state = { ...this.state, ...newState };
