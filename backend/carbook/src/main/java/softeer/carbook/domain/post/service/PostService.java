@@ -78,7 +78,7 @@ public class PostService {
         User profileUser = userRepository.findUserByNickname(profileUserNickname);
         return new OtherProfileResponse.OtherProfileResponseBuilder()
                 .nickname(profileUserNickname)
-                .email(userRepository.findUserByNickname(profileUserNickname).getEmail())
+                .email(profileUser.getEmail())
                 .follow(followRepository.isFollow(loginUser.getId(), profileUser.getId()))
                 .follower(followRepository.getFollowerCount(profileUser.getId()))
                 .following(followRepository.getFollowingCount(profileUser.getId()))
