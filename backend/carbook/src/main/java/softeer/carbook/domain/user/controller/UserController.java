@@ -6,12 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.BindingResultUtils;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import softeer.carbook.domain.user.dto.Message;
 import softeer.carbook.domain.user.dto.LoginForm;
-import softeer.carbook.domain.user.dto.NewNickNameForm;
+import softeer.carbook.domain.user.dto.ModifyNickNameForm;
 import softeer.carbook.domain.user.dto.SignupForm;
 import softeer.carbook.domain.user.exception.LoginEmailNotExistException;
 import softeer.carbook.domain.user.exception.NicknameNotExistException;
@@ -55,12 +53,12 @@ public class UserController {
     @PatchMapping("/profile/modify/{nickname}")
     public ResponseEntity<?> modifyNickname(
             @PathVariable("nickname") String nickname,
-            @Valid NewNickNameForm newNickNameForm,
+            @Valid ModifyNickNameForm modifyNickNameForm,
             HttpServletRequest httpServletRequest
     ){
         Message resultMsg = userService.modifyNickname(
                 nickname,
-                newNickNameForm.getNewNickname(),
+                modifyNickNameForm.getNewNickname(),
                 httpServletRequest);
         return Message.make200Response(resultMsg.getMessage());
     }
