@@ -33,14 +33,14 @@ public class UserController {
 
     // 회원가입
     @PostMapping("/signup")
-    public ResponseEntity<Message> signup(@Valid SignupForm signupForm){
+    public ResponseEntity<Message> signup(@RequestBody @Valid SignupForm signupForm){
         Message resultMsg = userService.signup(signupForm);
         return Message.make200Response(resultMsg.getMessage());
     }
 
     // 로그인
     @PostMapping("/login")
-    public ResponseEntity<Message> login(@Valid LoginForm loginForm, HttpSession session) {
+    public ResponseEntity<Message> login(@RequestBody @Valid LoginForm loginForm, HttpSession session) {
         Message resultMsg = userService.login(loginForm, session);
         return Message.make200Response(resultMsg.getMessage());
     }
@@ -53,7 +53,7 @@ public class UserController {
     @PatchMapping("/profile/modify/{nickname}")
     public ResponseEntity<?> modifyNickname(
             @PathVariable("nickname") String nickname,
-            @Valid ModifyNickNameForm modifyNickNameForm,
+            @RequestBody @Valid ModifyNickNameForm modifyNickNameForm,
             HttpServletRequest httpServletRequest
     ){
         Message resultMsg = userService.modifyNickname(
