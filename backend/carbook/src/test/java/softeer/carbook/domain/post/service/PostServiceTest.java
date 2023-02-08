@@ -9,8 +9,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import softeer.carbook.domain.follow.repository.FollowRepository;
 import softeer.carbook.domain.post.dto.GuestPostsResponse;
+import softeer.carbook.domain.post.dto.LoginPostsResponse;
 import softeer.carbook.domain.post.model.Image;
 import softeer.carbook.domain.user.controller.UserController;
+import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.repository.UserRepository;
 
 import java.util.ArrayList;
@@ -46,6 +48,13 @@ class PostServiceTest {
             new Image(1, "/first/image.jpg")
     ));
 
+    private final List<Image> user15FollowingImages = new ArrayList<>(List.of(
+            new Image(8, "/eighth/image.jpg"),
+            new Image(7, "/seventh/image.jpg"),
+            new Image(6, "/sixth/image.jpg"),
+            new Image(5, "/fifth/image.jpg")
+    ));
+
     @Test
     @DisplayName("비로그인 상태 메인 페이지 테스트")
     private void getRecentPostsTest() {
@@ -61,7 +70,19 @@ class PostServiceTest {
     }
 
     @Test
-    void getRecentFollowerPosts() {
+    @DisplayName("로그인 상태 메인 페이지 테스트")
+    void getRecentFollowerPostsTest() {
+        //given
+        int index = 0;
+        User user = new User(15,"user15@exam.com","15번유저","pw15");
+        //when
+        LoginPostsResponse loginPostsResponse = postService.getRecentFollowerPosts(0, user);
+        //then
+        LoginPostsResponse expectedResult = new LoginPostsResponse.LoginPostsResponseBuilder()
+                .images(user15FollowingImages)
+                .nickname(user.getNickname())
+                .build();
+        assertThat(loginPostsResponse).usingRecursiveComparison().isEqualTo(expectedResult);
     }
 
     @Test
