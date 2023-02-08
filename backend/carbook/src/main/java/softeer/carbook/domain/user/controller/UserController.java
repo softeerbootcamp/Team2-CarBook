@@ -11,6 +11,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import softeer.carbook.domain.user.dto.Message;
 import softeer.carbook.domain.user.dto.LoginForm;
+import softeer.carbook.domain.user.dto.NewNickNameForm;
 import softeer.carbook.domain.user.dto.SignupForm;
 import softeer.carbook.domain.user.exception.LoginEmailNotExistException;
 import softeer.carbook.domain.user.exception.SignupEmailDuplicateException;
@@ -47,6 +48,15 @@ public class UserController {
     // 로그아웃
 
     // 로그인한 사용자인지
+
+    // 닉네임 변경 ( 자신 프로필 페이지) > user 로
+    @PatchMapping("/profile/modify/{nickname}")
+    public ResponseEntity<?> modifyNickname(
+            @PathVariable("nickname") String nickname,
+            @Valid NewNickNameForm newNickNameForm){
+        Message resultMsg = userService.modifyNickname(nickname, newNickNameForm.getNewNickname());
+        return Message.make200Response(resultMsg.getMessage());
+    }
 
     // exception handling
 

@@ -65,4 +65,7 @@ public class UserService {
         return (User) session.getAttribute("user");
     }
 
+    public Message modifyNickname(String nickname, String newNickname) {
+        return new Message("Nickname modified successfully");
+    }
 }
