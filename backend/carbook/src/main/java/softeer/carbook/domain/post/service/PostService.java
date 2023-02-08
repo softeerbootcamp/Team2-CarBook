@@ -75,13 +75,13 @@ public class PostService {
     }
 
     public OtherProfileResponse otherProfile(User loginUser, String profileUserNickname) {
-        int profileUserId = userRepository.findUserByNickname(profileUserNickname).getId();
+        User profileUser = userRepository.findUserByNickname(profileUserNickname);
         return new OtherProfileResponse.OtherProfileResponseBuilder()
                 .nickname(profileUserNickname)
                 .email(userRepository.findUserByNickname(profileUserNickname).getEmail())
-                .follow(followRepository.isFollow(loginUser.getId(), profileUserId))
-                .follower(followRepository.getFollowerCount(profileUserId))
-                .following(followRepository.getFollowingCount(profileUserId))
+                .follow(followRepository.isFollow(loginUser.getId(), profileUser.getId()))
+                .follower(followRepository.getFollowerCount(profileUser.getId()))
+                .following(followRepository.getFollowingCount(profileUser.getId()))
                 .images(imageRepository.findImagesByNickName(profileUserNickname))
                 .build();
     }
