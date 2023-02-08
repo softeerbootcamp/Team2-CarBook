@@ -14,6 +14,7 @@ import softeer.carbook.domain.user.dto.LoginForm;
 import softeer.carbook.domain.user.dto.NewNickNameForm;
 import softeer.carbook.domain.user.dto.SignupForm;
 import softeer.carbook.domain.user.exception.LoginEmailNotExistException;
+import softeer.carbook.domain.user.exception.NicknameNotExistException;
 import softeer.carbook.domain.user.exception.SignupEmailDuplicateException;
 import softeer.carbook.domain.user.exception.NicknameDuplicateException;
 import softeer.carbook.domain.user.service.UserService;
@@ -95,6 +96,13 @@ public class UserController {
     public ResponseEntity<Message> loginEmailNotExistException(LoginEmailNotExistException emailNE){
         logger.debug(emailNE.getMessage());
         return Message.make400Response(emailNE.getMessage());
+    }
+
+    // 닉네임이 데이터베이스에 존재하지 않는 경우 처리
+    @ExceptionHandler(NicknameNotExistException.class)
+    public ResponseEntity<Message> nicknameNotExistException(NicknameNotExistException nicknameNE){
+        logger.debug(nicknameNE.getMessage());
+        return Message.make400Response(nicknameNE.getMessage());
     }
 
 
