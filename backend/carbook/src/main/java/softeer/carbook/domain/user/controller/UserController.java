@@ -7,10 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import softeer.carbook.domain.user.dto.Message;
-import softeer.carbook.domain.user.dto.LoginForm;
-import softeer.carbook.domain.user.dto.ModifyNickNameForm;
-import softeer.carbook.domain.user.dto.SignupForm;
+import softeer.carbook.domain.user.dto.*;
 import softeer.carbook.domain.user.exception.LoginEmailNotExistException;
 import softeer.carbook.domain.user.exception.NicknameNotExistException;
 import softeer.carbook.domain.user.exception.SignupEmailDuplicateException;
@@ -59,6 +56,18 @@ public class UserController {
         Message resultMsg = userService.modifyNickname(
                 nickname,
                 modifyNickNameForm.getNewNickname(),
+                httpServletRequest);
+        return Message.make200Response(resultMsg.getMessage());
+    }
+
+    // 비밀번호 변경 ( 자신 프로필 페이지 )
+    @PatchMapping("/profile/modify/password")
+    public ResponseEntity<Message> modifyPassword(
+            @Valid ModifyPasswordForm modifyPasswordForm,
+            HttpServletRequest httpServletRequest
+    ){
+        Message resultMsg = userService.modifyPassword(
+                modifyPasswordForm,
                 httpServletRequest);
         return Message.make200Response(resultMsg.getMessage());
     }

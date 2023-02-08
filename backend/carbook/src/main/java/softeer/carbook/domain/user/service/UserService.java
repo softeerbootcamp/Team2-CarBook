@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import softeer.carbook.domain.user.dto.Message;
 import softeer.carbook.domain.user.dto.LoginForm;
+import softeer.carbook.domain.user.dto.ModifyPasswordForm;
 import softeer.carbook.domain.user.dto.SignupForm;
 import softeer.carbook.domain.user.exception.NicknameNotExistException;
 import softeer.carbook.domain.user.exception.SignupEmailDuplicateException;
@@ -83,5 +84,9 @@ public class UserService {
         userRepository.modifyNickname(nickname, newNickname);
 
         return new Message("Nickname modified successfully");
+    }
+
+    public Message modifyPassword(ModifyPasswordForm modifyPasswordForm, HttpServletRequest httpServletRequest) {
+        return new Message("Password modified successfully");
     }
 }
