@@ -54,7 +54,7 @@ public class FollowController {
         return new ResponseEntity<>(followService.getFollowers(nickname), HttpStatus.OK);
     }
 
-    @GetMapping("/profile/followers")
+    @GetMapping("/profile/followings")
     public ResponseEntity<FollowListResponse> getFollowings(@RequestParam String nickname){
         return new ResponseEntity<>(followService.getFollowings(nickname), HttpStatus.OK);
     }
