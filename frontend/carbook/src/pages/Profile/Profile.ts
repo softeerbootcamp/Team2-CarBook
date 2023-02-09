@@ -74,6 +74,7 @@ function modal(): string {
 // </div>`;
 // }
 
+
 function followButtonTemplate(): string {
   return `<button class = 'follow-button'>팔로우</button>`;
 }
