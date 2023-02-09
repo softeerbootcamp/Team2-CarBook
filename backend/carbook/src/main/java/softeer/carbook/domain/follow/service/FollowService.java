@@ -39,11 +39,7 @@ public class FollowService {
         }
 
         // 팔로우 진행
-        //followRepository.addFollow(loginUser.getId(), profileUser.getId());
+        followRepository.addFollow(loginUser.getId(), profileUser.getId());
         return new Message("Follow Success");
-
-
-
-        return null;
     }
 }

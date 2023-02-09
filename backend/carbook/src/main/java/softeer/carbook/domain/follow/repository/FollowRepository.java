@@ -49,6 +49,13 @@ public class FollowRepository {
                 "delete from FOLLOW where id = ?", followId);
     }
 
+    public void addFollow(int followerId, int followingId) {
+        jdbcTemplate.update(
+                "insert into FOLLOW(follower_id, following_id) values (?, ?)",
+                followerId, followingId
+        );
+    }
+
     private RowMapper<Integer> idRowMapper(){
         return (rs, rowNum) -> rs.getInt("id");
     }
@@ -66,7 +73,4 @@ public class FollowRepository {
             return followingId;
         };
     }
-
-
-
 }
