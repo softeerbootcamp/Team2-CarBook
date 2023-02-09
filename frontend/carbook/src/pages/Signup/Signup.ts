@@ -1,8 +1,8 @@
-import { Component } from "@/core";
-import "./Signup.scss";
-import car from "@/assets/images/car.svg";
-import { push } from "@/utils/router/navigate";
-import { EMPTYID, EMPTYPW, EMPTYNICKNAME } from "@/constants/errorMessage";
+import { Component } from '@/core';
+import './Signup.scss';
+import car from '@/assets/images/car.svg';
+import { push } from '@/utils/router/navigate';
+import { EMPTYID, EMPTYPW, EMPTYNICKNAME } from '@/constants/errorMessage';
 
 export default class SignupPage extends Component {
   template(): string {
@@ -21,6 +21,7 @@ export default class SignupPage extends Component {
       <input type = 'password' class ='input-box' name = 'password' placeholder='비밀번호를 입력해주세요' maxlength='16'/>
       <div class ='signup-nickname'> Nickname</div>
       <input type = 'nickname' class ='input-box' name = 'nickname' placeholder='닉네임을 입력해주세요' maxlength='16'/>
+
       <button type = 'submit' class ='input-form-button'>회원가입</button>
     </form>
   </div>
@@ -34,31 +35,31 @@ export default class SignupPage extends Component {
 
   setEvent(): void {
     const form = document.body.querySelector(
-      ".signup-container .input-form"
+      '.signup-container .input-form'
     ) as HTMLFormElement;
-    form?.addEventListener("submit", (e) => {
+    form?.addEventListener('submit', (e) => {
       e.preventDefault();
 
       const id = form.signupid.value.trim();
       const password = form.password.value.trim();
       const nickname = form.nickname.value.trim();
 
-      const modal = document.body.querySelector(".alert-modal") as HTMLElement;
+      const modal = document.body.querySelector('.alert-modal') as HTMLElement;
 
       if (isEmpty(id, password, nickname, modal)) return false;
 
-      push("/login");
+      push('/login');
       return false;
     });
   }
 }
 
 function showErrorModal(modal: HTMLElement, errorMessage: string): void {
-  if (modal.classList.contains("FadeInAndOut")) return;
+  if (modal.classList.contains('FadeInAndOut')) return;
   modal.innerHTML = errorMessage;
-  modal.classList.toggle("FadeInAndOut");
+  modal.classList.toggle('FadeInAndOut');
   setTimeout(() => {
-    modal.classList.toggle("FadeInAndOut");
+    modal.classList.toggle('FadeInAndOut');
   }, 2000);
 }
 
@@ -68,15 +69,15 @@ function isEmpty(
   nickname: string,
   modal: HTMLElement
 ) {
-  if (id === "") {
+  if (id === '') {
     showErrorModal(modal, EMPTYID);
     return true;
   }
-  if (password === "") {
+  if (password === '') {
     showErrorModal(modal, EMPTYPW);
     return true;
   }
-  if (nickname === "") {
+  if (nickname === '') {
     showErrorModal(modal, EMPTYNICKNAME);
     return true;
   }

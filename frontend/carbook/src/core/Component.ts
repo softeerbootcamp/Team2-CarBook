@@ -20,7 +20,6 @@ export default class Component {
   render() {
     this.$target.innerHTML = this.template();
     this.setEvent();
-    this.mounted();
   }
   mounted() {}
   setEvent() {}
