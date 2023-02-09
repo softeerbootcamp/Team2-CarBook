@@ -17,7 +17,7 @@ public class ImageRepository {
     public ImageRepository(DataSource dataSource) { this.jdbcTemplate = new JdbcTemplate(dataSource); }
 
     public Image getImageByPostId(int postId){
-        return jdbcTemplate.queryForObject("select * from IMAGE where post_id = ?",
+        return jdbcTemplate.queryForObject("select img.post_id, img.image_url from IMAGE where post_id = ?",
                 imageRowMapper(), postId);
     }
 
@@ -39,23 +39,21 @@ public class ImageRepository {
     }
 
     public List<Image> findImagesByUserId(int id) {
-        List<Image> images = jdbcTemplate.query(
+        return jdbcTemplate.query(
                 "select IMAGE.post_id, IMAGE.image_url from POST INNER JOIN IMAGE " +
                         "ON POST.id = IMAGE.post_id " +
                         "WHERE POST.user_id = ? " +
                         "ORDER BY create_date DESC",
                 imageRowMapper(), id);
-        return images;
     }
 
     public List<Image> findImagesByNickName(String profileUserNickname) {
-        List<Image> images = jdbcTemplate.query(
+        return jdbcTemplate.query(
                 "select IMAGE.post_id, IMAGE.image_url from USER, POST, IMAGE " +
                         "WHERE USER.id = POST.user_id and POST.id = IMAGE.post_id " +
                         "and USER.nickname = ?" +
                         "ORDER BY create_date DESC",
                 imageRowMapper(), profileUserNickname);
-        return images;
     }
 
     public List<Image> getImagesOfRecentPostsByTags(String[] tagNames, int size, int index) {
