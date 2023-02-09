@@ -2,6 +2,7 @@ package softeer.carbook.domain.follow.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -49,6 +50,10 @@ public class FollowController {
     }
 
         // 팔로워 리스트 조회 > follow 로
+    @GetMapping("/profile/followers")
+    public ResponseEntity<Message>
+
+
 
         // 팔로잉 리스트 조회 > follow 로
 

@@ -75,6 +75,25 @@ public class UserRepository {
         );
     }
 
+    public List<String> getFollowingNicknames(String nickname){
+        return jdbcTemplate.queryForList("select u2.nickname from FOLLOW " +
+                "INNER JOIN USER u1 ON f.follower_id = u1.id " +
+                "INNER JOIN USER u2 ON f.following_id = u2.id " +
+                "where u1.nickname = ?" , String.class, nickname);
+    }
+
+    private RowMapper<User> userRowMapper(){
+        return (rs, rowNum) -> {
+            User user = new User(
+                    rs.getInt("id"),
+                    rs.getString("email"),
+                    rs.getString("nickname"),
+                    rs.getString("password")
+            );
+            return user;
+        };
+    }
+
     /* deprecated
     public String findEmailByNickname(String nickname) {
         List<String> result = jdbcTemplate.query("select email from USER where nickname = ?", emailRowMapper(), nickname);
@@ -98,19 +117,5 @@ public class UserRepository {
         return (rs, rowNum) -> rs.getInt("id");
     }
     */
-
-    private RowMapper<User> userRowMapper(){
-        return (rs, rowNum) -> {
-            User user = new User(
-                    rs.getInt("id"),
-                    rs.getString("email"),
-                    rs.getString("nickname"),
-                    rs.getString("password")
-            );
-            return user;
-        };
-    }
-
-
 
 }
