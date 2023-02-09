@@ -1,7 +1,7 @@
 import { basicAPI } from '@/api';
 import { categoryMap } from '@/constants/category';
 import { Component } from '@/core';
-import { IHashTag } from '@/interfaces';
+import { CategoryType, IHashTag } from '@/interfaces';
 import { tagStore } from '@/store';
 import { actionType } from '@/store/tagStore';
 import { getClosest, getTagIcon } from '@/utils';
@@ -92,7 +92,11 @@ export default class SearchForm extends Component {
       const dropdownCard = getClosest(target, '.dropdown__card');
 
       if (dropdown && dropdownCard) {
-        const { id, category, tag } = dropdownCard.dataset;
+        const { id, category, tag } = dropdownCard.dataset as {
+          id: string;
+          category: CategoryType;
+          tag: string;
+        };
         tagStore.dispach({
           type: actionType.ADD_TAG,
           tag: { id, category, tag },
