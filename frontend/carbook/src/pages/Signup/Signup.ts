@@ -3,6 +3,22 @@ import "./Signup.scss";
 import car from "@/assets/images/car.svg";
 import { push } from "@/utils/router/navigate";
 
+const [
+  EMPTYID,
+  EMPTYPW,
+  EMPTYNICKNAME,
+  DUPPLICATEDID,
+  DUPPLICATEDPW,
+  DUPPLICATEDNICKNAME,
+] = [
+  "ID를 입력해주세요",
+  "비밀번호를 입력해주세요",
+  "닉네임을 입력해주세요",
+  "중복된 ID입니다",
+  "중복된 비밀번호입니다",
+  "중복된 닉네임입니다",
+];
+
 export default class SignupPage extends Component {
   setup(): void {
     this.setState({
@@ -43,13 +59,6 @@ export default class SignupPage extends Component {
   </div>`;
   }
 
-  showModal(modal: HTMLElement): void {
-    modal.classList.toggle("FadeInAndOut");
-    setTimeout(() => {
-      modal.classList.toggle("FadeInAndOut");
-    }, 3000);
-  }
-
   setEvent(): void {
     const form = document.body.querySelector(
       ".signup-container .input-form"
@@ -57,77 +66,76 @@ export default class SignupPage extends Component {
     form?.addEventListener("submit", (e) => {
       e.preventDefault();
 
-      const [
-        EMPTYID,
-        EMPTYPW,
-        EMPTYNICKNAME,
-        DUPPLICATEDID,
-        DUPPLICATEDPW,
-        DUPPLICATEDNICKNAME,
-      ] = [
-        "ID를 입력해주세요",
-        "비밀번호를 입력해주세요",
-        "닉네임을 입력해주세요",
-        "중복된 ID입니다",
-        "중복된 비밀번호입니다",
-        "중복된 닉네임입니다",
-      ];
-
-      let isDupplicated = false;
       const id = form.id.value;
       const password = form.password.value;
       const nickname = form.nickname.value;
 
       const modal = document.body.querySelector(".alert-modal") as HTMLElement;
-      console.log(modal);
 
       /**TODO 빈 입력값 체크 */
-      if (id === "") {
-        console.log("🍇empty id");
-        modal.innerHTML = EMPTYID;
-        this.showModal(modal);
-        return false;
-      }
-      if (password === "") {
-        console.log("🍇empty password");
-        modal.innerHTML = EMPTYPW;
-        this.showModal(modal);
-        return false;
-      }
-      if (nickname === "") {
-        console.log("🍇empty nickname");
-        modal.innerHTML = EMPTYNICKNAME;
-        this.showModal(modal);
-        return false;
-      }
+      if (isEmpty(id, password, nickname, modal)) return false;
 
       /**TODO 중복 값 체크 */
-      this.state.userInfos.forEach((userInfo) => {
-        if (userInfo.id === id) {
-          console.log("💩dupplicated id");
-          modal.innerHTML = DUPPLICATEDID;
-          this.showModal(modal);
-          isDupplicated = true;
-          return false;
-        }
-        if (userInfo.password === password) {
-          console.log("💩dupplicated password");
-          modal.innerHTML = DUPPLICATEDPW;
-          this.showModal(modal);
-          isDupplicated = true;
-          return false;
-        }
-        if (userInfo.nickname === nickname) {
-          console.log("💩dupplicated nickname");
-          modal.innerHTML = DUPPLICATEDNICKNAME;
-          this.showModal(modal);
-          isDupplicated = true;
-          return false;
-        }
-      });
+      if (isDupplicated(this.state.userInfos, id, password, nickname, modal))
+        return false;
+
       push("/login");
-      if (!isDupplicated) console.log("signup success");
       return false;
     });
   }
+}
+
+function showErrorModal(modal: HTMLElement, errorMessage: string): void {
+  if (modal.classList.contains("FadeInAndOut")) return;
+  modal.innerHTML = errorMessage;
+  modal.classList.toggle("FadeInAndOut");
+  setTimeout(() => {
+    modal.classList.toggle("FadeInAndOut");
+  }, 2000);
+}
+
+function isEmpty(
+  id: string,
+  password: string,
+  nickname: string,
+  modal: HTMLElement
+) {
+  if (id === "") {
+    showErrorModal(modal, EMPTYID);
+    return true;
+  }
+  if (password === "") {
+    showErrorModal(modal, EMPTYPW);
+    return true;
+  }
+  if (nickname === "") {
+    showErrorModal(modal, EMPTYNICKNAME);
+    return true;
+  }
+  return false;
+}
+
+function isDupplicated(
+  userInfos: object[],
+  id: string,
+  password: string,
+  nickname: string,
+  modal: HTMLElement
+): boolean {
+  let DupplicatedFlag = false;
+  userInfos.forEach((userInfo) => {
+    if (userInfo.id === id) {
+      showErrorModal(modal, DUPPLICATEDID);
+      return (DupplicatedFlag = true);
+    }
+    if (userInfo.password === password) {
+      showErrorModal(modal, DUPPLICATEDPW);
+      return (DupplicatedFlag = true);
+    }
+    if (userInfo.nickname === nickname) {
+      showErrorModal(modal, DUPPLICATEDNICKNAME);
+      return (DupplicatedFlag = true);
+    }
+  });
+  return DupplicatedFlag;
 }
