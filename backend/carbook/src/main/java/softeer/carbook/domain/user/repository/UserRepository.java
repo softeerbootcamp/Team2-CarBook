@@ -22,11 +22,11 @@ public class UserRepository {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public void addUser(SignupForm signupForm) {
+    public void addUser(User user) {
         jdbcTemplate.update("insert into USER(email, password, nickname) values(?, ?, ?)",
-                signupForm.getEmail(),
-                signupForm.getPassword(),
-                signupForm.getNickname()
+                user.getEmail(),
+                user.getPassword(),
+                user.getNickname()
         );
     }
 

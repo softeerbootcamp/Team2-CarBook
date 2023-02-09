@@ -22,6 +22,9 @@ dependencies {
 
 	// jdbc
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+
+	// https://mvnrepository.com/artifact/org.mindrot/jbcrypt
+	implementation group: 'org.mindrot', name: 'jbcrypt', version: '0.4'
 }
 
 tasks.named('test') {
