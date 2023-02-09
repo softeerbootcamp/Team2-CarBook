@@ -2,7 +2,6 @@ package softeer.carbook.domain.follow.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import softeer.carbook.domain.follow.dto.FollowListResponse;
 import softeer.carbook.domain.follow.dto.ModifyFollowInfoForm;
 import softeer.carbook.domain.follow.repository.FollowRepository;
 import softeer.carbook.domain.user.dto.Message;
@@ -42,13 +41,5 @@ public class FollowService {
         // 팔로우 진행
         followRepository.addFollow(loginUser.getId(), profileUser.getId());
         return new Message("Follow Success");
-    }
-
-    public FollowListResponse getFollowings(String nickname){
-        return new FollowListResponse(userRepository.getFollowingNicknames(nickname));
-    }
-
-    public FollowListResponse getFollowers(String nickname){
-        return new FollowListResponse(userRepository.getFollowerNicknames(nickname));
     }
 }
