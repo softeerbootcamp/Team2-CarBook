@@ -1,11 +1,10 @@
 package softeer.carbook.domain.follow.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import softeer.carbook.domain.follow.dto.FollowListResponse;
 import softeer.carbook.domain.follow.dto.ModifyFollowInfoForm;
 import softeer.carbook.domain.follow.service.FollowService;
 import softeer.carbook.domain.user.dto.Message;
@@ -51,9 +50,14 @@ public class FollowController {
 
         // 팔로워 리스트 조회 > follow 로
     @GetMapping("/profile/followers")
-    public ResponseEntity<Message>
+    public ResponseEntity<FollowListResponse> getFollowers(@RequestParam String nickname){
+        return new ResponseEntity<>(followService.getFollowers(nickname), HttpStatus.OK);
+    }
 
-
+    @GetMapping("/profile/followers")
+    public ResponseEntity<FollowListResponse> getFollowings(@RequestParam String nickname){
+        return new ResponseEntity<>(followService.getFollowings(nickname), HttpStatus.OK);
+    }
 
         // 팔로잉 리스트 조회 > follow 로
 
