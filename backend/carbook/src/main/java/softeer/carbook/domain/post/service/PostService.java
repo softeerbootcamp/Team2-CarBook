@@ -52,7 +52,7 @@ public class PostService {
     }
 
     public PostsSearchResponse searchByTags(String hashtags, int index) {
-        String[] tagNames = hashtags.split("\\+");
+        String[] tagNames = hashtags.split(" ");
 
         List<Image> images = imageRepository.getImagesOfRecentPostsByTags(tagNames, POST_COUNT, index);
         return new PostsSearchResponse.PostsSearchResponseBuilder()

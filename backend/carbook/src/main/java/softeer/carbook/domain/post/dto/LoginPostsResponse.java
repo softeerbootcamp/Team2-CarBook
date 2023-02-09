@@ -9,6 +9,18 @@ public class LoginPostsResponse {
     private String nickname;
     private List<Image> images;
 
+    public boolean isLogin() {
+        return isLogin;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public List<Image> getImages() {
+        return images;
+    }
+
     public LoginPostsResponse(LoginPostsResponse.LoginPostsResponseBuilder loginPostsResponseBuilder){
         this.nickname = loginPostsResponseBuilder.nickname;
         this.images = loginPostsResponseBuilder.images;

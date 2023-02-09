@@ -1,5 +1,6 @@
 package softeer.carbook.domain.user.service;
 
+import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +32,10 @@ public class UserService {
     public Message signup(SignupForm signupForm){
         // 중복 체크
         checkDuplicated(signupForm);
+        // 비밀번호 암호화
+        User user = new User(signupForm.getEmail(), signupForm.getNickname(), encryptPassword(signupForm.getPassword()));
         // 데이터베이스에 유저 추가
-        userRepository.addUser(signupForm);
+        userRepository.addUser(user);
         return new Message("SignUp Success");
     }
 
@@ -53,6 +56,18 @@ public class UserService {
         }
         // 패스워드 불일치
         return new Message("ERROR: Password not match");
+    }
+
+    public Message logout(HttpServletRequest httpServletRequest) {
+        HttpSession session = httpServletRequest.getSession(false);
+
+        // 로그인 상태 확인
+        checkLoginException(session);
+
+        // 로그아웃 진행
+        session.invalidate();
+
+        return new Message("Logout Success");
     }
 
     public User findLoginedUser(HttpServletRequest httpServletRequest){
@@ -110,6 +125,11 @@ public class UserService {
     }
 
     private boolean checkPassword(User user, String password){
-        return user.getPassword().equals(password);
+        return BCrypt.checkpw(password, user.getPassword());
     }
+
+    private String encryptPassword(String password) {
+        return BCrypt.hashpw(password, BCrypt.gensalt());
+    }
+
 }

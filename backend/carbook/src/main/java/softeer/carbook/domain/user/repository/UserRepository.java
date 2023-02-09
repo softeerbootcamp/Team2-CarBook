@@ -22,56 +22,79 @@ public class UserRepository {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public void addUser(SignupForm signupForm) {
+    public void addUser(User user) {
         jdbcTemplate.update("insert into USER(email, password, nickname) values(?, ?, ?)",
-                signupForm.getEmail(),
-                signupForm.getPassword(),
-                signupForm.getNickname()
+                user.getEmail(),
+                user.getPassword(),
+                user.getNickname()
         );
     }
 
     public void modifyNickname(String nickname, String newNickname) {
-        jdbcTemplate.update("update USER SET nickname = ? where nickname = ?",
+        jdbcTemplate.update("update USER set nickname = ? where nickname = ?",
                 newNickname,
                 nickname
         );
     }
 
     public void modifyPassword(String password, String newPassword) {
-        jdbcTemplate.update("update USER SET password = ? where password = ?",
+        jdbcTemplate.update("update USER set password = ? where password = ?",
                 newPassword,
                 password
         );
     }
 
     public boolean isEmailDuplicated(String email) {
-        List<User> result = jdbcTemplate.query("select * from USER where email = ?", userRowMapper(), email);
+        List<User> result = jdbcTemplate.query("select u.id, u.email, u.nickname, u.password from USER u where email = ?", userRowMapper(), email);
         return !result.isEmpty();
     }
 
     public boolean isNicknameDuplicated(String nickname) {
-        List<User> result = jdbcTemplate.query("select * from USER where nickname = ?", userRowMapper(), nickname);
+        List<User> result = jdbcTemplate.query("select u.id, u.email, u.nickname, u.password from USER u where nickname = ?", userRowMapper(), nickname);
         return !result.isEmpty();
     }
 
     public User findUserById(int id){
-        List<User> result = jdbcTemplate.query("select * from USER where id = ?", userRowMapper(), id);
+        List<User> result = jdbcTemplate.query("select u.id, u.email, u.nickname, u.password from USER u where id = ?", userRowMapper(), id);
         return result.stream().findAny().orElseThrow(
                 () -> new IdNotExistException()
         );
     }
 
     public User findUserByEmail(String email){
-        List<User> result = jdbcTemplate.query("select * from USER where email = ?", userRowMapper(), email);
+        List<User> result = jdbcTemplate.query("select u.id, u.email, u.nickname, u.password from USER u where email = ?", userRowMapper(), email);
         return result.stream().findAny().orElseThrow(
                 () -> new LoginEmailNotExistException()
         );
     }
 
     public User findUserByNickname(String nickname){
-        List<User> result = jdbcTemplate.query("select * from USER where nickname = ?", userRowMapper(), nickname);
+        List<User> result = jdbcTemplate.query("select u.id, u.email, u.nickname, u.password from USER u where nickname = ?", userRowMapper(), nickname);
         return result.stream().findAny().orElseThrow(
                 () -> new NicknameNotExistException()
+        );
+    }
+
+    public List<String> getFollowingNicknames(String nickname){
+        return jdbcTemplate.queryForList("select u2.nickname from FOLLOW f " +
+                "INNER JOIN USER u1 ON f.follower_id = u1.id " +
+                "INNER JOIN USER u2 ON f.following_id = u2.id " +
+                "where u1.nickname = ?" , String.class, nickname);
+    }
+
+    public List<String> getFollowerNicknames(String nickname){
+        return jdbcTemplate.queryForList("select u2.nickname from FOLLOW f " +
+                "INNER JOIN USER u1 ON f.following_id = u1.id " +
+                "INNER JOIN USER u2 ON f.follower_id = u2.id " +
+                "where u1.nickname = ?" , String.class, nickname);
+    }
+
+    private RowMapper<User> userRowMapper(){
+        return (rs, rowNum) -> new User(
+                rs.getInt("id"),
+                rs.getString("email"),
+                rs.getString("nickname"),
+                rs.getString("password")
         );
     }
 
@@ -98,19 +121,5 @@ public class UserRepository {
         return (rs, rowNum) -> rs.getInt("id");
     }
     */
-
-    private RowMapper<User> userRowMapper(){
-        return (rs, rowNum) -> {
-            User user = new User(
-                    rs.getInt("id"),
-                    rs.getString("email"),
-                    rs.getString("nickname"),
-                    rs.getString("password")
-            );
-            return user;
-        };
-    }
-
-
 
 }
