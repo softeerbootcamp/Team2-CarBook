@@ -2,6 +2,7 @@ import { Component } from "@/core";
 import "./Login.scss";
 import car from "@/assets/images/car.svg";
 import { push } from "@/utils/router/navigate";
+import { EMPTYID, EMPTYPW } from "@/constants/errorMessage";
 
 export default class LoginPage extends Component {
   template(): string {
@@ -21,10 +22,11 @@ export default class LoginPage extends Component {
           <button type = 'submit' class ='input-form-button'>로그인</button>
         </form>
       </div>
-      <footer>
+      <footer class ='login-footer'>
         <h3 class ='footer-message'>계정이 없으신가요?</h3>
         <h3 class ='register'>회원 가입</h3>
       </footer>
+      <div class = 'alert-modal'>오류 : 닉네임이 중복되었습니다.</div>
     </div>
     `;
   }
@@ -42,10 +44,31 @@ export default class LoginPage extends Component {
 
       const modal = document.body.querySelector(".alert-modal") as HTMLElement;
 
-      // if (isEmpty(id, password, modal)) return false;
+      if (isEmpty(id, password, modal)) return false;
 
       push("/");
       return false;
     });
   }
+}
+
+function showErrorModal(modal: HTMLElement, errorMessage: string): void {
+  if (modal.classList.contains("FadeInAndOut")) return;
+  modal.innerHTML = errorMessage;
+  modal.classList.toggle("FadeInAndOut");
+  setTimeout(() => {
+    modal.classList.toggle("FadeInAndOut");
+  }, 2000);
+}
+
+function isEmpty(id: string, password: string, modal: HTMLElement) {
+  if (id === "") {
+    showErrorModal(modal, EMPTYID);
+    return true;
+  }
+  if (password === "") {
+    showErrorModal(modal, EMPTYPW);
+    return true;
+  }
+  return false;
 }
