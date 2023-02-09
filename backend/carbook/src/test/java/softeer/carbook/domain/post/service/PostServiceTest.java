@@ -2,30 +2,16 @@ package softeer.carbook.domain.post.service;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import softeer.carbook.domain.follow.repository.FollowRepository;
 import softeer.carbook.domain.post.dto.GuestPostsResponse;
 import softeer.carbook.domain.post.dto.LoginPostsResponse;
-import softeer.carbook.domain.post.model.Image;
-import softeer.carbook.domain.user.controller.UserController;
-import softeer.carbook.domain.user.model.User;
-import softeer.carbook.domain.user.repository.UserRepository;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 import softeer.carbook.domain.post.dto.PostsSearchResponse;
 import softeer.carbook.domain.post.model.Image;
+import softeer.carbook.domain.user.model.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -71,7 +57,7 @@ class PostServiceTest {
 
     @Test
     @DisplayName("더 이상 불러올 게시글이 없을 때 테스트")
-    void getNoPostsTest(){
+    void getNoPostsTest() {
         //given
         int index = 10;
         //when
@@ -88,7 +74,7 @@ class PostServiceTest {
     void getRecentFollowerPostsTest() {
         //given
         int index = 0;
-        User user = new User(15,"user15@exam.com","15번유저","pw15");
+        User user = new User(15, "user15@exam.com", "15번유저", "pw15");
         //when
         LoginPostsResponse loginPostsResponse = postService.getRecentFollowerPosts(index, user);
         //then
@@ -101,10 +87,10 @@ class PostServiceTest {
 
     @Test
     @DisplayName("팔로잉중인 게시글이 없는 경우 테스트")
-    void getNoFollowingPostsTest(){
+    void getNoFollowingPostsTest() {
         //given
         int index = 0;
-        User user = new User(17,"user17@email.com","사용자17","pw17");
+        User user = new User(17, "user17@email.com", "사용자17", "pw17");
         //when
         LoginPostsResponse loginPostsResponse = postService.getRecentFollowerPosts(index, user);
         //then
@@ -118,7 +104,7 @@ class PostServiceTest {
     @Test
     @DisplayName("해시태그를 통한 게시물 검색 기능 테스트")
     void searchByTags() {
-        String hashtags = "맑음+흐림";
+        String hashtags = "맑음 흐림";
 
         PostsSearchResponse response = postService.searchByTags(hashtags, 0);
         List<Image> result = response.getImages();
