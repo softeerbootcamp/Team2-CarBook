@@ -82,6 +82,13 @@ public class UserRepository {
                 "where u1.nickname = ?" , String.class, nickname);
     }
 
+    public List<String> getFollowerNicknames(String nickname){
+        return jdbcTemplate.queryForList("select u2.nickname from FOLLOW " +
+                "INNER JOIN USER u1 ON f.following_id = u1.id " +
+                "INNER JOIN USER u2 ON f.follower_id = u2.id " +
+                "where u1.nickname = ?" , String.class, nickname);
+    }
+
     private RowMapper<User> userRowMapper(){
         return (rs, rowNum) -> {
             User user = new User(
