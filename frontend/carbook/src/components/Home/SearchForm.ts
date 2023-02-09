@@ -2,7 +2,9 @@ import { basicAPI } from '@/api';
 import { categoryMap } from '@/constants/category';
 import { Component } from '@/core';
 import { IHashTag } from '@/interfaces';
-import { getTagIcon } from '@/utils';
+import { tagStore } from '@/store';
+import { actionType } from '@/store/tagStore';
+import { getClosest, getTagIcon } from '@/utils';
 import Category from './Category';
 
 export default class SearchForm extends Component {
@@ -41,7 +43,7 @@ export default class SearchForm extends Component {
         ${keywords
           .map(
             ({ id, category, tag }: IHashTag) => `
-          <div class="dropdown__card" data-id="${id}">
+          <div class="dropdown__card" data-id="${id}" data-category="${category}" data-tag="${tag}">
             <div class="dropdown__card--icon">${getTagIcon(category)}</div>
             <div class="dropdown__card--text">${tag}</div>
             <div class="dropdown__card--type">${categoryMap[category]}</div>
@@ -85,8 +87,21 @@ export default class SearchForm extends Component {
     container.addEventListener('click', (e) => {
       const target = e.target as HTMLElement;
 
-      if (target.closest('.section__dropdown') || target.closest('.selections'))
-        return;
+      const dropdown = getClosest(target, '.section__dropdown');
+      const dropdownCard = getClosest(target, '.dropdown__card');
+
+      if (dropdown && dropdownCard) {
+        const { id, category, tag } = dropdownCard.dataset;
+        tagStore.dispach({
+          type: actionType.ADD_TAG,
+          tag: { id, category, tag },
+        });
+        this.elementVisibleHandler(input);
+      }
+
+      const selections = getClosest(target, '.selections');
+      if (selections || dropdown) return;
+
       this.elementVisibleHandler(input);
     });
   }

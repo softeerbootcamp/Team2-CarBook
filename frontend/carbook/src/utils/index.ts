@@ -13,3 +13,7 @@ export function getTagIcon(type: string) {
       return;
   }
 }
+
+export function getClosest(target: HTMLElement, name: string) {
+  return target.closest(name) as HTMLElement;
+}

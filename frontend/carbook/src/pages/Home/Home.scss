@@ -57,6 +57,7 @@
     .active {
       transform: translateY(0);
       opacity: 1;
+      z-index: 1000;
     }
 
 
@@ -97,10 +98,10 @@
       box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
       border-radius: 5px;
       bottom: -165px;
-      z-index: 1000;
       overflow-y: scroll;
       -ms-overflow-style: none;
       scrollbar-width: none;
+
       &::-webkit-scrollbar {
         display: none;
       }
@@ -182,7 +183,7 @@
     flex-direction: column;
     align-items: center;
     padding: 35px;
-    gap: 30px;
+    gap: 20px;
     font-family: 'Pretendard Variable';
     position: relative;
 
@@ -197,7 +198,6 @@
       width: 100%;
       gap: 10px;
       overflow-x: scroll;
-      min-height: 30px;
       -ms-overflow-style: none;
       scrollbar-width: none;
       &::-webkit-scrollbar {
@@ -257,5 +257,16 @@
       color: white;
       cursor: pointer;
     }
+  }
+}
+
+@keyframes fadeInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
   }
 }
