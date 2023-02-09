@@ -2,7 +2,7 @@ import { basicAPI } from '@/api';
 import { categoryMap } from '@/constants/category';
 import { Component } from '@/core';
 import { IHashTag } from '@/interfaces';
-import { getTagIcon } from '@/utils';
+import { getClosest, getTagIcon } from '@/utils';
 import Category from './Category';
 
 export default class SearchForm extends Component {
@@ -85,8 +85,17 @@ export default class SearchForm extends Component {
     container.addEventListener('click', (e) => {
       const target = e.target as HTMLElement;
 
-      if (target.closest('.section__dropdown') || target.closest('.selections'))
-        return;
+      const dropdown = getClosest(target, '.section__dropdown');
+      const dropdownCard = getClosest(target, '.dropdown__card');
+
+      if (dropdown && dropdownCard) {
+        const cardId = dropdownCard.dataset.id;
+        this.elementVisibleHandler(input);
+      }
+
+      const selections = getClosest(target, '.selections');
+      if (selections || dropdown) return;
+
       this.elementVisibleHandler(input);
     });
   }
