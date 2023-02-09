@@ -1,19 +1,15 @@
-import { CategoryType } from '@/interfaces';
+import { IHashTag, CategoryType } from '@/interfaces';
 
 interface ITagObj {
   [id: string]: {
-    category?: CategoryType;
-    tag?: string;
+    category: CategoryType;
+    tag: string;
   };
 }
 
 interface IAction {
   type: string;
-  tag: {
-    id: string;
-    category?: CategoryType;
-    tag?: string;
-  };
+  tag: IHashTag;
 }
 
 type handler = () => void;
