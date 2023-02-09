@@ -76,14 +76,14 @@ public class UserRepository {
     }
 
     public List<String> getFollowingNicknames(String nickname){
-        return jdbcTemplate.queryForList("select u2.nickname from FOLLOW " +
+        return jdbcTemplate.queryForList("select u2.nickname from FOLLOW f " +
                 "INNER JOIN USER u1 ON f.follower_id = u1.id " +
                 "INNER JOIN USER u2 ON f.following_id = u2.id " +
                 "where u1.nickname = ?" , String.class, nickname);
     }
 
     public List<String> getFollowerNicknames(String nickname){
-        return jdbcTemplate.queryForList("select u2.nickname from FOLLOW " +
+        return jdbcTemplate.queryForList("select u2.nickname from FOLLOW f " +
                 "INNER JOIN USER u1 ON f.following_id = u1.id " +
                 "INNER JOIN USER u2 ON f.follower_id = u2.id " +
                 "where u1.nickname = ?" , String.class, nickname);
