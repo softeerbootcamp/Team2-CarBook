@@ -38,3 +38,6 @@ out/
 
 ### DB info ###
 src/main/resources/application.properties
+
+### logback ###
+src/main/resources/logback.xml
