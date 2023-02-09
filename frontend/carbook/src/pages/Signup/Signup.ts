@@ -58,9 +58,9 @@ export default class SignupPage extends Component {
     form?.addEventListener("submit", (e) => {
       e.preventDefault();
 
-      const id = form.id.value;
-      const password = form.password.value;
-      const nickname = form.nickname.value;
+      const id = form.id.value.trim();
+      const password = form.password.value.trim();
+      const nickname = form.nickname.value.trim();
 
       const modal = document.body.querySelector(".alert-modal") as HTMLElement;
 
