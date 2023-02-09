@@ -13,6 +13,34 @@ public class OtherProfileResponse {
     private int following;
     private List<Image> images;
 
+    public boolean isMyProfile() {
+        return isMyProfile;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public boolean isFollow() {
+        return isFollow;
+    }
+
+    public int getFollower() {
+        return follower;
+    }
+
+    public int getFollowing() {
+        return following;
+    }
+
+    public List<Image> getImages() {
+        return images;
+    }
+
     public OtherProfileResponse(OtherProfileResponseBuilder otherProfileResponseBuilder) {
         this.nickname = otherProfileResponseBuilder.nickname;
         this.email = otherProfileResponseBuilder.email;
