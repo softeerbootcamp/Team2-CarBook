@@ -12,7 +12,6 @@ export default class Component {
     this.props = props;
     this.setup();
     this.render();
-    this.mounted();
   }
   setup() {}
   template() {

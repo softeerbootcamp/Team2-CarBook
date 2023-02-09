@@ -5,7 +5,11 @@ export default class PostList extends Component {
     const { postList } = this.props;
 
     return `
-     ${postList.map((post) => ` <div class="main__gallery--image"></div>`).join('')}
+     ${postList
+       .map(
+         (post: any) => ` <div class="main__gallery--image" data=${post}></div>`
+       )
+       .join('')}
     `;
   }
 }
