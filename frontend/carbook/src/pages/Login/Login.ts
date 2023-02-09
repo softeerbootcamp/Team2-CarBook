@@ -16,7 +16,7 @@ export default class LoginPage extends Component {
       <div class='login-contents'>
         <form class ='input-form'>
           <div class = 'login-id'> ID</div>
-          <input type = 'text' placeholder='id를 입력해주세요' class ='input-box' name ='id'/>
+          <input type = 'text' placeholder='id를 입력해주세요' class ='input-box' name ='loginid'/>
           <div class ='login-password'> Password</div>
           <input type = 'password' class ='input-box' name = 'password' placeholder='비밀번호를 입력해주세요'/>
           <button type = 'submit' class ='input-form-button'>로그인</button>
@@ -39,7 +39,7 @@ export default class LoginPage extends Component {
     form?.addEventListener("submit", (e) => {
       e.preventDefault();
 
-      const id = form.id.value.trim();
+      const id = form.loginid.value.trim();
       const password = form.password.value.trim();
 
       const modal = document.body.querySelector(".alert-modal") as HTMLElement;

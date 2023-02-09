@@ -16,7 +16,7 @@ export default class SignupPage extends Component {
   <div class='signup-contents'>
     <form class ='input-form'>
       <div class = 'signup-id'> ID</div>
-      <input type = 'email' placeholder='id를 입력해주세요' class ='input-box' name ='id' required autofocus/>
+      <input type = 'email' placeholder='id를 입력해주세요' class ='input-box' name ='signupid' required autofocus/>
       <div class ='signup-password'> Password</div>
       <input type = 'password' class ='input-box' name = 'password' placeholder='비밀번호를 입력해주세요' maxlength='16'/>
       <div class ='signup-nickname'> Nickname</div>
@@ -39,7 +39,7 @@ export default class SignupPage extends Component {
     form?.addEventListener("submit", (e) => {
       e.preventDefault();
 
-      const id = form.id.value.trim();
+      const id = form.signupid.value.trim();
       const password = form.password.value.trim();
       const nickname = form.nickname.value.trim();
 
