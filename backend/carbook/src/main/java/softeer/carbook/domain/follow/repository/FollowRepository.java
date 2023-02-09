@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class FollowRepository {
@@ -37,6 +38,21 @@ public class FollowRepository {
                 Integer.class, id, followingId) != 0;
     }
 
+    public Optional<Integer> findFollowId(int followerId, int followingId) {
+        return jdbcTemplate.query(
+                "select id from FOLLOW where follower_id = ? and following_id = ?",
+                idRowMapper(), followerId, followingId).stream().findAny();
+    }
+
+    public void unFollow(int followId) {
+        jdbcTemplate.update(
+                "delete from FOLLOW where id = ?", followId);
+    }
+
+    private RowMapper<Integer> idRowMapper(){
+        return (rs, rowNum) -> rs.getInt("id");
+    }
+
     private RowMapper<Integer> followerIdRowMapper(){
         return (rs, rowNum) -> {
             Integer followerId = rs.getInt("follower_id");
@@ -50,6 +66,7 @@ public class FollowRepository {
             return followingId;
         };
     }
+
 
 
 }
