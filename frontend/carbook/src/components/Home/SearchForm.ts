@@ -5,6 +5,7 @@ import { IHashTag } from '@/interfaces';
 import { tagStore } from '@/store';
 import { actionType } from '@/store/tagStore';
 import { getClosest, getTagIcon } from '@/utils';
+
 import Category from './Category';
 
 export default class SearchForm extends Component {
