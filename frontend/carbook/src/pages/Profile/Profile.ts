@@ -1,6 +1,5 @@
 import { Component } from '@/core';
 import './Profile.scss';
-import { menu } from '@/assets/icons/postdetail_menu.svg';
 
 export default class ProfilePage extends Component {
   template(): string {
@@ -64,38 +63,38 @@ function modal(): string {
   `;
 }
 
-function menuTemplate(): string {
-  return `<div class ='header-info-menu'>
-  <ul class = 'info-menu-items'>
-  <h3>설정</h3>
-  <li>닉네임 변경</li>
-  <li>비밀번호 변경</li>
-  <li>로그아웃</li>
-</ul>
-</div>`;
-}
+// function menuTemplate(): string {
+//   return `<div class ='header-info-menu'>
+//   <ul class = 'info-menu-items'>
+//   <h3>설정</h3>
+//   <li>닉네임 변경</li>
+//   <li>비밀번호 변경</li>
+//   <li>로그아웃</li>
+// </ul>
+// </div>`;
+// }
 
 function followButtonTemplate(): string {
   return `<button class = 'follow-button'>팔로우</button>`;
 }
 
-function postslistTemplate(): string {
-  return /*html*/ `
-  <div class = 'profile__contents'>
-    <h2 class = 'profile__contents-header'>
-      내 게시물
-    </h2>
-    <div class="profile__contents-posts">
-      <div class="profile__contents-post"></div>
-      <div class="profile__contents-post"></div>
-      <div class="profile__contents-post"></div>
-      <div class="profile__contents-post"></div>
-      <div class="profile__contents-post"></div>
-      <div class="profile__contents-post"></div>
-    </div>
-  </div>
-  `;
-}
+// function postslistTemplate(): string {
+//   return /*html*/ `
+//   <div class = 'profile__contents'>
+//     <h2 class = 'profile__contents-header'>
+//       내 게시물
+//     </h2>
+//     <div class="profile__contents-posts">
+//       <div class="profile__contents-post"></div>
+//       <div class="profile__contents-post"></div>
+//       <div class="profile__contents-post"></div>
+//       <div class="profile__contents-post"></div>
+//       <div class="profile__contents-post"></div>
+//       <div class="profile__contents-post"></div>
+//     </div>
+//   </div>
+//   `;
+// }
 
 function followinglistTemplate(): string {
   return /*html*/ `
