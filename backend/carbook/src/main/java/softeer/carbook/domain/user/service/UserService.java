@@ -55,6 +55,18 @@ public class UserService {
         return new Message("ERROR: Password not match");
     }
 
+    public Message logout(HttpServletRequest httpServletRequest) {
+        HttpSession session = httpServletRequest.getSession(false);
+
+        // 로그인 상태 확인
+        checkLoginException(session);
+
+        // 로그아웃 진행
+        session.invalidate();
+
+        return new Message("Logout Success");
+    }
+
     public User findLoginedUser(HttpServletRequest httpServletRequest){
         HttpSession session = httpServletRequest.getSession(false);
 
@@ -112,4 +124,6 @@ public class UserService {
     private boolean checkPassword(User user, String password){
         return user.getPassword().equals(password);
     }
+
+
 }

@@ -39,7 +39,12 @@ public class UserController {
         return Message.make200Response(resultMsg.getMessage());
     }
 
-    // todo 로그아웃
+    // 로그아웃
+    @PostMapping("/profile/logout")
+    public ResponseEntity<Message> logout(HttpServletRequest httpServletRequest){
+        Message resultMsg = userService.logout(httpServletRequest);
+        return Message.make200Response(resultMsg.getMessage());
+    }
 
     // 로그인한 사용자인지
 
