@@ -1,7 +1,8 @@
 package softeer.carbook.domain.hashtag.service;
 
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,18 +20,16 @@ class HashtagServiceTest {
     @Autowired
     HashtagService hashtagService;
 
-    @Test
+    @ParameterizedTest
+    @ValueSource(strings = {"맑", "맑음"})
     @DisplayName("해시태그 검색 기능 테스트")
-    void searchHashTag() {
-        String keyword = "맑음";
-        int expectedId = 1;
-
+    void searchHashTag(String keyword) {
         HashtagSearchResponse response = hashtagService.searchHashTag(keyword);
-        List<Hashtag> hashtags = response.getHashtags();
-        Hashtag hashtag = hashtags.get(0);
 
-        assertThat(hashtags.size()).isEqualTo(1);
-        assertThat(hashtag.getId()).isEqualTo(expectedId);
-        assertThat(hashtag.getTag()).isEqualTo(keyword);
+        List<Hashtag> result = response.getHashtags();
+        Hashtag hashtag = result.get(0);
+        assertThat(result.size()).isEqualTo(1);
+        assertThat(hashtag.getId()).isEqualTo(1);
+        assertThat(hashtag.getTag()).isEqualTo("맑음");
     }
 }
