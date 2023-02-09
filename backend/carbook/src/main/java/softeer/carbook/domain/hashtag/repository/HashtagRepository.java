@@ -21,10 +21,14 @@ public class HashtagRepository {
     }
 
     public Hashtag findHashtagByName(String tag) {
-        List<Hashtag> hashtags = jdbcTemplate.query("select * from HASHTAG where tag = ?", tagRowMapper(), tag);
+        List<Hashtag> hashtags = jdbcTemplate.query("SELECT * FROM HASHTAG WHERE tag = ?", tagRowMapper(), tag);
         return hashtags.stream()
                 .findAny()
                 .orElseThrow(() -> new HashtagNotExistException());
+    }
+
+    public List<Hashtag> searchHashtagByPrefix(String keyword) {
+        return jdbcTemplate.query("SELECT h.id, h.tag FROM HASHTAG h WHERE tag LIKE '" + keyword + "%'", tagRowMapper());
     }
 
     private RowMapper<Hashtag> tagRowMapper() {
