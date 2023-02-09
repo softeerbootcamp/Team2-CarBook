@@ -10,7 +10,9 @@ export default class PostList extends Component {
 
     return `
      ${postList
-       .map((post) => ` <div class="main__gallery--image"></div>`)
+       .map(
+         (post: any) => ` <div class="main__gallery--image" data=${post}></div>`
+       )
        .join('')}
     `;
   }
