@@ -8,8 +8,6 @@ import java.util.List;
 public class FollowListResponse {
     private List<String> nicknames;
 
-    public FollowListResponse() { nicknames = null; }
-
     public FollowListResponse(List<String> nicknames) { this.nicknames = nicknames; }
 
     public List<String> getNicknames() {
