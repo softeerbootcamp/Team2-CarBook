@@ -8,6 +8,11 @@ public class ModifyNickNameForm {
     @NotBlank(message = "닉네임을 입력해 주세요.")
     private final String newNickname;
 
+    // json 파싱 때문에 빈 생성자를 생성해 주어야 함..
+    public ModifyNickNameForm() {
+        newNickname = null;
+    }
+
     public ModifyNickNameForm(String newNickname) {
         this.newNickname = newNickname;
     }
