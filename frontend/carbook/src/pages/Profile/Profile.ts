@@ -1,7 +1,26 @@
 import { Component } from "@/core";
 import "./Profile.scss";
 
+type NickName = string;
+
 export default class ProfilePage extends Component {
+  setup(): void {
+    this.setState({
+      isMyProfile: false,
+      isFollow: false,
+      profileMode: "following",
+      followers: [
+        { nickname: "1번째 팔로워" },
+        { nickname: "2번째 팔로워" },
+        { nickname: "3번째 팔로워" },
+      ],
+      followings: [
+        { nickname: "1번째 팔로워" },
+        { nickname: "2번째 팔로워" },
+        { nickname: "3번째 팔로워" },
+      ],
+    });
+  }
   template(): string {
     return /*html*/ `
     <div class = 'profile__container'>
@@ -12,7 +31,6 @@ export default class ProfilePage extends Component {
             <div class ='modify-status'></div>
           </div>
           <div class ='user-email'>test@gmail.com</div>
-          
         </div>
         <div class ='header-contents'>
           <section class ='profile-posts'>
@@ -29,7 +47,8 @@ export default class ProfilePage extends Component {
           </section>
         </div>
       </header>
-      ${followinglistTemplate()}
+
+      <div class = 'profile__contents'></div>
       ${modal()}
     </div>
     `;
@@ -39,8 +58,57 @@ export default class ProfilePage extends Component {
     const modify_status = this.$target.querySelector(
       ".modify-status"
     ) as HTMLElement;
-    console.log(modify_status);
-    new FollowButton(modify_status, { isFollow: false });
+    const profile_contents = this.$target.querySelector(
+      ".profile__contents"
+    ) as HTMLElement;
+
+    this.state.isMyProfile
+      ? new Menu(modify_status)
+      : new FollowButton(modify_status, { isFollow: this.state.isFollow });
+
+    this.state.profileMode === "posts" && new Postlists(profile_contents);
+
+    this.state.profileMode === "follower" &&
+      new Followlists(profile_contents, {
+        profileMode: this.state.profileMode,
+        isMyProfile: this.state.isMyProfile,
+        follows: this.state.followers,
+      });
+
+    this.state.profileMode === "following" &&
+      new Followlists(profile_contents, {
+        profileMode: this.state.profileMode,
+        isMyProfile: this.state.isMyProfile,
+        follows: this.state.followings,
+      });
+  }
+}
+
+class ProfileHeaderInfo extends Component {
+  template(): string {
+    return /*html*/ `
+    <div class ='header-info'>
+    <div class = 'header-info-header'>
+      <div class ='user-nickname'>유저 닉네임</div>
+      <div class ='modify-status'></div>
+    </div>
+    <div class ='user-email'>test@gmail.com</div>
+  </div>
+  <div class ='header-contents'>
+    <section class ='profile-posts'>
+      <div class ='profile-posts-title'>게시물</div>
+      <div class ='profile-posts-count'>13</div>
+    </section>
+    <section class ='profile-follower'>
+      <div class ='profile-follower-title'>팔로워</div>
+      <div class ='profile-follower-count'>164</div>
+    </section>
+    <section class ='profile-following'>
+      <div class ='profile-following-title'>팔로잉</div>
+      <div class ='profile-following-count'>272</div>
+    </section>
+  </div>
+    `;
   }
 }
 
@@ -50,6 +118,70 @@ class FollowButton extends Component {
     return `<button class = 'follow-button'>${
       isFollow ? "언팔로우" : "팔로우"
     }</button>`;
+  }
+}
+
+class Menu extends Component {
+  template(): string {
+    return /*html */ `
+    <div class ='header-info-menu'>
+      <ul class = 'info-menu-items'>
+        <h3>설정</h3>
+        <li>닉네임 변경</li>
+        <li>비밀번호 변경</li>
+        <li>로그아웃</li>
+      </ul>
+    </div>`;
+  }
+}
+
+class Postlists extends Component {
+  template(): string {
+    return /*html*/ `
+    <h2 class = 'profile__contents-header'>
+      내 게시물
+    </h2>
+    <div class="profile__contents-posts">
+      <div class="profile__contents-post"></div>
+      <div class="profile__contents-post"></div>
+      <div class="profile__contents-post"></div>
+      <div class="profile__contents-post"></div>
+      <div class="profile__contents-post"></div>
+      <div class="profile__contents-post"></div>
+    </div>
+  `;
+  }
+}
+
+function FollowlistsItem(isMyProfile: boolean, nickname: string) {
+  return /*html*/ `
+      <li class = 'profile__contents-follower'>
+          <div class ='follower-info'>
+            <div class ='follower-info-icon'></div>
+            <h3 class ='follower-info-nickname'>${nickname}</h3>
+          </div>
+          <button class =follower-delete-button ${
+            isMyProfile ? "" : "hidden"
+          }>삭제</button>
+        </li>
+      `;
+}
+
+class Followlists extends Component {
+  template(): string {
+    const { profileMode, isMyProfile, follows } = this.props;
+    return /*html*/ `
+      <h2 class = 'profile__contents-header'>
+        ${profileMode === "follower" ? "팔로워" : "팔로잉"}
+      </h2>
+      <ul class = 'profile__contents-followers'>
+        ${follows
+          .map(({ nickname }: NickName[]) =>
+            FollowlistsItem(isMyProfile, nickname)
+          )
+          .join("")}
+      </ul>
+      `;
   }
 }
 
@@ -77,78 +209,5 @@ function modal(): string {
       </form>
     </div>
   </div>
-  `;
-}
-
-// function menuTemplate(): string {
-//   return `<div class ='header-info-menu'>
-//   <ul class = 'info-menu-items'>
-//   <h3>설정</h3>
-//   <li>닉네임 변경</li>
-//   <li>비밀번호 변경</li>
-//   <li>로그아웃</li>
-// </ul>
-// </div>`;
-// }
-
-function followButtonTemplate(): string {
-  return `<button class = 'follow-button'>팔로우</button>`;
-}
-
-// function postslistTemplate(): string {
-//   return /*html*/ `
-//   <div class = 'profile__contents'>
-//     <h2 class = 'profile__contents-header'>
-//       내 게시물
-//     </h2>
-//     <div class="profile__contents-posts">
-//       <div class="profile__contents-post"></div>
-//       <div class="profile__contents-post"></div>
-//       <div class="profile__contents-post"></div>
-//       <div class="profile__contents-post"></div>
-//       <div class="profile__contents-post"></div>
-//       <div class="profile__contents-post"></div>
-//     </div>
-//   </div>
-//   `;
-// }
-
-function followinglistTemplate(): string {
-  return /*html*/ `
-  <div class = 'profile__contents'>
-  <h2 class = 'profile__contents-header'>
-    팔로워
-  </h2>
-  <ul class = 'profile__contents-followers'>
-    <li class = 'profile__contents-follower'>
-      <div class ='follower-info'>
-        <div class ='follower-info-icon'></div>
-        <h3 class ='follower-info-nickname'>김은아</h3>
-      </div>
-      <button class ='follower-delete-button'>삭제</button>
-    </li>
-    <li class = 'profile__contents-follower'>
-      <div class ='follower-info'>
-        <div class ='follower-info-icon'></div>
-        <h3 class ='follower-info-nickname'>김은아</h3>
-      </div>
-      <button class ='follower-delete-button'>삭제</button>
-    </li>
-    <li class = 'profile__contents-follower'>
-      <div class ='follower-info'>
-        <div class ='follower-info-icon'></div>
-        <h3 class ='follower-info-nickname'>김은아</h3>
-      </div>
-      <button class ='follower-delete-button'>삭제</button>
-    </li>
-    <li class = 'profile__contents-follower'>
-      <div class ='follower-info'>
-        <div class ='follower-info-icon'></div>
-        <h3 class ='follower-info-nickname'>김은아</h3>
-      </div>
-      <button class ='follower-delete-button'>삭제</button>
-    </li>
-  </ul>
-</div>
   `;
 }
