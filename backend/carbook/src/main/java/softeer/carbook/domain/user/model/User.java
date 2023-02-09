@@ -1,4 +1,7 @@
 package softeer.carbook.domain.user.model;
+
+import softeer.carbook.domain.user.dto.SignupForm;
+
 public class User {
     private final int id;
     private final String email;
@@ -11,6 +14,13 @@ public class User {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
+    }
+
+    public User(String email, String nickname, String password) {
+        this.id = -1;
+        this.email = email;
+        this.nickname = nickname;
+        this.password=  password;
     }
 
     public int getId() {

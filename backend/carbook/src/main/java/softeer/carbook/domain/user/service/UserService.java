@@ -32,8 +32,10 @@ public class UserService {
     public Message signup(SignupForm signupForm){
         // 중복 체크
         checkDuplicated(signupForm);
+        // 비밀번호 암호화
+        User user = new User(signupForm.getEmail(), signupForm.getNickname(), encryptPassword(signupForm.getPassword()));
         // 데이터베이스에 유저 추가
-        userRepository.addUser(signupForm);
+        userRepository.addUser(user);
         return new Message("SignUp Success");
     }
 
@@ -123,7 +125,7 @@ public class UserService {
     }
 
     private boolean checkPassword(User user, String password){
-        return user.getPassword().equals(password);
+        return BCrypt.checkpw(password, user.getPassword());
     }
 
     private String encryptPassword(String password) {
