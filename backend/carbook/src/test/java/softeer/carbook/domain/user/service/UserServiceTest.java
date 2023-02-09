@@ -1,6 +1,5 @@
 package softeer.carbook.domain.user.service;
 
-import com.mysql.cj.log.Log;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,24 +12,18 @@ import softeer.carbook.domain.user.dto.SignupForm;
 import softeer.carbook.domain.user.exception.LoginEmailNotExistException;
 import softeer.carbook.domain.user.exception.NicknameDuplicateException;
 import softeer.carbook.domain.user.exception.SignupEmailDuplicateException;
-import softeer.carbook.domain.user.repository.UserRepository;
-
-import javax.servlet.http.HttpSession;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
 class UserServiceTest {
     @Autowired
     UserService userService;
-    @Autowired
-    UserRepository userRepository;
 
     @Test
     @DisplayName("회원가입 성공 테스트")
-    void signup_success(){
+    void signup_success() {
         // given
         SignupForm signupForm = new SignupForm("test123@gmail.com", "testNickname", "testtest123");
         // when
@@ -41,14 +34,14 @@ class UserServiceTest {
 
     @Test
     @DisplayName("회원가입 중복된 이메일 입력될 경우")
-    void signupEmailDuplicate(){
+    void signupEmailDuplicate() {
         // given
         SignupForm signupForm = new SignupForm("test@gmail.com", "testNickname", "testtest123");
         String exceptionMsg = "";
         // when
         try {
             Message resultMsg = userService.signup(signupForm);
-        }catch (SignupEmailDuplicateException e){
+        } catch (SignupEmailDuplicateException e) {
             exceptionMsg = e.getMessage();
         }
         // then
@@ -57,14 +50,14 @@ class UserServiceTest {
 
     @Test
     @DisplayName("회원가입 중복된 닉네임 입력될 경우")
-    void signupNicknameDuplicate(){
+    void signupNicknameDuplicate() {
         // given
-        SignupForm signupForm = new SignupForm("test123@gmail.com", "carbook123", "testtest123");
+        SignupForm signupForm = new SignupForm("test123@gmail.com", "carbook123", "15번유저");
         String exceptionMsg = "";
         // when
-        try{
+        try {
             Message resultMsg = userService.signup(signupForm);
-        }catch (NicknameDuplicateException e){
+        } catch (NicknameDuplicateException e) {
             exceptionMsg = e.getMessage();
         }
         // then
@@ -75,7 +68,7 @@ class UserServiceTest {
     @DisplayName("로그인 성공 테스트")
     void loginSuccess() {
         // given
-        LoginForm loginForm = new LoginForm("test@gmail.com", "카북화이팅");
+        LoginForm loginForm = new LoginForm("test@gmail.com", "carbook");
         // when
         Message resultMsg = userService.login(loginForm, new MockHttpSession());
         // then
@@ -89,9 +82,9 @@ class UserServiceTest {
         LoginForm loginForm = new LoginForm("test123@gmail.com", "카북화이팅");
         String exceptionMsg = "";
         // when
-        try{
+        try {
             Message resultMsg = userService.login(loginForm, new MockHttpSession());
-        }catch (LoginEmailNotExistException e){
+        } catch (LoginEmailNotExistException e) {
             exceptionMsg = e.getMessage();
         }
         // then

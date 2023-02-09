@@ -3,7 +3,6 @@ package softeer.carbook.domain.post.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import softeer.carbook.domain.follow.repository.FollowRepository;
-import softeer.carbook.domain.hashtag.repository.HashtagRepository;
 import softeer.carbook.domain.post.dto.GuestPostsResponse;
 import softeer.carbook.domain.post.dto.LoginPostsResponse;
 import softeer.carbook.domain.post.dto.PostsSearchResponse;
@@ -21,7 +20,6 @@ import java.util.List;
 public class PostService {
     private final PostRepository postRepository;
     private final ImageRepository imageRepository;
-    private final HashtagRepository hashtagRepository;
     private final UserRepository userRepository;
     private final FollowRepository followRepository;
     private final int POST_COUNT = 10;
@@ -30,12 +28,10 @@ public class PostService {
     public PostService(
             PostRepository postRepository,
             ImageRepository imageRepository,
-            HashtagRepository hashtagRepository,
             UserRepository userRepository,
             FollowRepository followRepository) {
         this.postRepository = postRepository;
         this.imageRepository = imageRepository;
-        this.hashtagRepository = hashtagRepository;
         this.userRepository = userRepository;
         this.followRepository = followRepository;
     }
