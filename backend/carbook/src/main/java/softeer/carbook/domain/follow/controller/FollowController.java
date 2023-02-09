@@ -12,6 +12,7 @@ import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 
 @RestController
@@ -35,7 +36,7 @@ public class FollowController {
     // 팔로우, 언팔로우 기능 구현 ( 타인 프로필 페이지 ) > follow 로
     @PostMapping("/profile/follow")
     public ResponseEntity<Message> modifyFollowInfo(
-            @RequestBody ModifyFollowInfoForm modifyFollowInfoForm,
+            @RequestBody @Valid ModifyFollowInfoForm modifyFollowInfoForm,
             HttpServletRequest httpServletRequest
     ){
         // 일단 로그인 확인 후 로그인한 유저 받아오기
