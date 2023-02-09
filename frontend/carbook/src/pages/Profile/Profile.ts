@@ -1,5 +1,5 @@
-import { Component } from '@/core';
-import './Profile.scss';
+import { Component } from "@/core";
+import "./Profile.scss";
 
 export default class ProfilePage extends Component {
   template(): string {
@@ -9,7 +9,7 @@ export default class ProfilePage extends Component {
         <div class ='header-info'>
           <div class = 'header-info-header'>
             <div class ='user-nickname'>유저 닉네임</div>
-            ${followButtonTemplate()}
+            <div class ='modify-status'></div>
           </div>
           <div class ='user-email'>test@gmail.com</div>
           
@@ -33,6 +33,23 @@ export default class ProfilePage extends Component {
       ${modal()}
     </div>
     `;
+  }
+
+  mounted(): void {
+    const modify_status = this.$target.querySelector(
+      ".modify-status"
+    ) as HTMLElement;
+    console.log(modify_status);
+    new FollowButton(modify_status, { isFollow: false });
+  }
+}
+
+class FollowButton extends Component {
+  template(): string {
+    const { isFollow } = this.props;
+    return `<button class = 'follow-button'>${
+      isFollow ? "언팔로우" : "팔로우"
+    }</button>`;
   }
 }
 
@@ -73,7 +90,6 @@ function modal(): string {
 // </ul>
 // </div>`;
 // }
-
 
 function followButtonTemplate(): string {
   return `<button class = 'follow-button'>팔로우</button>`;

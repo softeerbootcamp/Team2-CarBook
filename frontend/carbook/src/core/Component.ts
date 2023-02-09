@@ -15,11 +15,12 @@ export default class Component {
   }
   setup() {}
   template() {
-    return '';
+    return "";
   }
   render() {
     this.$target.innerHTML = this.template();
     this.setEvent();
+    this.mounted();
   }
   mounted() {}
   setEvent() {}
