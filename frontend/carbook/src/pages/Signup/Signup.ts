@@ -5,18 +5,6 @@ import { push } from "@/utils/router/navigate";
 import { EMPTYID, EMPTYPW, EMPTYNICKNAME } from "@/constants/errorMessage";
 
 export default class SignupPage extends Component {
-  setup(): void {
-    this.setState({
-      // *더미 데이터
-      userInfos: [
-        {
-          id: "jdh@naver.com",
-          nickname: "dongja",
-          password: "qwer1234",
-        },
-      ],
-    });
-  }
   template(): string {
     return /*html*/ `
     <div class = 'signup-container'>
