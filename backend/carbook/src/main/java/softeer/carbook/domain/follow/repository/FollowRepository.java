@@ -14,7 +14,7 @@ public class FollowRepository {
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public FollowRepository(DataSource dataSource) { this.jdbcTemplate = new JdbcTemplate(); }
+    public FollowRepository(DataSource dataSource) { this.jdbcTemplate = new JdbcTemplate(dataSource); }
 
     public List<Integer> getFollowerIds(int followingId){
         return jdbcTemplate.query("select follower_id from FOLLOW where following_id = ?", followerIdRowMapper(), followingId);
