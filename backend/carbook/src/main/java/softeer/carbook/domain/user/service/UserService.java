@@ -1,5 +1,6 @@
 package softeer.carbook.domain.user.service;
 
+import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -125,5 +126,8 @@ public class UserService {
         return user.getPassword().equals(password);
     }
 
+    private String encryptPassword(String password) {
+        return BCrypt.hashpw(password, BCrypt.gensalt());
+    }
 
 }
