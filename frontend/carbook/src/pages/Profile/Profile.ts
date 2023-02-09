@@ -1,14 +1,74 @@
 import { Component } from "@/core";
 import "./Profile.scss";
+import IMAGEURL from "@/assets/images/car.jpg";
 
 type NickName = string;
+
+class HeaderInfo extends Component {
+  template(): string {
+    const { nickname, email } = this.props;
+    return /*html*/ `
+    <div class = 'header-info-header'>
+      <div class ='user-nickname'>${nickname}</div>
+      <div class ='modify-status'></div>
+    </div>
+    <div class ='user-email'>${email}</div>
+    `;
+  }
+
+  mounted(): void {
+    const { isMyProfile, isFollow } = this.props;
+    const modify_status = this.$target.querySelector(
+      ".modify-status"
+    ) as HTMLElement;
+
+    isMyProfile
+      ? new Menu(modify_status)
+      : new FollowButton(modify_status, { isFollow });
+  }
+}
+
+class HeaderContents extends Component {
+  template(): string {
+    const { posts, follower, following } = this.props;
+    return /*html*/ `
+    <section class ='profile-posts'>
+      <div class ='profile-posts-title'>게시물</div>
+      <div class ='profile-posts-count'>${posts}</div>
+    </section>
+    <section class ='profile-follower'>
+      <div class ='profile-follower-title'>팔로워</div>
+      <div class ='profile-follower-count'>${follower}</div>
+    </section>
+    <section class ='profile-following'>
+      <div class ='profile-following-title'>팔로잉</div>
+      <div class ='profile-following-count'>${following}</div>
+    </section>
+    `;
+  }
+}
 
 export default class ProfilePage extends Component {
   setup(): void {
     this.setState({
       isMyProfile: false,
       isFollow: false,
-      profileMode: "following",
+      nickname: "유저닉네임",
+      email: "useremail@gmail.com",
+      profileMode: "posts",
+      images: [
+        { postId: 1, imageUrl: IMAGEURL },
+        { postId: 2, imageUrl: IMAGEURL },
+        { postId: 1, imageUrl: IMAGEURL },
+        { postId: 2, imageUrl: IMAGEURL },
+        { postId: 1, imageUrl: IMAGEURL },
+        { postId: 2, imageUrl: IMAGEURL },
+        { postId: 1, imageUrl: IMAGEURL },
+        { postId: 2, imageUrl: IMAGEURL },
+      ],
+      posts: 11,
+      follower: 164,
+      following: 272,
       followers: [
         { nickname: "1번째 팔로워" },
         { nickname: "2번째 팔로워" },
@@ -26,28 +86,10 @@ export default class ProfilePage extends Component {
     <div class = 'profile__container'>
       <header>
         <div class ='header-info'>
-          <div class = 'header-info-header'>
-            <div class ='user-nickname'>유저 닉네임</div>
-            <div class ='modify-status'></div>
-          </div>
-          <div class ='user-email'>test@gmail.com</div>
         </div>
         <div class ='header-contents'>
-          <section class ='profile-posts'>
-            <div class ='profile-posts-title'>게시물</div>
-            <div class ='profile-posts-count'>13</div>
-          </section>
-          <section class ='profile-follower'>
-            <div class ='profile-follower-title'>팔로워</div>
-            <div class ='profile-follower-count'>164</div>
-          </section>
-          <section class ='profile-following'>
-            <div class ='profile-following-title'>팔로잉</div>
-            <div class ='profile-following-count'>272</div>
-          </section>
         </div>
       </header>
-
       <div class = 'profile__contents'></div>
       ${modal()}
     </div>
@@ -55,18 +97,32 @@ export default class ProfilePage extends Component {
   }
 
   mounted(): void {
-    const modify_status = this.$target.querySelector(
-      ".modify-status"
+    const headerInfo = this.$target.querySelector(
+      ".header-info"
     ) as HTMLElement;
+
+    const header_contents = this.$target.querySelector(
+      ".header-contents"
+    ) as HTMLElement;
+
+    new HeaderInfo(headerInfo, {
+      isMyProfile: this.state.isMyProfile,
+      isFollow: this.state.isFollow,
+      nickname: this.state.nickname,
+      email: this.state.email,
+    });
+    new HeaderContents(header_contents, {
+      posts: this.state.images.length,
+      follower: this.state.follower,
+      following: this.state.following,
+    });
+
     const profile_contents = this.$target.querySelector(
       ".profile__contents"
     ) as HTMLElement;
 
-    this.state.isMyProfile
-      ? new Menu(modify_status)
-      : new FollowButton(modify_status, { isFollow: this.state.isFollow });
-
-    this.state.profileMode === "posts" && new Postlists(profile_contents);
+    this.state.profileMode === "posts" &&
+      new Postlists(profile_contents, { images: this.state.images });
 
     this.state.profileMode === "follower" &&
       new Followlists(profile_contents, {
@@ -106,34 +162,6 @@ export default class ProfilePage extends Component {
   }
 }
 
-class ProfileHeaderInfo extends Component {
-  template(): string {
-    return /*html*/ `
-    <div class ='header-info'>
-    <div class = 'header-info-header'>
-      <div class ='user-nickname'>유저 닉네임</div>
-      <div class ='modify-status'></div>
-    </div>
-    <div class ='user-email'>test@gmail.com</div>
-  </div>
-  <div class ='header-contents'>
-    <section class ='profile-posts'>
-      <div class ='profile-posts-title'>게시물</div>
-      <div class ='profile-posts-count'>13</div>
-    </section>
-    <section class ='profile-follower'>
-      <div class ='profile-follower-title'>팔로워</div>
-      <div class ='profile-follower-count'>164</div>
-    </section>
-    <section class ='profile-following'>
-      <div class ='profile-following-title'>팔로잉</div>
-      <div class ='profile-following-count'>272</div>
-    </section>
-  </div>
-    `;
-  }
-}
-
 class FollowButton extends Component {
   template(): string {
     const { isFollow } = this.props;
@@ -159,17 +187,18 @@ class Menu extends Component {
 
 class Postlists extends Component {
   template(): string {
+    const { images } = this.props;
     return /*html*/ `
     <h2 class = 'profile__contents-header'>
       내 게시물
     </h2>
     <div class="profile__contents-posts">
-      <div class="profile__contents-post"></div>
-      <div class="profile__contents-post"></div>
-      <div class="profile__contents-post"></div>
-      <div class="profile__contents-post"></div>
-      <div class="profile__contents-post"></div>
-      <div class="profile__contents-post"></div>
+      ${images
+        .map(
+          (image) =>
+            `<img class="profile__contents-post" src= '${image.imageUrl}'></img>`
+        )
+        .join("")}
     </div>
   `;
   }

@@ -142,9 +142,11 @@
         border-radius: 10px;
         background-color: rgb(215, 215, 215);
         cursor: pointer;
-        background-image: url("@/assets/images/car.jpg");
-        background-size: cover;
-        background-position: center;
+        object-fit: cover;
+        text-align: center;
+        // background-image: url("@/assets/images/car.jpg");
+        // background-size: cover;
+        // background-position: center;
       }
     }
 
