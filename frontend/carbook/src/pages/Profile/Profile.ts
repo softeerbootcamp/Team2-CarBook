@@ -82,6 +82,28 @@ export default class ProfilePage extends Component {
         follows: this.state.followings,
       });
   }
+
+  setEvent(): void {
+    this.$target.addEventListener("click", (e: Event) => {
+      const target = e.target as HTMLElement;
+
+      const postsSection = target.closest("section.profile-posts");
+      if (postsSection) {
+        this.setState({ ...this.state, profileMode: "posts" });
+        return;
+      }
+      const followerSection = target.closest("section.profile-follower");
+      if (followerSection) {
+        this.setState({ ...this.state, profileMode: "follower" });
+        return;
+      }
+      const followingSection = target.closest("section.profile-following");
+      if (followingSection) {
+        this.setState({ ...this.state, profileMode: "following" });
+        return;
+      }
+    });
+  }
 }
 
 class ProfileHeaderInfo extends Component {
