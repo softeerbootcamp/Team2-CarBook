@@ -4,7 +4,8 @@
   background: #ffffff;
   margin: 0 auto;
   text-align: center;
-  padding: 15vh 10vw;
+  padding: 15vh 20%;
+  width: 100%;
   max-width: 500px;
 
   header {
@@ -79,5 +80,25 @@
     h3.footer-message {
       font-family: "LINESeedKR-Rg";
     }
+  }
+
+  .alert-modal {
+    width: 297px;
+    margin: 0;
+    position: fixed;
+    top: -60px;
+    background-color: $main-pink;
+    padding: 16px;
+    border-radius: 4px;
+    visibility: hidden;
+    opacity: 0;
+
+    transition: all ease-in-out 0.5s;
+  }
+  .FadeInAndOut {
+    visibility: visible;
+    opacity: 1;
+    top: 50px;
+    // animation: fadeInOut 4s linear 1 forwards;
   }
 }
