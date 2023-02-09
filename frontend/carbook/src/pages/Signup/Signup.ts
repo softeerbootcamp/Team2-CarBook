@@ -2,14 +2,7 @@ import { Component } from "@/core";
 import "./Signup.scss";
 import car from "@/assets/images/car.svg";
 import { push } from "@/utils/router/navigate";
-import {
-  EMPTYID,
-  EMPTYPW,
-  EMPTYNICKNAME,
-  DUPPLICATEDID,
-  DUPPLICATEDPW,
-  DUPPLICATEDNICKNAME,
-} from "@/constants/errorMessage";
+import { EMPTYID, EMPTYPW, EMPTYNICKNAME } from "@/constants/errorMessage";
 
 export default class SignupPage extends Component {
   setup(): void {
@@ -64,12 +57,7 @@ export default class SignupPage extends Component {
 
       const modal = document.body.querySelector(".alert-modal") as HTMLElement;
 
-      /**TODO 빈 입력값 체크 */
       if (isEmpty(id, password, nickname, modal)) return false;
-
-      /**TODO 중복 값 체크 */
-      if (isDupplicated(this.state.userInfos, id, password, nickname, modal))
-        return false;
 
       push("/login");
       return false;
@@ -105,29 +93,4 @@ function isEmpty(
     return true;
   }
   return false;
-}
-
-function isDupplicated(
-  userInfos: object[],
-  id: string,
-  password: string,
-  nickname: string,
-  modal: HTMLElement
-): boolean {
-  let DupplicatedFlag = false;
-  userInfos.forEach((userInfo) => {
-    if (userInfo.id === id) {
-      showErrorModal(modal, DUPPLICATEDID);
-      return (DupplicatedFlag = true);
-    }
-    if (userInfo.password === password) {
-      showErrorModal(modal, DUPPLICATEDPW);
-      return (DupplicatedFlag = true);
-    }
-    if (userInfo.nickname === nickname) {
-      showErrorModal(modal, DUPPLICATEDNICKNAME);
-      return (DupplicatedFlag = true);
-    }
-  });
-  return DupplicatedFlag;
 }
