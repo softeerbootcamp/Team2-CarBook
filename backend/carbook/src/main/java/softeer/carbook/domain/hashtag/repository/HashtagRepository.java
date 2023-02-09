@@ -21,7 +21,7 @@ public class HashtagRepository {
     }
 
     public Hashtag findHashtagByName(String tag) {
-        List<Hashtag> hashtags = jdbcTemplate.query("SELECT * FROM HASHTAG WHERE tag = ?", tagRowMapper(), tag);
+        List<Hashtag> hashtags = jdbcTemplate.query("SELECT h.id, h.tag FROM HASHTAG h WHERE tag = ?", tagRowMapper(), tag);
         return hashtags.stream()
                 .findAny()
                 .orElseThrow(() -> new HashtagNotExistException());
