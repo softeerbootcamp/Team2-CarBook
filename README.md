@@ -12,6 +12,8 @@
 ## 프로토타입
 <img src="https://user-images.githubusercontent.com/67576476/217990904-09d8012c-28f4-4be4-a232-3057b49351da.png" width="600px" />
 
+## API 명세서
+[API 명세서 POSTMAN](https://documenter.getpostman.com/view/25607734/2s935kPm4y)
 
 ## 팀 소개
 <a href="https://github.com/rladuswl">
