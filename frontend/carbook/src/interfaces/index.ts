@@ -10,3 +10,7 @@ export interface IImage {
   postId: number;
   imageUrl: string;
 }
+
+export interface IFollows {
+  nickname: string;
+}

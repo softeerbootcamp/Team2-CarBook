@@ -1,4 +1,5 @@
 import { Component } from "@/core";
+import { IFollows } from "@/interfaces";
 
 export default class Followlists extends Component {
   template(): string {
@@ -9,7 +10,9 @@ export default class Followlists extends Component {
         </h2>
         <ul class = 'profile__contents-followers'>
           ${follows
-            .map(({ nickname }) => FollowlistsItem(isMyProfile, nickname))
+            .map(({ nickname }: IFollows) =>
+              FollowlistsItem(isMyProfile, nickname)
+            )
             .join("")}
         </ul>
         `;
