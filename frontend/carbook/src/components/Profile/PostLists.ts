@@ -1,4 +1,5 @@
 import { Component } from "@/core";
+import { IImage } from "@/interfaces";
 
 export default class Postlists extends Component {
   template(): string {
@@ -10,7 +11,7 @@ export default class Postlists extends Component {
       <div class="profile__contents-posts">
         ${images
           .map(
-            (image) =>
+            (image: IImage) =>
               `<img class="profile__contents-post" src= '${image.imageUrl}'></img>`
           )
           .join("")}

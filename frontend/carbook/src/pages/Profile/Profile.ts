@@ -12,7 +12,7 @@ import {
 export default class ProfilePage extends Component {
   setup(): void {
     this.setState({
-      isMyProfile: true,
+      isMyProfile: false,
       isFollow: false,
       nickname: "유저닉네임",
       email: "useremail@gmail.com",
@@ -20,12 +20,12 @@ export default class ProfilePage extends Component {
       images: [
         { postId: 1, imageUrl: IMAGEURL },
         { postId: 2, imageUrl: IMAGEURL },
-        { postId: 1, imageUrl: IMAGEURL },
-        { postId: 2, imageUrl: IMAGEURL },
-        { postId: 1, imageUrl: IMAGEURL },
-        { postId: 2, imageUrl: IMAGEURL },
-        { postId: 1, imageUrl: IMAGEURL },
-        { postId: 2, imageUrl: IMAGEURL },
+        { postId: 3, imageUrl: IMAGEURL },
+        { postId: 4, imageUrl: IMAGEURL },
+        { postId: 5, imageUrl: IMAGEURL },
+        { postId: 6, imageUrl: IMAGEURL },
+        { postId: 7, imageUrl: IMAGEURL },
+        { postId: 8, imageUrl: IMAGEURL },
       ],
       posts: 11,
       follower: 164,

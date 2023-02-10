@@ -35,7 +35,6 @@ export default class LoginPage extends Component {
     const form = document.body.querySelector(
       ".login__container .input-form"
     ) as HTMLFormElement;
-    console.log(form);
     form?.addEventListener("submit", (e) => {
       e.preventDefault();
 
