@@ -1,0 +1,272 @@
+@import '@/styles/color.scss';
+
+.home-container {
+  height: 100vh;
+  background-color: $main-blue;
+
+  .header {
+    height: 15%;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin: 0 auto;
+    padding: 0 30px;
+
+    &__left-box {
+      color: white;
+    }
+
+    &__logo {
+      font-family: 'netmarble';
+      font-weight: 700;
+      font-size: 20px;
+      cursor: pointer;
+      margin-bottom: 5px;
+    }
+
+    &__sub {
+      font-size: 10px;
+    }
+
+    &__right-box {
+      border-radius: 50%;
+      width: 25px;
+      height: 25px;
+      background: url('@/assets/icons/profile.svg');
+      background-size: cover;
+      cursor: pointer;
+    }
+
+  }
+  .section {
+    height: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    position: relative;
+
+    &__category {
+      font-size: 10px;
+      position: absolute;
+      left: 25%;
+      top: 15px;
+    }
+
+    .active {
+      transform: translateY(0);
+      opacity: 1;
+      z-index: 1000;
+    }
+
+
+    &__input {
+      background-color: $main-blue;
+      color: white;
+      border-width: 0 0 2px 0;
+      border-bottom: 2px solid white;
+      height: 30px;
+      padding: 5px 25px 5px 8px;
+      font-size: 12px;
+      width: 50%;
+
+      &::placeholder {
+        color: white;
+        font-size: 12px;
+        font-weight: 400;
+      }
+    }
+    &__search-img {
+      background: url('@/assets/icons/search.svg');
+      width: 16px;
+      height: 16px;
+      margin-left: -20px;
+      cursor: pointer;
+    }
+
+    &__dropdown {
+
+      transition: all 0.2s ease-in-out;
+      opacity: 0;
+      transform: translateY(20%);
+      display: block; /* 변동 */
+      position: absolute;
+      width: 50%;
+      height: 180px;
+      background: white;
+      box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+      border-radius: 5px;
+      bottom: -165px;
+      overflow-y: scroll;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      .dropdown__category {
+        display: flex;
+        gap: 7px;
+        color: black;
+        padding: 10px 10px 5px 10px;
+        font-size: 8px;
+        position: relative;
+
+        .selected {
+          font-weight: bold;
+          z-index: 1000;
+        }
+
+        .hidden {
+          display: none;
+        }
+
+        .selections {
+          position: absolute;
+          left: 60px;
+          font-weight: bold;
+          display: flex;
+          opacity: 0;
+          transform: translateX(-10%);
+          transition: all 0.3s ease-out;
+          overflow-x: hidden;
+
+          div {
+            padding: 0 3px;
+          }
+        }
+
+        .active {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      .dropdown__card {
+        padding: 15px 20px;
+        color: black;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+
+        font-size: 14px;
+        cursor: pointer;
+        &--icon {
+          width: 16px;
+          height: 16px;
+          text-align: center;
+
+        }
+        &--type {
+          background: $main-dark-blue;
+          color: white;
+          border-radius: 20px;
+          font-size: 10px;
+          padding: 2px 5px;
+          font-weight: 100;
+        }
+
+        &:hover {
+          background-color: $main-light-blue;
+        }
+      }
+    }
+  }
+
+  .main {
+    background-color: white;
+    height: 75%;
+    border-radius: 20px 20px 0 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 35px;
+    gap: 20px;
+    font-family: 'Pretendard Variable';
+    position: relative;
+
+    &__title {
+      font-weight: 700;
+      font-size: 20px;
+    }
+
+    &__hashtags {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      gap: 10px;
+      overflow-x: scroll;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      .hashtag {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        background: $main-light-blue;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 16px;
+        font-weight: 200;
+        white-space: nowrap;
+      }
+    }
+
+    &__gallery {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      overflow-y: scroll;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      &--image {
+        min-width: 150px;
+        width: 25vw;
+        height: 18vh;
+        border-radius: 10px;
+        background-color: rgb(215, 215, 215);
+        cursor: pointer;
+        background-image: url('@/assets/images/car.jpg');
+
+        background-size: cover;
+        background-position: center;
+      }
+    }
+
+    &__button {
+      display: flex;
+      justify-content: center;
+      background: $main-blue;
+      box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+      border-radius: 50%;
+      width: 55px;
+      height: 55px;
+      position: absolute;
+      right: 20px;
+      bottom: 20px;
+      font-size: 40px;
+      color: white;
+      cursor: pointer;
+    }
+  }
+}
+
+@keyframes fadeInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

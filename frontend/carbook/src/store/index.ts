@@ -1,0 +1,1 @@
+export { tagStore } from './tagStore';
