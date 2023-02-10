@@ -17,43 +17,43 @@ public class FollowRepository {
     public FollowRepository(DataSource dataSource) { this.jdbcTemplate = new JdbcTemplate(dataSource); }
 
     public List<Integer> getFollowerIds(int followingId){
-        return jdbcTemplate.query("select follower_id from FOLLOW where following_id = ?", followerIdRowMapper(), followingId);
+        return jdbcTemplate.query("select follower_id from FOLLOW where is_deleted = false and following_id = ?", followerIdRowMapper(), followingId);
     }
 
     public List<Integer> getFollowingIds(int followerId){
-        return jdbcTemplate.query("select following_id from FOLLOW where follower_id = ?", followingIdRowMapper(), followerId);
+        return jdbcTemplate.query("select following_id from FOLLOW where is_deleted = false and follower_id = ?", followingIdRowMapper(), followerId);
     }
 
     public int getFollowerCount(int followingId){
-        return jdbcTemplate.queryForObject("select count(*) from FOLLOW where following_id = ?", Integer.class, followingId);
+        return jdbcTemplate.queryForObject("select count(*) from FOLLOW where is_deleted = false and following_id = ?", Integer.class, followingId);
     }
 
     public int getFollowingCount(int followerId){
-        return jdbcTemplate.queryForObject("select count(*) from FOLLOW where follower_id = ?", Integer.class, followerId);
+        return jdbcTemplate.queryForObject("select count(*) from FOLLOW where is_deleted = false and follower_id = ?", Integer.class, followerId);
     }
 
     public boolean isFollow(int id, int followingId) {
         return jdbcTemplate.queryForObject(
-                "select EXISTS (select * from FOLLOW where follower_id = ? and following_id = ? limit 1) as success",
+                "select EXISTS (select * from FOLLOW where is_deleted = false and follower_id = ? and following_id = ? limit 1) as success",
                 Integer.class, id, followingId) != 0;
     }
 
     public Optional<Integer> findFollowId(int followerId, int followingId) {
         return jdbcTemplate.query(
-                "select id from FOLLOW where follower_id = ? and following_id = ?",
+                "select id from FOLLOW where is_deleted = false and follower_id = ? and following_id = ?",
                 idRowMapper(), followerId, followingId).stream().findAny();
     }
 
     public void unFollow(int followId) {
         jdbcTemplate.update(
-                "delete from FOLLOW where id = ?", followId);
+                "update FOLLOW set is_deleted = true where id = ?", followId);
     }
 
     public void addFollow(int followerId, int followingId) {
         jdbcTemplate.update(
-                "insert into FOLLOW(follower_id, following_id) values (?, ?)",
-                followerId, followingId
-        );
+                "insert into FOLLOW(follower_id, following_id) values (?, ?) " +
+                        "on DUPLICATE KEY update is_deleted = false",
+                followerId, followingId );
     }
 
     private RowMapper<Integer> idRowMapper(){
