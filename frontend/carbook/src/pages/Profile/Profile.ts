@@ -12,7 +12,7 @@ import {
 export default class ProfilePage extends Component {
   setup(): void {
     this.setState({
-      isMyProfile: false,
+      isMyProfile: true,
       isFollow: false,
       nickname: "유저닉네임",
       email: "useremail@gmail.com",
