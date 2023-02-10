@@ -31,15 +31,15 @@ export default class ProfilePage extends Component {
       follower: 164,
       following: 272,
       followers: [
-        { nickname: "1번째 팔로워" },
-        { nickname: "2번째 팔로워" },
-        { nickname: "3번째 팔로워" },
+        { nickname: "1번째팔로워" },
+        { nickname: "2번째팔로워" },
+        { nickname: "3번째팔로워" },
       ],
       followings: [
-        { nickname: "1번째 팔로잉" },
-        { nickname: "2번째 팔로잉" },
-        { nickname: "3번째 팔로잉" },
-        { nickname: "4번째 팔로잉" },
+        { nickname: "1번째팔로잉" },
+        { nickname: "2번째팔로잉" },
+        { nickname: "3번째팔로잉" },
+        { nickname: "4번째팔로잉" },
       ],
     });
   }

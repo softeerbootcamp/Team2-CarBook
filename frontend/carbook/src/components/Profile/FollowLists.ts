@@ -1,5 +1,6 @@
 import { Component } from "@/core";
 import { IFollows } from "@/interfaces";
+import { push } from "@/utils/router/navigate";
 
 export default class Followlists extends Component {
   template(): string {
@@ -17,12 +18,23 @@ export default class Followlists extends Component {
         </ul>
         `;
   }
+
+  setEvent(): void {
+    this.$target.addEventListener("click", (e: Event) => {
+      const target = (e.target as HTMLElement).closest(
+        ".follower-info"
+      ) as HTMLElement;
+      console.log(target.dataset, "target", target);
+      if (!target.dataset.nickname) return;
+      push("/profile/" + target.dataset.nickname);
+    });
+  }
 }
 
 function FollowlistsItem(isMyProfile: boolean, nickname: string) {
   return /*html*/ `
         <li class = 'profile__contents-follower'>
-            <div class ='follower-info'>
+            <div class ='follower-info' data-nickname= "${nickname}">
               <div class ='follower-info-icon'></div>
               <h3 class ='follower-info-nickname'>${nickname}</h3>
             </div>
