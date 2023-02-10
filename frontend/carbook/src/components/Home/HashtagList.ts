@@ -1,12 +1,11 @@
 import { Component } from '@/core';
-import { tagStore } from '@/store';
+import { tagStore } from '@/store/tagStore';
 import { actionType } from '@/store/tagStore';
 import { getClosest, getTagIcon } from '@/utils';
 
 export default class HashTagList extends Component {
   setup(): void {
-    tagStore.subscribe(this.render.bind(this));
-    this.setState(tagStore.getState());
+    tagStore.subscribe(this, this.render.bind(this));
     this.onClickHandler();
   }
   template(): string {
@@ -38,7 +37,7 @@ export default class HashTagList extends Component {
 
       tagStore.dispach({
         type: actionType.DELETE_TAG,
-        tag: { id },
+        payload: { id },
       });
     });
   }
