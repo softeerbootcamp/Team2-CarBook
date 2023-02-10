@@ -10,6 +10,10 @@
     border-radius: 8px;
   }
 
+  .hidden {
+    visibility: hidden;
+  }
+
   header {
     color: white;
     padding: 8%;
@@ -50,7 +54,7 @@
           flex-direction: column;
           justify-content: space-around;
 
-          visibility: hidden;
+          // visibility: hidden;
 
           h3 {
             font-weight: 700;
@@ -138,9 +142,11 @@
         border-radius: 10px;
         background-color: rgb(215, 215, 215);
         cursor: pointer;
-        background-image: url("@/assets/images/car.jpg");
-        background-size: cover;
-        background-position: center;
+        object-fit: cover;
+        text-align: center;
+        // background-image: url("@/assets/images/car.jpg");
+        // background-size: cover;
+        // background-position: center;
       }
     }
 

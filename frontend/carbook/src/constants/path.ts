@@ -1,4 +1,11 @@
-import { HomePage, LoginPage, PostDetailPage, PostPage, ProfilePage, SignupPage } from '@/pages';
+import {
+  HomePage,
+  LoginPage,
+  PostDetailPage,
+  PostPage,
+  ProfilePage,
+  SignupPage,
+} from "@/pages";
 
 export const routes = [
   { path: /^\/$/, element: HomePage },

@@ -12,14 +12,15 @@ export default class Component {
     this.props = props;
     this.setup();
     this.render();
+    this.setEvent();
   }
   setup() {}
   template() {
-    return '';
+    return "";
   }
   render() {
     this.$target.innerHTML = this.template();
-    this.setEvent();
+    this.mounted();
   }
   mounted() {}
   setEvent() {}
