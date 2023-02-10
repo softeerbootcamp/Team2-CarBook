@@ -26,7 +26,7 @@ export default class Followlists extends Component {
       ) as HTMLElement;
       console.log(target.dataset, "target", target);
       if (!target.dataset.nickname) return;
-      push("/profile/" + target.dataset.nickname);
+      push("/profile/1");
     });
   }
 }
