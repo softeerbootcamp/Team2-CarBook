@@ -37,7 +37,6 @@
       background-size: cover;
       cursor: pointer;
     }
-
   }
   .section {
     height: 10%;
@@ -57,9 +56,8 @@
     .active {
       transform: translateY(0);
       opacity: 1;
-      z-index: 1000;
+      visibility: visible;
     }
-
 
     &__input {
       background-color: $main-blue;
@@ -86,11 +84,11 @@
     }
 
     &__dropdown {
-
+      z-index: 1000;
+      visibility: hidden;
       transition: all 0.2s ease-in-out;
       opacity: 0;
       transform: translateY(20%);
-      display: block; /* 변동 */
       position: absolute;
       width: 50%;
       height: 180px;
@@ -98,12 +96,15 @@
       box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
       border-radius: 5px;
       bottom: -165px;
-      overflow-y: scroll;
-      -ms-overflow-style: none;
-      scrollbar-width: none;
 
-      &::-webkit-scrollbar {
-        display: none;
+      .dropdown__cards--scroll {
+        height: 180px;
+        overflow-y: scroll;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+        &::-webkit-scrollbar {
+          display: none;
+        }
       }
 
       .dropdown__category {
@@ -144,6 +145,12 @@
         }
       }
 
+      .dropdown__msg {
+        padding: 15px 20px;
+        color: black;
+        font-size: 12px;
+      }
+
       .dropdown__card {
         padding: 15px 20px;
         color: black;
@@ -157,7 +164,6 @@
           width: 16px;
           height: 16px;
           text-align: center;
-
         }
         &--type {
           background: $main-dark-blue;
@@ -166,6 +172,14 @@
           font-size: 10px;
           padding: 2px 5px;
           font-weight: 100;
+        }
+        .hashtag {
+          background: $main-pink;
+          color: white;
+        }
+        .type {
+          background: $main-light-blue;
+          color: $main-dark-blue;
         }
 
         &:hover {
