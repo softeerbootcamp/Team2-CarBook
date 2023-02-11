@@ -37,6 +37,13 @@ public class ExceptionController {
         return Message.make400Response(nicknameDE.getMessage());
     }
 
+    // 로그인 시 패스워드 불일치 시 처리
+    @ExceptionHandler(PasswordNotMatchException.class)
+    public ResponseEntity<Message> passwordNotMatchException(PasswordNotMatchException passwordNME){
+        logger.debug(passwordNME.getMessage());
+        return Message.make400Response(passwordNME.getMessage());
+    }
+
     // 로그인 시 등록된 이메일이 없는 경우 처리
     @ExceptionHandler(LoginEmailNotExistException.class)
     public ResponseEntity<Message> loginEmailNotExistException(LoginEmailNotExistException emailNE){

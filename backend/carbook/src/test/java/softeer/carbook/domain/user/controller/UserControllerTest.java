@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import softeer.carbook.domain.user.dto.LoginForm;
 import softeer.carbook.domain.user.dto.Message;
 import softeer.carbook.domain.user.dto.SignupForm;
 import softeer.carbook.domain.user.service.UserService;
@@ -47,7 +48,23 @@ class UserControllerTest {
     }
 
     @Test
-    void login() {
+    @DisplayName("로그인 테스트")
+    void login() throws Exception {
+        // given
+        LoginForm loginForm = new LoginForm(
+                "springtestemail@gmail.com",
+                "springtestpwd"
+        );
+
+        given(userService.login(any(LoginForm.class), any()))
+                .willReturn(new Message("Login Success"));
+
+        // when & then
+        mockMvc.perform(post("/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"email\":\"springtestemail@gmail.com\"," +
+                                "\"password\":\"springtessdtpwd\"}"))
+                .andExpect(status().isOk());
     }
 
     @Test

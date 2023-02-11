@@ -11,6 +11,7 @@ import softeer.carbook.domain.user.dto.Message;
 import softeer.carbook.domain.user.dto.SignupForm;
 import softeer.carbook.domain.user.exception.LoginEmailNotExistException;
 import softeer.carbook.domain.user.exception.NicknameDuplicateException;
+import softeer.carbook.domain.user.exception.PasswordNotMatchException;
 import softeer.carbook.domain.user.exception.SignupEmailDuplicateException;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -96,10 +97,15 @@ class UserServiceTest {
     void loginPasswordNotMatch() {
         // given
         LoginForm loginForm = new LoginForm("test@gmail.com", "카북화이팅123");
+        String exceptionMsg = "";
         // when
-        Message resultMsg = userService.login(loginForm, new MockHttpSession());
+        try{
+            Message resultMsg = userService.login(loginForm, new MockHttpSession());
+        } catch (PasswordNotMatchException e) {
+            exceptionMsg = e.getMessage();
+        }
         // then
-        assertThat(resultMsg.getMessage()).isEqualTo("ERROR: Password not match");
+        assertThat(exceptionMsg).isEqualTo("ERROR: Password not match");
     }
 
 }
