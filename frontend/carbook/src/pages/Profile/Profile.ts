@@ -102,25 +102,29 @@ export default class ProfilePage extends Component {
   }
 
   setEvent(): void {
-    const form = document.body.querySelector(
-      ".profile__container form"
+    const modifyInfoButton = this.$target.querySelector(
+      ".modify-button"
     ) as HTMLFormElement;
-    form?.addEventListener("submit", (e) => {
+    modifyInfoButton?.addEventListener("click", (e: Event) => {
       e.preventDefault();
       const modal = document.body.querySelector(".alert-modal") as HTMLElement;
-      showErrorModal(modal, "test");
-      // const id = form.loginid.value.trim();
-      // const password = form.password.value.trim();
+      showErrorModal(modal, "회원정보가 변경되었습니다");
+      modal.classList.add("gray");
+      setTimeout(() => {
+        document.body
+          .querySelector(".modify-modal")
+          ?.classList.toggle("hidden");
+      }, 2000);
 
-      // const modal = document.body.querySelector(".alert-modal") as HTMLElement;
-
-      // if (isEmpty(id, password, modal)) return false;
-
-      // push("/");
-      return false;
+      /**todo
+       * 1. 서버와 통신후 응답받음
+       * 2-1. 유저 정보 변경 성공하면 정보 변경 알려주고 모달창 없애기
+       * 2-2. 만약 실패하면 경고창 띄우고 모달창 유지
+       */
     });
 
     this.$target.addEventListener("click", (e: Event) => {
+      e.preventDefault();
       const target = e.target as HTMLElement;
 
       const postsSection = target.closest("section.profile-posts");
@@ -173,7 +177,7 @@ function showErrorModal(modal: HTMLElement, errorMessage: string): void {
 
 function modal(): string {
   return /*html*/ `
-  <div class ='modify-modal'>
+  <div class ='modify-modal hidden'>
     <div class = 'title'>회원 정보</div>
     <div class ='modify-modal-form'>
       <form>
@@ -192,9 +196,8 @@ function modal(): string {
           <input class ='input-box' placeholder='기존 비밀번호'/>
           <div class ='eyes slash'></div>
         </div>
-        <div class ='modify-modal-footer'>
-          <button class ='modify-button'>변경</button>
-        </div>
+        <div class ='modify-modal-footer'><button class ='modify-button'>변경</button> </div>
+          
       </form>
     </div>
   </div>

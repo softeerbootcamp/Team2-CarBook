@@ -13,6 +13,13 @@
 
   .hidden {
     visibility: hidden;
+    opacity: 0;
+  }
+  .gray {
+    background-color: lightgray;
+  }
+  .pink {
+    background-color: $main-pink;
   }
 
   header {
@@ -29,6 +36,26 @@
         justify-content: space-between;
         align-items: center;
         margin-bottom: 8px;
+
+        .user-nickname {
+          font-family: "LINESeedKR-Rg";
+          font-size: 24px;
+          color: $main-white;
+        }
+
+        .user-email {
+          color: #dcdcdc;
+          font-size: 14px;
+          font-family: "Pretendard Variable";
+        }
+
+        .follow-button {
+          background-color: $main-pink;
+          color: $main-white;
+          font-size: 16px;
+          font-family: "LINESeedKR-Rg";
+          font-weight: 200;
+        }
       }
 
       &-menu {
@@ -38,64 +65,72 @@
         background-size: cover;
         background-position: center;
         position: relative;
+        visibility: visible;
+        opacity: 1;
+        transition: ease-in-out 0.7s;
+        cursor: pointer;
+
+        &:hover:not(.info-menu-items) {
+          filter: invert(50);
+        }
+
         .info-menu-items {
           position: absolute;
           top: 20px;
           right: 0;
           width: 134px;
           height: 144px;
-          gap: 10%;
-          border-radius: 4px;
+          padding: 4px 0;
+          border-radius: 4px 0;
           box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-          padding: 16px 24px;
           background-color: white;
           color: black;
 
           display: flex;
           flex-direction: column;
           justify-content: space-around;
-
-          // visibility: hidden;
+          transition: all ease-in-out 0.2s;
+          font-size: 12px;
+          cursor: none;
 
           h3 {
+            cursor: auto;
+            padding: 16px 0 4px 16px;
             font-weight: 700;
+            // font-size: 16px;
           }
 
           li {
+            cursor: pointer;
+            padding: 8px 16px;
             font-size: 12px;
+            &:hover {
+              background-color: $main-light-blue;
+            }
           }
         }
-      }
-
-      .user-nickname {
-        font-family: "LINESeedKR-Rg";
-        font-size: 24px;
-        color: $main-white;
-      }
-
-      .user-email {
-        color: #dcdcdc;
-        font-size: 14px;
-        font-family: "Pretendard Variable";
-      }
-
-      .follow-button {
-        background-color: $main-pink;
-        color: $main-white;
-        font-size: 16px;
-        font-family: "LINESeedKR-Rg";
-        font-weight: 200;
       }
     }
 
     .header-contents {
       display: flex;
-      padding: 24px;
-      justify-content: space-between;
       text-align: center;
-
+      justify-content: center;
       font-size: 14px;
       color: $main-white;
+
+      section {
+        width: 30%;
+        padding: 16px;
+        margin-bottom: 8px;
+        border-radius: 8px;
+        cursor: pointer;
+        &:hover {
+          background-color: $main-dark-blue;
+          // outline: none;
+          // box-shadow: 0 0 0 2px $main-light-blue;
+        }
+      }
 
       .profile-posts-count,
       .profile-follower-count,
@@ -177,6 +212,9 @@
 
         .follower-delete-button {
           background-color: lightgray;
+          &:hover {
+            background-color: $main-pink;
+          }
         }
       }
     }
