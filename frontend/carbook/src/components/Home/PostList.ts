@@ -1,9 +1,9 @@
 import { Component } from '@/core';
-import { tagStore } from '@/store';
+import { tagStore } from '@/store/tagStore';
 
 export default class PostList extends Component {
   setup(): void {
-    tagStore.subscribe(this.render.bind(this));
+    tagStore.subscribe(this, this.render.bind(this));
   }
   template(): string {
     const { postList } = this.props;
