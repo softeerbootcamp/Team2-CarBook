@@ -54,7 +54,7 @@ export default class ProfilePage extends Component {
       </header>
       <div class = 'profile__contents'></div>
       ${modal()}
-    </div>
+      <div class = 'alert-modal'>오류 : 닉네임이 중복되었습니다.</div>
     `;
   }
 
@@ -102,6 +102,24 @@ export default class ProfilePage extends Component {
   }
 
   setEvent(): void {
+    const form = document.body.querySelector(
+      ".profile__container form"
+    ) as HTMLFormElement;
+    form?.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const modal = document.body.querySelector(".alert-modal") as HTMLElement;
+      showErrorModal(modal, "test");
+      // const id = form.loginid.value.trim();
+      // const password = form.password.value.trim();
+
+      // const modal = document.body.querySelector(".alert-modal") as HTMLElement;
+
+      // if (isEmpty(id, password, modal)) return false;
+
+      // push("/");
+      return false;
+    });
+
     this.$target.addEventListener("click", (e: Event) => {
       const target = e.target as HTMLElement;
 
@@ -109,6 +127,18 @@ export default class ProfilePage extends Component {
       const followerSection = target.closest("section.profile-follower");
       const followingSection = target.closest("section.profile-following");
       const followButton = target.closest(".follow-button");
+      const eyes = target.closest(".eyes");
+
+      if (eyes) {
+        eyes.classList.toggle("slash");
+        const inputBox = eyes.parentElement?.querySelector(
+          "input"
+        ) as HTMLInputElement;
+        eyes.classList.contains("slash")
+          ? (inputBox.type = "password")
+          : (inputBox.type = "text");
+        return;
+      }
 
       if (postsSection) {
         this.setState({ ...this.state, profileMode: "posts" });
@@ -132,6 +162,15 @@ export default class ProfilePage extends Component {
   }
 }
 
+function showErrorModal(modal: HTMLElement, errorMessage: string): void {
+  if (modal.classList.contains("FadeInAndOut")) return;
+  modal.innerHTML = errorMessage;
+  modal.classList.toggle("FadeInAndOut");
+  setTimeout(() => {
+    modal.classList.toggle("FadeInAndOut");
+  }, 2000);
+}
+
 function modal(): string {
   return /*html*/ `
   <div class ='modify-modal'>
@@ -141,14 +180,17 @@ function modal(): string {
         <div class ='modify-modal-form-nickname'>
         <h3 class = 'form-label'>닉네임</h3>
         <input class ='input-box' placeholder='현재 닉네임'/>
+        <div class ='eyes slash'></div>
         </div>
-        <div class ='modify-modal-form-nickname'>
+        <div class ='modify-modal-form-password'>
         <h3 class = 'form-label'>비밀번호</h3>
         <input class ='input-box' placeholder='새 비밀번호'/>
+        <div class ='eyes slash'></div>
         </div>
-        <div class ='modify-modal-form-nickname'>
+        <div class ='modify-modal-form-password-confirm'>
           <h3 class = 'form-label'>비밀번호 확인</h3>
           <input class ='input-box' placeholder='기존 비밀번호'/>
+          <div class ='eyes slash'></div>
         </div>
         <div class ='modify-modal-footer'>
           <button class ='modify-button'>변경</button>
