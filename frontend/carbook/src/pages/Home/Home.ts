@@ -15,23 +15,6 @@ export default class HomePage extends Component {
         { postid: 2, imageUrl: '2번째 이미지' },
         { postid: 3, imageUrl: '3번째 이미지' },
       ],
-      hashtags: [
-        {
-          id: '1',
-          category: 'model',
-          tag: '경차',
-        },
-        {
-          id: '2',
-          category: 'type',
-          tag: 'sonata',
-        },
-        {
-          id: '3',
-          category: 'hashtag',
-          tag: '내부',
-        },
-      ],
     });
   }
 
@@ -57,12 +40,16 @@ export default class HomePage extends Component {
   mounted(): void {
     const header = this.$target.querySelector('.header') as HTMLElement;
     const section = this.$target.querySelector('.section') as HTMLElement;
-    const hastagList = this.$target.querySelector('.main__hashtags') as HTMLElement;
-    const postList = this.$target.querySelector('.main__gallery') as HTMLElement;
+    const hastagList = this.$target.querySelector(
+      '.main__hashtags'
+    ) as HTMLElement;
+    const postList = this.$target.querySelector(
+      '.main__gallery'
+    ) as HTMLElement;
 
     new Header(header);
     new SearchForm(section);
-    new HashTagList(hastagList, { hashtagList: this.state.hashtags });
+    new HashTagList(hastagList);
     new PostList(postList, { postList: this.state.images });
   }
 

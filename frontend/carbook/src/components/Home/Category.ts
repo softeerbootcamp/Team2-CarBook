@@ -1,11 +1,12 @@
 import { categoryMap } from '@/constants/category';
 import { Component } from '@/core';
 import { CategoryType } from '@/interfaces';
+import { qs } from '@/utils';
 
 export default class Category extends Component {
   setup(): void {
     this.state = {
-      option: 'all',
+      option: 'hashtag',
     };
   }
 
@@ -30,21 +31,28 @@ export default class Category extends Component {
   }
 
   onHandleSearchCategory() {
-    const selections = this.$target.querySelector('.selections');
-    const selected = this.$target.querySelector('.selected');
+    const selections = qs(this.$target, '.selections');
+    const selected = qs(this.$target, '.selected');
 
-    this.$target?.addEventListener('click', (e) => {
-      selected?.classList.toggle('hidden');
-      selections?.classList.toggle('active');
+    selected?.addEventListener('click', () => {
+      this.onToggleClassName(selected, selections);
+    });
 
-      const target = e.target as HTMLElement;
-      const classname = target.className as CategoryType;
+    selections?.addEventListener('click', ({ target }) => {
+      const classname = (<HTMLElement>target).className as CategoryType;
 
       const koreaWord = categoryMap[classname];
       if (koreaWord) {
         this.setState({ option: classname });
         this.props.setOption(classname);
+
+        this.onToggleClassName(selected, selections);
       }
     });
+  }
+
+  onToggleClassName(selected: HTMLElement, selections: HTMLElement) {
+    selected?.classList.toggle('hidden');
+    selections?.classList.toggle('active');
   }
 }
