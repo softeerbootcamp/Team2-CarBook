@@ -10,10 +10,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import softeer.carbook.domain.user.dto.LoginForm;
-import softeer.carbook.domain.user.dto.Message;
-import softeer.carbook.domain.user.dto.ModifyNickNameForm;
-import softeer.carbook.domain.user.dto.SignupForm;
+import softeer.carbook.domain.user.dto.*;
 import softeer.carbook.domain.user.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,11 +38,6 @@ class UserControllerTest {
     @DisplayName("회원가입 테스트")
     void signup() throws Exception {
         // given
-        SignupForm signupForm = new SignupForm(
-                "springtestemail@gmail.com",
-                "springtestpwd",
-                "springtest"
-        );
         given(userService.signup(any(SignupForm.class)))
                 .willReturn(new Message("SignUp Success"));
 
@@ -64,12 +56,9 @@ class UserControllerTest {
     @DisplayName("로그인 테스트")
     void login() throws Exception {
         // given
-        LoginForm loginForm = new LoginForm(
-                "springtestemail@gmail.com",
-                "springtestpwd"
-        );
-
-        given(userService.login(any(LoginForm.class), any()))
+        given(userService.login(
+                any(LoginForm.class),
+                any(HttpSession.class)))
                 .willReturn(new Message("Login Success"));
 
         // when & then
@@ -99,11 +88,9 @@ class UserControllerTest {
     @DisplayName("닉네임 변경 테스트")
     void modifyNickname() throws Exception {
         // given
-        String nickname = "springtest";
-        ModifyNickNameForm modifyNickNameForm = new ModifyNickNameForm("newspringtest");
         given(userService.modifyNickname(
-                eq(nickname),
-                eq(modifyNickNameForm.getNewNickname()),
+                any(String.class),
+                any(String.class),
                 any(HttpServletRequest.class)))
                 .willReturn(new Message("Nickname modified successfully"));
 
@@ -116,6 +103,20 @@ class UserControllerTest {
     }
 
     @Test
-    void modifyPassword() {
+    @DisplayName("비밀번호 변경 테스트")
+    void modifyPassword() throws Exception {
+        // given
+        given(userService.modifyPassword(
+                any(ModifyPasswordForm.class),
+                any(HttpServletRequest.class)))
+                .willReturn(new Message("Nickname modified successfully"));
+
+        // when & then
+        mockMvc.perform(patch("/profile/modify/password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"password\":\"springtestpwd\"," +
+                                "\"newPassword\":\"springtestnewpwd\"}"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Nickname modified successfully")));
     }
 }
