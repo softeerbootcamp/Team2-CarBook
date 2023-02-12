@@ -97,9 +97,8 @@ async function sendUserInfo(
         push("/");
       }, TRANSITIONDELAY);
     })
-    .catch((error) => {
+    .catch(() => {
       /**id error*/
-      console.log(error.response.data.message);
       showErrorModal(modal, NONEXISTENTID);
     });
 }
