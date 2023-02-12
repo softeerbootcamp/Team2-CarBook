@@ -14,6 +14,7 @@ export default class PostList extends Component {
 
     tagStore.subscribe(this, this.render.bind(this));
     this.state = {
+      isLogin: false,
       isInit: true,
       isLoading: false,
       idEnd: false,
@@ -68,9 +69,11 @@ export default class PostList extends Component {
 
     const res = await basicAPI.get(`/api/posts/m?index=${index}`);
     const images = res.data.images;
+    const isLogin = res.data.login;
 
     const end = images.length === 0;
     this.setState({
+      isLogin,
       images: this.state.images.concat(images),
       index: index + 8,
       isLoading: false,
@@ -121,8 +124,12 @@ export default class PostList extends Component {
     this.$target.addEventListener('click', ({ target }) => {
       const image = getClosest(<HTMLElement>target, '.gallery--image');
       if (image) {
-        const postId = image.dataset.id;
-        push(`/post/${postId}`);
+        if (this.state.isLogin) {
+          const postId = image.dataset.id;
+          push(`/post/${postId}`);
+        } else {
+          push('/login');
+        }
       }
     });
   }
