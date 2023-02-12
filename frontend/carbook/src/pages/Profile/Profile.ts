@@ -108,8 +108,8 @@ export default class ProfilePage extends Component {
     modifyInfoButton?.addEventListener("click", (e: Event) => {
       e.preventDefault();
       const modal = document.body.querySelector(".alert-modal") as HTMLElement;
-      showErrorModal(modal, "회원정보가 변경되었습니다");
       modal.classList.add("gray");
+      showErrorModal(modal, "회원정보가 변경되었습니다");
       setTimeout(() => {
         document.body
           .querySelector(".modify-modal")
@@ -188,12 +188,12 @@ function modal(): string {
         </div>
         <div class ='modify-modal-form-password'>
         <h3 class = 'form-label'>비밀번호</h3>
-        <input class ='input-box' placeholder='새 비밀번호'/>
+        <input type ='password' class ='input-box' placeholder='새 비밀번호'/>
         <div class ='eyes slash'></div>
         </div>
         <div class ='modify-modal-form-password-confirm'>
           <h3 class = 'form-label'>비밀번호 확인</h3>
-          <input class ='input-box' placeholder='기존 비밀번호'/>
+          <input type ='password' class ='input-box' placeholder='기존 비밀번호'/>
           <div class ='eyes slash'></div>
         </div>
         <div class ='modify-modal-footer'><button class ='modify-button'>변경</button> </div>
