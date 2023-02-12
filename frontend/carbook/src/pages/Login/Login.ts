@@ -26,7 +26,7 @@ export default class LoginPage extends Component {
         <h3 class ='footer-message'>계정이 없으신가요?</h3>
         <h3 class ='register'>회원 가입</h3>
       </footer>
-      <div class = 'alert-modal'>오류 : 닉네임이 중복되었습니다.</div>
+      <div class = 'alert-modal'>변경오류 : 닉네임이 중복되었습니다.</div>
     </div>
     `;
   }
