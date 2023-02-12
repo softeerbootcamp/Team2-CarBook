@@ -74,7 +74,6 @@
 
     h3.register {
       font-family: "LINESeedKR-Bd";
-      // font-weight: 700;
     }
 
     h3.footer-message {
@@ -87,7 +86,6 @@
     margin: 0;
     position: fixed;
     top: -60px;
-    background-color: $main-pink;
     padding: 16px;
     border-radius: 4px;
     visibility: hidden;
@@ -95,6 +93,13 @@
 
     transition: all ease-in-out 0.5s;
   }
+  .success {
+    background-color: $main-light-blue;
+  }
+  .fail {
+    background-color: $main-pink;
+  }
+
   .FadeInAndOut {
     visibility: visible;
     opacity: 1;

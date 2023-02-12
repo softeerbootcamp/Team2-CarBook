@@ -104,12 +104,19 @@ async function sendUserInfo(
 }
 
 function showErrorModal(modal: HTMLElement, errorMessage: string): void {
+  const FADEINOUTDELAY = 2000;
+  const ModalStatus = errorMessage === LOGINSUCCESS ? "success" : "fail";
+
   if (modal.classList.contains("FadeInAndOut")) return;
+
   modal.innerHTML = errorMessage;
+  modal.classList.toggle(ModalStatus);
   modal.classList.toggle("FadeInAndOut");
+
   setTimeout(() => {
     modal.classList.toggle("FadeInAndOut");
-  }, 2000);
+    modal.classList.toggle(ModalStatus);
+  }, FADEINOUTDELAY);
 }
 
 function isEmpty(id: string, password: string, modal: HTMLElement) {
