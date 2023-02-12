@@ -88,7 +88,6 @@
     margin: 0;
     position: fixed;
     top: -60px;
-    background-color: $main-pink;
     padding: 16px;
     border-radius: 4px;
     visibility: hidden;
@@ -100,6 +99,11 @@
     visibility: visible;
     opacity: 1;
     top: 50px;
-    // animation: fadeInOut 4s linear 1 forwards;
+  }
+  .success {
+    background-color: $main-light-blue;
+  }
+  .fail {
+    background-color: $main-pink;
   }
 }
