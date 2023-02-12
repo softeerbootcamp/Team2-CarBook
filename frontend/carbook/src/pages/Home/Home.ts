@@ -6,16 +6,9 @@ import { push } from '@/utils/router/navigate';
 
 export default class HomePage extends Component {
   setup(): void {
-    this.setState({
-      // 더미 데이터
-      isLogin: true,
-      nickname: '카북닉네임',
-      images: [
-        { postid: 1, imageUrl: '스트링' },
-        { postid: 2, imageUrl: '2번째 이미지' },
-        { postid: 3, imageUrl: '3번째 이미지' },
-      ],
-    });
+    this.state = {
+      nickname: 'nickname',
+    };
   }
 
   template(): string {
@@ -30,6 +23,8 @@ export default class HomePage extends Component {
         <div class="main__hashtags">
         </div>
         <div class="main__gallery">
+          <div class="gallery"></div>
+          <div class="spinner"></div>
         </div>
         <div class="main__button">+</div>
       </main>
@@ -43,14 +38,12 @@ export default class HomePage extends Component {
     const hastagList = this.$target.querySelector(
       '.main__hashtags'
     ) as HTMLElement;
-    const postList = this.$target.querySelector(
-      '.main__gallery'
-    ) as HTMLElement;
+    const postList = this.$target.querySelector('.gallery') as HTMLElement;
 
     new Header(header);
     new SearchForm(section);
     new HashTagList(hastagList);
-    new PostList(postList, { postList: this.state.images });
+    new PostList(postList);
   }
 
   setEvent(): void {
