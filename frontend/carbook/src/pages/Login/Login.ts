@@ -90,14 +90,11 @@ async function sendUserInfo(
       const responseMessage = response.data.message;
       if (responseMessage === "ERROR: Password not match") {
         showErrorModal(modal, NONEXISTENTPW);
-        // setTimeout(() => {
-        //   push("/");
-        // }, TRANSITIONDELAY);
         return;
       }
       showErrorModal(modal, LOGINSUCCESS);
       setTimeout(() => {
-        // push("/");
+        push("/");
       }, TRANSITIONDELAY);
     })
     .catch((error) => {
