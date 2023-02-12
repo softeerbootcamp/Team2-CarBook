@@ -1,56 +1,35 @@
 import { basicAPI } from '@/api';
-import { categoryMap } from '@/constants/category';
 import { Component } from '@/core';
-import { IHashTag } from '@/interfaces';
-import { tagStore } from '@/store/tagStore';
-import { actionType } from '@/store/tagStore';
-import { getClosest, getTagIcon } from '@/utils';
+import { CategoryType } from '@/interfaces';
+import { getClosest, qs } from '@/utils';
 import Category from './Category';
+import SearchList from './SearchList';
+
+interface ISearchFormData {
+  visible?: boolean;
+  option?: CategoryType;
+  keywords?: [];
+}
 
 export default class SearchForm extends Component {
+  data: ISearchFormData = {};
+  searchList: any;
   setup(): void {
-    this.state = {
-      option: 'all',
-      keywords: [
-        {
-          id: '1',
-          category: 'hashtag',
-          tag: '이름',
-        },
-        {
-          id: '2',
-          category: 'type',
-          tag: '이름',
-        },
-        {
-          id: '3',
-          category: 'model',
-          tag: '이름',
-        },
-      ],
+    this.data = {
+      option: 'hashtag',
+      keywords: [],
     };
   }
 
   template(): string {
-    const { keywords } = this.state;
-
     return `
       <input class="section__input" type="text" placeholder="키워드를 입력해주세요"/>
       <div class="section__search-img" alt="search-icon"></div>
       <div class="section__dropdown">
         <div class="dropdown__category">
         </div>
-        ${keywords
-          .map(
-            ({ id, category, tag }: IHashTag) => `
-          <div class="dropdown__card" data-id="${id}" data-category="${category}" data-tag="${tag}">
-            <div class="dropdown__card--icon">${getTagIcon(category)}</div>
-            <div class="dropdown__card--text">${tag}</div>
-            <div class="dropdown__card--type">${categoryMap[category]}</div>
-          </div>
-        `
-          )
-          .join('')}
+        <div class="dropdown__cards">
+        </div>
       </div>
     `;
   }
@@ -59,61 +38,46 @@ export default class SearchForm extends Component {
     const category = this.$target.querySelector(
       '.dropdown__category'
     ) as HTMLElement;
+    const cards = this.$target.querySelector('.dropdown__cards') as HTMLElement;
+
     new Category(category, {
-      setOption: (option: string) => {
+      setOption: (option: CategoryType) => {
         this.setOption(option);
       },
     });
+
+    const searchList = new SearchList(cards, { keywords: this.data.keywords });
+    this.searchList = searchList;
   }
 
   setEvent(): void {
-    const input = this.$target.querySelector(
-      '.section__input'
-    ) as HTMLInputElement;
+    const input = qs(this.$target, '.section__input') as HTMLInputElement;
+    this.onChangeInputHandler(input);
 
-    // 태그 검색
+    const container = qs(document, '.home-container');
+    container.addEventListener('click', ({ target }) => {
+      const dropdown = getClosest(<HTMLElement>target, '.section__dropdown');
+      const selections = getClosest(<HTMLElement>target, '.selections');
+
+      if (dropdown || selections) return;
+
+      this.onVisibleHandler(input);
+    });
+  }
+
+  onChangeInputHandler(input: HTMLInputElement) {
     let timer: ReturnType<typeof setTimeout>;
     input?.addEventListener('keyup', () => {
       const { value } = input;
 
       if (timer) clearTimeout(timer);
       timer = setTimeout(() => {
-        console.log('검색 실행', value, this.state.option);
-        //this.searchKeyword(value, this.state.option)
+        this.getSearchedData(value, this.data.option);
       }, 200);
     });
-
-    const container = document.querySelector('.home-container') as HTMLElement;
-    container.addEventListener('click', (e) => {
-      const target = e.target as HTMLElement;
-
-      const dropdown = getClosest(target, '.section__dropdown');
-      const dropdownCard = getClosest(target, '.dropdown__card');
-
-      if (dropdown && dropdownCard) {
-        const { id, category, tag } = dropdownCard.dataset;
-        tagStore.dispach({
-          type: actionType.ADD_TAG,
-          payload: { id, category, tag },
-        });
-        this.elementVisibleHandler(input);
-      }
-
-      const selections = getClosest(target, '.selections');
-      if (selections || dropdown) return;
-
-      this.elementVisibleHandler(input);
-    });
   }
 
-  async searchKeyword(keyword: string, category = '') {
-    const searchedData = await basicAPI.get(
-      `/search/${category}/?keyword=${keyword}`
-    );
-    this.setState(searchedData.data());
-  }
-
-  elementVisibleHandler(input: HTMLInputElement) {
+  onVisibleHandler(input: HTMLInputElement) {
     const isActive = document.activeElement;
     const dropdown = this.$target.querySelector('.section__dropdown');
 
@@ -124,7 +88,15 @@ export default class SearchForm extends Component {
     }
   }
 
-  setOption(option: string) {
-    this.state.option = option;
+  setOption(option: CategoryType) {
+    this.data.option = option;
+  }
+
+  async getSearchedData(keyword: string, category = 'hashtag') {
+    const searchedData = await basicAPI.get(
+      `/api/search/${category}/?keyword=${keyword.trim()}`
+    );
+    this.data = { ...this.data, keywords: searchedData.data.hashtags };
+    this.searchList.setState({ keywords: searchedData.data.hashtags });
   }
 }
