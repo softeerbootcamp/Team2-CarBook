@@ -6,33 +6,9 @@ import { push } from '@/utils/router/navigate';
 
 export default class HomePage extends Component {
   setup(): void {
-    this.setState({
-      // 더미 데이터
-      isLogin: true,
-      nickname: '카북닉네임',
-      images: [
-        { postid: 1, imageUrl: '스트링' },
-        { postid: 2, imageUrl: '2번째 이미지' },
-        { postid: 3, imageUrl: '3번째 이미지' },
-      ],
-      hashtags: [
-        {
-          id: '1',
-          category: 'model',
-          tag: '경차',
-        },
-        {
-          id: '2',
-          category: 'type',
-          tag: 'sonata',
-        },
-        {
-          id: '3',
-          category: 'hashtag',
-          tag: '내부',
-        },
-      ],
-    });
+    this.state = {
+      nickname: 'nickname',
+    };
   }
 
   template(): string {
@@ -47,6 +23,8 @@ export default class HomePage extends Component {
         <div class="main__hashtags">
         </div>
         <div class="main__gallery">
+          <div class="gallery"></div>
+          <div class="spinner"></div>
         </div>
         <div class="main__button">+</div>
       </main>
@@ -57,13 +35,15 @@ export default class HomePage extends Component {
   mounted(): void {
     const header = this.$target.querySelector('.header') as HTMLElement;
     const section = this.$target.querySelector('.section') as HTMLElement;
-    const hastagList = this.$target.querySelector('.main__hashtags') as HTMLElement;
-    const postList = this.$target.querySelector('.main__gallery') as HTMLElement;
+    const hastagList = this.$target.querySelector(
+      '.main__hashtags'
+    ) as HTMLElement;
+    const postList = this.$target.querySelector('.gallery') as HTMLElement;
 
     new Header(header);
     new SearchForm(section);
-    new HashTagList(hastagList, { hashtagList: this.state.hashtags });
-    new PostList(postList, { postList: this.state.images });
+    new HashTagList(hastagList);
+    new PostList(postList);
   }
 
   setEvent(): void {
