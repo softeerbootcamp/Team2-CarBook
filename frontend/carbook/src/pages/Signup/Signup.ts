@@ -8,9 +8,9 @@ import {
   EMPTYNICKNAME,
   DUPPLICATEDID,
   DUPPLICATEDNICKNAME,
+  SUCCESSSIGNUP,
 } from "@/constants/errorMessage";
 import { basicAPI } from "@/api";
-import { AxiosResponse, AxiosError } from "axios";
 
 export default class SignupPage extends Component {
   template(): string {
@@ -56,10 +56,15 @@ export default class SignupPage extends Component {
 
       if (isEmpty(id, password, nickname, modal)) return false;
       sendUserInfo(id, password, nickname, modal);
-      // if (IsDupplication(id, password, nickname, modal))
-      //   console.log("dupplicated");
+    });
+  }
 
-      // push("/login");
+  mounted(): void {
+    this.$target.addEventListener("click", (e: Event) => {
+      const target = e.target as HTMLElement;
+      const loginLink = target.closest(".footer-login");
+      if (!loginLink) return;
+      push("/login");
     });
   }
 }
@@ -76,14 +81,18 @@ async function sendUserInfo(
       password,
       nickname,
     })
-    .then((response) => {
-      console.log(response);
-      push("/login");
+    .then(() => {
+      const LOGINDELAY = 2300;
+      showErrorModal(modal, SUCCESSSIGNUP);
+      setTimeout(() => {
+        push("/login");
+      }, LOGINDELAY);
     })
     .catch((error) => {
-      console.log(error);
-      if (error.response.data.message === "ERROR: Duplicated email")
+      if (error.response.data.message === "ERROR: Duplicated email") {
         showErrorModal(modal, DUPPLICATEDID);
+        return;
+      }
       if (error.response.data.message === "ERROR: Duplicated nickname")
         showErrorModal(modal, DUPPLICATEDNICKNAME);
     });
