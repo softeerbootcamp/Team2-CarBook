@@ -2,7 +2,8 @@
 
 .home-container {
   height: 100vh;
-  background-color: $main-blue;
+  background: $main-blue;
+  /*animation: background-gradient 10s linear infinite;*/
 
   .header {
     height: 15%;
@@ -60,7 +61,8 @@
     }
 
     &__input {
-      background-color: $main-blue;
+      background: $main-blue;
+      /*animation: background-gradient 10s linear infinite;*/
       color: white;
       border-width: 0 0 2px 0;
       border-bottom: 2px solid white;
@@ -232,9 +234,6 @@
     }
 
     &__gallery {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
       overflow-y: scroll;
       -ms-overflow-style: none;
       scrollbar-width: none;
@@ -242,18 +241,50 @@
         display: none;
       }
 
-      &--image {
-        min-width: 150px;
-        width: 25vw;
-        height: 18vh;
-        border-radius: 10px;
-        background-color: rgb(215, 215, 215);
-        cursor: pointer;
-        background-image: url('@/assets/images/car.jpg');
+      .gallery {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
 
-        background-size: cover;
-        background-position: center;
+        &--image {
+          min-width: 150px;
+          width: 25vw;
+          height: 18vh;
+          border-radius: 10px;
+          background-color: rgb(215, 215, 215);
+          cursor: pointer;
+          background-image: url('@/assets/images/car.jpg');
+
+          background-size: cover;
+          background-position: center;
+        }
+
+        &--skelton {
+          min-width: 150px;
+          width: 25vw;
+          height: 18vh;
+          border-radius: 10px;
+          background-color: rgb(192, 192, 192);
+          cursor: pointer;
+          animation: skeleton-gradient 3s linear infinite;
+        }
       }
+
+      .spinner {
+        display: none;
+        background: url('@/assets/images/spinner.png');
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        margin: 50px;
+        min-width: 100px;
+        min-height: 100px;
+      }
+    }
+
+    .active {
+      display: block;
+      animation: spin 2000ms infinite linear;
     }
 
     &__button {
@@ -282,5 +313,35 @@
   100% {
     opacity: 1;
     transform: translateX(0);
+  }
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes skeleton-gradient {
+  0% {
+    background: rgb(212, 212, 212);
+  }
+  50% {
+    background: rgb(128, 128, 128);
+  }
+  100% {
+    background: rgb(212, 212, 212);
+  }
+}
+
+@keyframes background-gradient {
+  0% {
+    background: $main-dark-blue;
+  }
+  50% {
+    background: $main-blue;
+  }
+  100% {
+    background: $main-dark-blue;
   }
 }
