@@ -13,3 +13,9 @@ export const [
   "중복된 비밀번호입니다",
   "중복된 닉네임입니다",
 ];
+
+export const [NONEXISTENTID, NONEXISTENTPW, LOGINSUCCESS] = [
+  "존재하지 않는 이메일입니다",
+  "존재하지 않는 비밀번호입니다",
+  "로그인에 성공하였습니다",
+];
