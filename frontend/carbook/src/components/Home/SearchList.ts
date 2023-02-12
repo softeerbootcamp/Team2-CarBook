@@ -2,7 +2,8 @@ import { categoryMap } from '@/constants/category';
 import { Component } from '@/core';
 import { IHashTag } from '@/interfaces';
 import { actionType, tagStore } from '@/store/tagStore';
-import { getClosest, getTagIcon } from '@/utils';
+import { getClosest } from '@/utils';
+import { getTagIcon } from './helper';
 
 export default class SearchList extends Component {
   setup(): void {

@@ -2,8 +2,9 @@ import { basicAPI } from '@/api';
 import { Component } from '@/core';
 import { IImage } from '@/interfaces';
 import { tagStore } from '@/store/tagStore';
-import { getClosest, qs } from '@/utils';
+import { getClosest, isSameObj, qs } from '@/utils';
 import { push } from '@/utils/router/navigate';
+import { getSearchUrl } from './helper';
 
 export default class PostList extends Component {
   observer: any;
@@ -13,14 +14,17 @@ export default class PostList extends Component {
     this.lastImg = null;
 
     tagStore.subscribe(this, this.render.bind(this));
+
     this.state = {
       isLogin: false,
+      nickname: '',
       isInit: true,
       isLoading: false,
       idEnd: false,
       images: [],
       length: 6,
       index: 0,
+      tags: {},
     };
 
     this.observer = new IntersectionObserver(
@@ -44,7 +48,13 @@ export default class PostList extends Component {
   }
 
   render(): void {
-    const { images, isLoading, isInit } = this.state;
+    const { images, isLoading, isInit, tags } = this.state;
+
+    if (!isSameObj(tags, tagStore.getState())) {
+      this.$target.innerHTML = '';
+      this.setState({ isInit: true, tags: tagStore.getState() });
+      return;
+    }
 
     if (isInit) {
       this.fetchImages();
@@ -67,7 +77,8 @@ export default class PostList extends Component {
     const { index } = this.state;
     this.setState({ isLoading: true, isInit: false });
 
-    const res = await basicAPI.get(`/api/posts/m?index=${index}`);
+    const url = getSearchUrl(index);
+    const res = await basicAPI.get(url);
     const images = res.data.images;
     const isLogin = res.data.login;
 

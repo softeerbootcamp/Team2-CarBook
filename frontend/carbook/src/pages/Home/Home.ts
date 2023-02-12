@@ -51,7 +51,9 @@ export default class HomePage extends Component {
       const target = e.target as HTMLElement;
 
       const profileBtn = target.closest('.header__right-box');
+      const plusBtn = target.closest('.main__button');
       if (profileBtn) push(`/profile/${this.state.nickname}`);
+      if (plusBtn) push(`/post/new`);
     });
   }
 }

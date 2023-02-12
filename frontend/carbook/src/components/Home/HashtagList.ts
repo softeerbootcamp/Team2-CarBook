@@ -1,7 +1,8 @@
 import { Component } from '@/core';
 import { tagStore } from '@/store/tagStore';
 import { actionType } from '@/store/tagStore';
-import { getClosest, getTagIcon } from '@/utils';
+import { getClosest } from '@/utils';
+import { getTagIcon } from './helper';
 
 export default class HashTagList extends Component {
   setup(): void {
