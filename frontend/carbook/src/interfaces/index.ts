@@ -1,4 +1,4 @@
-export type CategoryType = "type" | "model" | "hashtag";
+export type CategoryType = 'type' | 'model' | 'hashtag';
 
 export interface IHashTag {
   id: string;
