@@ -24,7 +24,6 @@ export default class Followlists extends Component {
       const target = (e.target as HTMLElement).closest(
         ".follower-info"
       ) as HTMLElement;
-      console.log(target.dataset, "target", target);
       if (!target.dataset.nickname) return;
       push("/profile/1");
     });

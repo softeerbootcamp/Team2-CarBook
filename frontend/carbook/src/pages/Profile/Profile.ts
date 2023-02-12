@@ -54,7 +54,7 @@ export default class ProfilePage extends Component {
       </header>
       <div class = 'profile__contents'></div>
       ${modal()}
-    </div>
+      <div class = 'alert-modal'>오류 : 닉네임이 중복되었습니다.</div>
     `;
   }
 
@@ -102,13 +102,47 @@ export default class ProfilePage extends Component {
   }
 
   setEvent(): void {
+    const modifyInfoButton = this.$target.querySelector(
+      ".modify-button"
+    ) as HTMLFormElement;
+    modifyInfoButton?.addEventListener("click", (e: Event) => {
+      e.preventDefault();
+      const modal = document.body.querySelector(".alert-modal") as HTMLElement;
+      modal.classList.add("gray");
+      showErrorModal(modal, "회원정보가 변경되었습니다");
+      setTimeout(() => {
+        document.body
+          .querySelector(".modify-modal")
+          ?.classList.toggle("hidden");
+      }, 2000);
+
+      /**todo
+       * 1. 서버와 통신후 응답받음
+       * 2-1. 유저 정보 변경 성공하면 정보 변경 알려주고 모달창 없애기
+       * 2-2. 만약 실패하면 경고창 띄우고 모달창 유지
+       */
+    });
+
     this.$target.addEventListener("click", (e: Event) => {
+      e.preventDefault();
       const target = e.target as HTMLElement;
 
       const postsSection = target.closest("section.profile-posts");
       const followerSection = target.closest("section.profile-follower");
       const followingSection = target.closest("section.profile-following");
       const followButton = target.closest(".follow-button");
+      const eyes = target.closest(".eyes");
+
+      if (eyes) {
+        eyes.classList.toggle("slash");
+        const inputBox = eyes.parentElement?.querySelector(
+          "input"
+        ) as HTMLInputElement;
+        eyes.classList.contains("slash")
+          ? (inputBox.type = "password")
+          : (inputBox.type = "text");
+        return;
+      }
 
       if (postsSection) {
         this.setState({ ...this.state, profileMode: "posts" });
@@ -132,27 +166,38 @@ export default class ProfilePage extends Component {
   }
 }
 
+function showErrorModal(modal: HTMLElement, errorMessage: string): void {
+  if (modal.classList.contains("FadeInAndOut")) return;
+  modal.innerHTML = errorMessage;
+  modal.classList.toggle("FadeInAndOut");
+  setTimeout(() => {
+    modal.classList.toggle("FadeInAndOut");
+  }, 2000);
+}
+
 function modal(): string {
   return /*html*/ `
-  <div class ='modify-modal'>
+  <div class ='modify-modal hidden'>
     <div class = 'title'>회원 정보</div>
     <div class ='modify-modal-form'>
       <form>
         <div class ='modify-modal-form-nickname'>
         <h3 class = 'form-label'>닉네임</h3>
         <input class ='input-box' placeholder='현재 닉네임'/>
+        <div class ='eyes slash'></div>
         </div>
-        <div class ='modify-modal-form-nickname'>
+        <div class ='modify-modal-form-password'>
         <h3 class = 'form-label'>비밀번호</h3>
-        <input class ='input-box' placeholder='새 비밀번호'/>
+        <input type ='password' class ='input-box' placeholder='새 비밀번호'/>
+        <div class ='eyes slash'></div>
         </div>
-        <div class ='modify-modal-form-nickname'>
+        <div class ='modify-modal-form-password-confirm'>
           <h3 class = 'form-label'>비밀번호 확인</h3>
-          <input class ='input-box' placeholder='기존 비밀번호'/>
+          <input type ='password' class ='input-box' placeholder='기존 비밀번호'/>
+          <div class ='eyes slash'></div>
         </div>
-        <div class ='modify-modal-footer'>
-          <button class ='modify-button'>변경</button>
-        </div>
+        <div class ='modify-modal-footer'><button class ='modify-button'>변경</button> </div>
+          
       </form>
     </div>
   </div>
