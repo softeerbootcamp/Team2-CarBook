@@ -79,12 +79,13 @@ export default class PostList extends Component {
 
     const url = getSearchUrl(index);
     const res = await basicAPI.get(url);
-    const images = res.data.images;
-    const isLogin = res.data.login;
+    const { images, login, nickname } = res.data;
+
+    this.props.setUserInfo(login, nickname);
 
     const end = images.length === 0;
     this.setState({
-      isLogin,
+      isLogin: login,
       images: this.state.images.concat(images),
       index: index + 8,
       isLoading: false,
@@ -116,7 +117,7 @@ export default class PostList extends Component {
       if (this.$target.querySelector(`img[data-id="${postId}"]`) === null) {
         this.$target.insertAdjacentHTML(
           'beforeend',
-          ` <img class="gallery--image" src="${''}" data-id="${postId}"></img>`
+          ` <img class="gallery--image" src="${imageUrl}" data-id="${postId}"></img>`
         );
       }
     });

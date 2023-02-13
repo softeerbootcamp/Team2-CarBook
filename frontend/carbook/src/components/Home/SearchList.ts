@@ -11,7 +11,7 @@ export default class SearchList extends Component {
   }
 
   template(): string {
-    const { keywords } = this.state;
+    const { keywords, option } = this.state;
 
     return `
       ${
@@ -21,6 +21,7 @@ export default class SearchList extends Component {
       }
       <div class="dropdown__cards--scroll">
       ${keywords
+        .filter(({ category = 'hashtag' }: IHashTag) => category === option)
         .map(
           ({ id, category, tag }: IHashTag) => `
             <div class="dropdown__card" data-id="${id}" data-category="${category}" data-tag="${tag}">

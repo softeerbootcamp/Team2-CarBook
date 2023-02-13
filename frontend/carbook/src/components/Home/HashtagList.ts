@@ -19,6 +19,11 @@ export default class HashTagList extends Component {
     });
 
     return `
+      ${
+        hashtagList.length === 0
+          ? '<div class="msg">🔍 검색을 통해 원하는 태그를 추가하세요</div>'
+          : ''
+      }
       ${hashtagList
         .map(
           (hashtag) =>
