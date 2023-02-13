@@ -30,7 +30,7 @@ public class HashtagRepository {
     }
 
     public List<Type> searchTypeByPrefix(String keyword) {
-        return jdbcTemplate.query("SELECT t.id, t.tag FROM Type t WHERE tag LIKE '" + keyword + "%'", typeRowMapper());
+        return jdbcTemplate.query("SELECT t.id, t.tag FROM TYPE t WHERE tag LIKE '" + keyword + "%'", typeRowMapper());
     }
 
     public List<Model> searchModelByPrefix(String keyword) {
