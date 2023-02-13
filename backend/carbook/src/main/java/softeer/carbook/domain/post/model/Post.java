@@ -46,4 +46,6 @@ public class Post {
     public String getContent() {
         return content;
     }
+
+    public int getModelId() { return model_id; }
 }

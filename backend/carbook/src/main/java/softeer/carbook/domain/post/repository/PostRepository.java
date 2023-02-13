@@ -10,6 +10,7 @@ import softeer.carbook.domain.post.model.Post;
 
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 
 @Repository
 public class PostRepository {
@@ -44,9 +45,10 @@ public class PostRepository {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection
-                    .prepareStatement("insert into POST(user_id, content) values(?, ?)");
+                    .prepareStatement("INSERT INTO POST (user_id, content, model_id) values(?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, post.getUserId());
             ps.setString(2, post.getContent());
+            ps.setInt(3, post.getModelId());
             return ps;
         }, keyHolder);
         return keyHolder.getKey().intValue();
