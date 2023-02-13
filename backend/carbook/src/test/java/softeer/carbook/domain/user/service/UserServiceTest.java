@@ -15,6 +15,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.transaction.annotation.Transactional;
 import softeer.carbook.domain.user.dto.LoginForm;
+import softeer.carbook.domain.user.dto.ModifyPasswordForm;
 import softeer.carbook.domain.user.exception.*;
 import softeer.carbook.global.dto.Message;
 import softeer.carbook.domain.user.dto.SignupForm;
@@ -183,6 +184,118 @@ class UserServiceTest {
 
         // Then
         assertThat(exception.getMessage()).isEqualTo("ERROR: Session Has Expired");
+    }
+
+    @Test
+    @DisplayName("닉네임 변경 테스트 - 기존 닉네임이 데이터베이스에 없을 때")
+    void modifyNicknameNotExistNickname(){
+        // Given
+        String nickname = "nickname";
+        String newNickname = "newnickname";
+        MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("user", 14);
+        httpServletRequest.setSession(session);
+
+        given(userRepository.isNicknameDuplicated(nickname)).willReturn(false);
+
+        // When
+        Throwable exception = assertThrows(NicknameNotExistException.class, () -> {
+            Message resultMsg = userService.modifyNickname(nickname, newNickname, httpServletRequest);
+        });
+
+        // Then
+        assertThat(exception.getMessage()).isEqualTo("ERROR: Nickname not exist");
+        verify(userRepository).isNicknameDuplicated(nickname);
+    }
+
+    @Test
+    @DisplayName("닉네임 변경 테스트 - 새로운 닉네임이 중복")
+    void modifyNicknameDuplicatedNewNickname(){
+        // Given
+        String nickname = "nickname";
+        String newNickname = "newnickname";
+        MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("user", 14);
+        httpServletRequest.setSession(session);
+
+        given(userRepository.isNicknameDuplicated(nickname)).willReturn(true);
+        given(userRepository.isNicknameDuplicated(newNickname)).willReturn(true);
+
+        // When
+        Throwable exception = assertThrows(NicknameDuplicateException.class, () -> {
+            Message resultMsg = userService.modifyNickname(nickname, newNickname, httpServletRequest);
+        });
+
+        // Then
+        assertThat(exception.getMessage()).isEqualTo("ERROR: Duplicated nickname");
+        verify(userRepository).isNicknameDuplicated(nickname);
+        verify(userRepository).isNicknameDuplicated(newNickname);
+    }
+
+    @Test
+    @DisplayName("비밀번호 변경 테스트 - 성공")
+    void modifyPasswordSuccess(){
+        // Given
+        ModifyPasswordForm modifyPasswordForm = new ModifyPasswordForm("password", "newPassword");
+        User user = new User("test@gmail.com", "nickname",
+                BCrypt.hashpw("password", BCrypt.gensalt()));
+        MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("user", 14);
+        httpServletRequest.setSession(session);
+
+        given(userRepository.findUserById(14)).willReturn(user);
+
+        // When
+        Message resultMsg = userService.modifyPassword(modifyPasswordForm, httpServletRequest);
+
+        // Then
+        assertThat(resultMsg.getMessage()).isEqualTo("Password modified successfully");
+        verify(userRepository).findUserById(14);
+    }
+
+    @Test
+    @DisplayName("비밀번호 변경 테스트 - 로그인 상태 아닐 때")
+    void modifyPasswordNotLogin(){
+        // Given
+        ModifyPasswordForm modifyPasswordForm = new ModifyPasswordForm("password", "newPassword");
+        User user = new User("test@gmail.com", "nickname",
+                BCrypt.hashpw("password", BCrypt.gensalt()));
+        MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
+
+        // When
+        Throwable exception = assertThrows(NotLoginStatementException.class, () -> {
+            Message resultMsg = userService.modifyPassword(modifyPasswordForm, httpServletRequest);
+        });
+
+        // Then
+        assertThat(exception.getMessage()).isEqualTo("ERROR: Session Has Expired");
+    }
+
+    @Test
+    @DisplayName("비밀번호 변경 테스트 - 기존 비밀번호와 맞지 않을 경우")
+    void modifyPasswordNotMatchPassword(){
+        // Given
+        ModifyPasswordForm modifyPasswordForm = new ModifyPasswordForm("password12", "newPassword");
+        User user = new User("test@gmail.com", "nickname",
+                BCrypt.hashpw("password", BCrypt.gensalt()));
+        MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("user", 14);
+        httpServletRequest.setSession(session);
+
+        given(userRepository.findUserById(14)).willReturn(user);
+
+        // When
+        Throwable exception = assertThrows(PasswordNotMatchException.class, () -> {
+            Message resultMsg = userService.modifyPassword(modifyPasswordForm, httpServletRequest);
+        });
+
+        // Then
+        assertThat(exception.getMessage()).isEqualTo("ERROR: Password not match");
+        verify(userRepository).findUserById(14);
     }
 
 

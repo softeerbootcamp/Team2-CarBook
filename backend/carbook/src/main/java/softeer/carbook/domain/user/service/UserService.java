@@ -101,7 +101,7 @@ public class UserService {
         User modifyUser = findLoginedUser(httpServletRequest);
         if(!checkPassword(modifyUser, modifyPasswordForm.getPassword()))
             // 기존 비밀번호와 맞지 않을 경우 = 패스워드 불일치
-            return new Message("ERROR: Password not match");
+            throw new PasswordNotMatchException();
 
         // 새로운 비밀번호 반영
         userRepository.modifyPassword(modifyPasswordForm.getPassword(), modifyPasswordForm.getNewPassword());
