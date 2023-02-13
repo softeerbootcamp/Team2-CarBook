@@ -18,8 +18,6 @@ export default class Followlists extends Component {
       .then((response) => response.data)
       .catch((error) => error);
 
-    console.log(data.nicknames);
-
     this.setState({
       ...this.state,
       follows: data.nicknames,

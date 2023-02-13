@@ -24,7 +24,6 @@ export default class ProfilePage extends Component {
       .get(`/api/profile?nickname=${urlnickname}`)
       .then((response) => response.data)
       .catch((error) => error);
-    console.log(data);
     this.setState({
       isMyProfile: data.myProfile,
       isFollow: data.follow,
@@ -35,7 +34,6 @@ export default class ProfilePage extends Component {
       follower: data.follower,
       following: data.following,
     });
-    console.log("img", this.state.images.length);
   }
 
   async receiveFollower() {}
@@ -152,7 +150,6 @@ export default class ProfilePage extends Component {
       }
 
       if (followerSection) {
-        console.log("clicked follower section");
         this.setState({ ...this.state, profileMode: "follower" });
         return;
       }
@@ -170,7 +167,6 @@ export default class ProfilePage extends Component {
 
   async toggleFollow() {
     this.setState({ ...this.state, isFollow: !this.state.isFollow });
-    console.log(this.state.nickname);
     await basicAPI.post(`/api/profile/follow`, {
       followingNickname: this.state.nickname,
     });
