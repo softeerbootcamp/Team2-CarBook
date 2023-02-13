@@ -14,13 +14,14 @@ export default class ProfilePage extends Component {
   setup(): void {
     //path에서 닉네임 가져오기
     // console.log(location.pathname.split("/").slice(-1)[0]);
-
-    this.fetchProfilePage();
+    const urlnickname = location.pathname.split("/").slice(-1)[0];
+    this.setState({ nickname: urlnickname });
+    this.fetchProfilePage(urlnickname);
   }
 
-  async fetchProfilePage() {
+  async fetchProfilePage(urlnickname: string) {
     const data = await basicAPI
-      .get("/api/profile?nickname=dongja")
+      .get(`/api/profile?nickname=${urlnickname}`)
       .then((response) => response.data)
       .catch((error) => error);
     console.log(data);
@@ -87,6 +88,7 @@ export default class ProfilePage extends Component {
         profileMode: this.state.profileMode,
         isMyProfile: this.state.isMyProfile,
         follows: this.state.followers,
+        nickname: this.state.nickname,
       });
 
     this.state.profileMode === "following" &&
@@ -94,6 +96,7 @@ export default class ProfilePage extends Component {
         profileMode: this.state.profileMode,
         isMyProfile: this.state.isMyProfile,
         follows: this.state.followings,
+        nickname: this.state.nickname,
       });
   }
 
@@ -104,7 +107,7 @@ export default class ProfilePage extends Component {
     modifyInfoButton?.addEventListener("click", (e: Event) => {
       e.preventDefault();
       const modal = document.body.querySelector(".alert-modal") as HTMLElement;
-      modal.classList.add("gray");
+      modal.classList.add("blue");
       showErrorModal(modal, "회원정보가 변경되었습니다");
       setTimeout(() => {
         document.body
@@ -171,7 +174,7 @@ export default class ProfilePage extends Component {
     await basicAPI.post(`/api/profile/follow`, {
       followingNickname: this.state.nickname,
     });
-    this.fetchProfilePage();
+    this.fetchProfilePage(this.state.nickname);
   }
 }
 

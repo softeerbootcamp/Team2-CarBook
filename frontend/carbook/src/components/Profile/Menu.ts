@@ -1,4 +1,6 @@
+import { basicAPI } from "@/api";
 import { Component } from "@/core";
+import { push } from "../../utils/router/navigate";
 
 export default class Menu extends Component {
   template(): string {
@@ -21,13 +23,32 @@ export default class Menu extends Component {
     this.$target.addEventListener("click", (e: Event) => {
       const target = e.target as HTMLElement;
       const li = target.closest("li");
+      const modal = document.body.querySelector(".alert-modal") as HTMLElement;
+
       if (!li) return;
+      if (li.classList.contains("logout")) {
+        this.doLogout(modal);
+        return;
+      }
       document.body.querySelector(".modify-modal")?.classList.toggle("hidden");
       const menu = this.$target.querySelector(
         ".info-menu-items"
       ) as HTMLElement;
       menu.classList.toggle("hidden");
     });
+  }
+
+  async doLogout(modal: HTMLElement) {
+    const LOGOUTDELAY = 2300;
+    await basicAPI
+      .post(`/api/profile/logout`)
+      .then(() => {
+        showErrorModal(modal, "로그아웃에 성공하셨습니다");
+        setTimeout(() => {
+          push("/");
+        }, LOGOUTDELAY);
+      })
+      .catch((error) => error);
   }
   setEvent(): void {
     this.$target.addEventListener("click", (e: Event) => {
@@ -37,4 +58,15 @@ export default class Menu extends Component {
       menu.classList.toggle("hidden");
     });
   }
+}
+
+function showErrorModal(modal: HTMLElement, errorMessage: string): void {
+  if (modal.classList.contains("FadeInAndOut")) return;
+  modal.innerHTML = errorMessage;
+  modal.classList.toggle("blue");
+  modal.classList.toggle("FadeInAndOut");
+  setTimeout(() => {
+    modal.classList.toggle("FadeInAndOut");
+    modal.classList.toggle("blue");
+  }, 2000);
 }

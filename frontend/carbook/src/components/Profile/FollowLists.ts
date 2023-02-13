@@ -10,11 +10,11 @@ export default class Followlists extends Component {
   }
 
   async receiveFollowLists() {
-    const { profileMode } = this.props;
+    const { profileMode, nickname } = this.props;
 
     const mode = profileMode === "follower" ? "followers" : "followings";
     const data = await basicAPI
-      .get(`/api/profile/${mode}?nickname=dongja1`)
+      .get(`/api/profile/${mode}?nickname=${nickname}`)
       .then((response) => response.data)
       .catch((error) => error);
 
