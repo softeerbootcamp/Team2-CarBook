@@ -25,6 +25,9 @@ dependencies {
 
 	// https://mvnrepository.com/artifact/org.mindrot/jbcrypt
 	implementation group: 'org.mindrot', name: 'jbcrypt', version: '0.4'
+
+	implementation platform('com.amazonaws:aws-java-sdk-bom:1.11.1000')
+	implementation 'com.amazonaws:aws-java-sdk-s3'
 }
 
 tasks.named('test') {
