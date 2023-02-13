@@ -43,10 +43,10 @@ class UserControllerTest {
 
         // when & then
         mockMvc.perform(post("/signup")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"email\":\"springtestemail@gmail.com\"," +
-                        "\"nickname\":\"springtest\"," +
-                        "\"password\":\"springtestpwd\"}"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"email\":\"springtestemail@gmail.com\"," +
+                                "\"nickname\":\"springtest\"," +
+                                "\"password\":\"springtestpwd\"}"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("SignUp Success")));
 
@@ -72,7 +72,7 @@ class UserControllerTest {
 
     @Test
     @DisplayName("로그아웃 테스트")
-    void logout() throws Exception{
+    void logout() throws Exception {
         // given
         given(userService.logout(any(HttpServletRequest.class)))
                 .willReturn(new Message("Logout Success"));
