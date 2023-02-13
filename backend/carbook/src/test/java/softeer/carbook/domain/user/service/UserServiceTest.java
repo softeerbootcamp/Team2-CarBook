@@ -154,7 +154,10 @@ class UserServiceTest {
         String nickname = "nickname";
         String newNickname = "newnickname";
         MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
-        given()
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("user", 14);
+        httpServletRequest.setSession(session);
+
         given(userRepository.isNicknameDuplicated(nickname)).willReturn(true);
         given(userRepository.isNicknameDuplicated(newNickname)).willReturn(false);
 
@@ -163,7 +166,6 @@ class UserServiceTest {
 
         // Then
         assertThat(resultMsg.getMessage()).isEqualTo("Nickname modified successfully");
-        verify(httpServletRequest).getSession(false);
         verify(userRepository).isNicknameDuplicated(nickname);
         verify(userRepository).isNicknameDuplicated(newNickname);
         verify(userRepository).modifyNickname(nickname, newNickname);
