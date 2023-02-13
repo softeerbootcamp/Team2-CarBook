@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import softeer.carbook.domain.hashtag.dto.HashtagSearchResponse;
+import softeer.carbook.domain.hashtag.dto.TagSearchResopnse;
 import softeer.carbook.domain.hashtag.dto.TypeSearchResponse;
 import softeer.carbook.domain.hashtag.service.HashtagService;
 
@@ -20,6 +21,11 @@ public class HashtagController {
     }
 
     // 모든 태그 검색
+    @GetMapping("/search/")
+    public ResponseEntity<TagSearchResopnse> searchAllTags(@RequestParam String keyword) {
+        TagSearchResopnse tagSearchResopnse = hashtagService.searchAllTags(keyword);
+        return new ResponseEntity<>(tagSearchResopnse, HttpStatus.OK);
+    }
 
     // 해시태그 검색
     @GetMapping("/search/hashtag/")
