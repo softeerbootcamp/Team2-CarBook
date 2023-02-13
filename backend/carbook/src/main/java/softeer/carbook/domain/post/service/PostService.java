@@ -2,6 +2,7 @@ package softeer.carbook.domain.post.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import softeer.carbook.domain.follow.repository.FollowRepository;
 import softeer.carbook.domain.post.dto.*;
 import softeer.carbook.domain.post.model.Image;
@@ -90,6 +91,7 @@ public class PostService {
     }
 
 
+    @Transactional
     public Message createPost(NewPostForm newPostForm, User loginUser) {
         Model model = tagRepository.findModelByName(newPostForm.getModel());
         int model_id = model.getId();

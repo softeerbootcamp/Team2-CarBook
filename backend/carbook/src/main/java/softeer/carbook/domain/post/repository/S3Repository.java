@@ -38,8 +38,11 @@ public class S3Repository {
                 FileOutputStream fos = new FileOutputStream(convertFile);
                 fos.write(file.getBytes());
                 return Optional.of(convertFile);
-            } return Optional.empty();
+            }
+            convertFile.delete();
+            return Optional.empty();
         } catch (IOException e) {
+            convertFile.delete();
             return Optional.empty();
         }
     }
