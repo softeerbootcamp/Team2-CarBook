@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.transaction.annotation.Transactional;
 import softeer.carbook.domain.user.dto.LoginForm;
@@ -23,11 +24,14 @@ import softeer.carbook.domain.user.exception.SignupEmailDuplicateException;
 import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.repository.UserRepository;
 
+import javax.servlet.http.HttpServletRequest;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -141,6 +145,28 @@ class UserServiceTest {
         // Then
         assertThat(exception.getMessage()).isEqualTo("ERROR: Password not match");
         verify(userRepository).findUserByEmail(loginForm.getEmail());
+    }
+
+    @Test
+    @DisplayName("닉네임 변경 테스트 - 성공")
+    void modifyNicknameSuccess(){
+        // Given
+        String nickname = "nickname";
+        String newNickname = "newnickname";
+        MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
+        given()
+        given(userRepository.isNicknameDuplicated(nickname)).willReturn(true);
+        given(userRepository.isNicknameDuplicated(newNickname)).willReturn(false);
+
+        // When
+        Message resultMsg = userService.modifyNickname(nickname, newNickname, httpServletRequest);
+
+        // Then
+        assertThat(resultMsg.getMessage()).isEqualTo("Nickname modified successfully");
+        verify(httpServletRequest).getSession(false);
+        verify(userRepository).isNicknameDuplicated(nickname);
+        verify(userRepository).isNicknameDuplicated(newNickname);
+        verify(userRepository).modifyNickname(nickname, newNickname);
     }
 
 }
