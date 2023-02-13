@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.transaction.annotation.Transactional;
 import softeer.carbook.domain.user.dto.LoginForm;
-import softeer.carbook.domain.user.dto.Message;
+import softeer.carbook.global.dto.Message;
 import softeer.carbook.domain.user.dto.SignupForm;
 import softeer.carbook.domain.user.exception.LoginEmailNotExistException;
 import softeer.carbook.domain.user.exception.NicknameDuplicateException;

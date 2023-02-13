@@ -7,13 +7,12 @@ import org.springframework.web.bind.annotation.*;
 import softeer.carbook.domain.follow.dto.FollowListResponse;
 import softeer.carbook.domain.follow.dto.ModifyFollowInfoForm;
 import softeer.carbook.domain.follow.service.FollowService;
-import softeer.carbook.domain.user.dto.Message;
+import softeer.carbook.global.dto.Message;
 import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import javax.validation.constraints.Positive;
 
 @RestController
 public class FollowController {

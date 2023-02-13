@@ -3,13 +3,11 @@ package softeer.carbook.domain.follow.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import softeer.carbook.domain.follow.dto.FollowListResponse;
-import softeer.carbook.domain.follow.dto.ModifyFollowInfoForm;
 import softeer.carbook.domain.follow.repository.FollowRepository;
-import softeer.carbook.domain.user.dto.Message;
+import softeer.carbook.global.dto.Message;
 import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.repository.UserRepository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
