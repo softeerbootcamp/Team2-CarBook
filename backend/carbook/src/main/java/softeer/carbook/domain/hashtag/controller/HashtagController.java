@@ -34,10 +34,10 @@ public class HashtagController {
         return new ResponseEntity<>(hashtagSearchResponse, HttpStatus.OK);
     }
 
-    // 차량 종류 태그 검색
-    @GetMapping("/search/type/")
-    public ResponseEntity<TypeSearchResponse> searchType(@RequestParam String keyword) {
-        TypeSearchResponse typeSearchResponse = hashtagService.searchType(keyword);
-        return new ResponseEntity<>(typeSearchResponse, HttpStatus.OK);
-    }
+//    // 차량 종류 태그 검색
+//    @GetMapping("/search/type/")
+//    public ResponseEntity<TypeSearchResponse> searchType(@RequestParam String keyword) {
+//        TypeSearchResponse typeSearchResponse = hashtagService.searchType(keyword);
+//        return new ResponseEntity<>(typeSearchResponse, HttpStatus.OK);
+//    }
 }

@@ -52,11 +52,11 @@ public class HashtagService {
                 .build();
     }
 
-    public TypeSearchResponse searchType(String keyword) {
-        List<Type> types = hashtagRepository.searchTypeByPrefix(keyword);
-
-        return new TypeSearchResponse.TypeSearchResponseBuilder()
-                .types(types)
-                .build();
-    }
+//    public TypeSearchResponse searchType(String keyword) {
+//        List<Type> types = hashtagRepository.searchTypeByPrefix(keyword);
+//
+//        return new TypeSearchResponse.TypeSearchResponseBuilder()
+//                .types(types)
+//                .build();
+//    }
 }
