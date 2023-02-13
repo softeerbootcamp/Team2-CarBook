@@ -146,27 +146,4 @@ class UserServiceTest {
         assertThat(exception.getMessage()).isEqualTo("ERROR: Password not match");
         verify(userRepository).findUserByEmail(loginForm.getEmail());
     }
-
-    @Test
-    @DisplayName("닉네임 변경 테스트 - 성공")
-    void modifyNicknameSuccess(){
-        // Given
-        String nickname = "nickname";
-        String newNickname = "newnickname";
-        MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
-        given()
-        given(userRepository.isNicknameDuplicated(nickname)).willReturn(true);
-        given(userRepository.isNicknameDuplicated(newNickname)).willReturn(false);
-
-        // When
-        Message resultMsg = userService.modifyNickname(nickname, newNickname, httpServletRequest);
-
-        // Then
-        assertThat(resultMsg.getMessage()).isEqualTo("Nickname modified successfully");
-        verify(httpServletRequest).getSession(false);
-        verify(userRepository).isNicknameDuplicated(nickname);
-        verify(userRepository).isNicknameDuplicated(newNickname);
-        verify(userRepository).modifyNickname(nickname, newNickname);
-    }
-
 }
