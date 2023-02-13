@@ -9,12 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 import softeer.carbook.domain.user.dto.LoginForm;
 import softeer.carbook.domain.user.dto.Message;
 import softeer.carbook.domain.user.dto.SignupForm;
-import softeer.carbook.domain.user.exception.LoginEmailNotExistException;
-import softeer.carbook.domain.user.exception.NicknameDuplicateException;
-import softeer.carbook.domain.user.exception.PasswordNotMatchException;
-import softeer.carbook.domain.user.exception.SignupEmailDuplicateException;
+import softeer.carbook.domain.user.exception.*;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Transactional
@@ -38,15 +36,12 @@ class UserServiceTest {
     void signupEmailDuplicate() {
         // given
         SignupForm signupForm = new SignupForm("test@gmail.com", "testNickname", "testtest123");
-        String exceptionMsg = "";
         // when
-        try {
+        Throwable exception = assertThrows(SignupEmailDuplicateException.class, () -> {
             Message resultMsg = userService.signup(signupForm);
-        } catch (SignupEmailDuplicateException e) {
-            exceptionMsg = e.getMessage();
-        }
+        });
         // then
-        assertThat(exceptionMsg).isEqualTo("ERROR: Duplicated email");
+        assertThat(exception.getMessage()).isEqualTo("ERROR: Duplicated email");
     }
 
     @Test
@@ -54,15 +49,12 @@ class UserServiceTest {
     void signupNicknameDuplicate() {
         // given
         SignupForm signupForm = new SignupForm("test123@gmail.com", "carbook123", "15번유저");
-        String exceptionMsg = "";
         // when
-        try {
+        Throwable exception = assertThrows(NicknameDuplicateException.class, () -> {
             Message resultMsg = userService.signup(signupForm);
-        } catch (NicknameDuplicateException e) {
-            exceptionMsg = e.getMessage();
-        }
+        });
         // then
-        assertThat(exceptionMsg).isEqualTo("ERROR: Duplicated nickname");
+        assertThat(exception.getMessage()).isEqualTo("ERROR: Duplicated nickname");
     }
 
     @Test
@@ -81,15 +73,12 @@ class UserServiceTest {
     void loginEmailNotExist() {
         // given
         LoginForm loginForm = new LoginForm("test123@gmail.com", "카북화이팅");
-        String exceptionMsg = "";
         // when
-        try {
+        Throwable exception = assertThrows(LoginEmailNotExistException.class, () -> {
             Message resultMsg = userService.login(loginForm, new MockHttpSession());
-        } catch (LoginEmailNotExistException e) {
-            exceptionMsg = e.getMessage();
-        }
+        });
         // then
-        assertThat(exceptionMsg).isEqualTo("ERROR: Email not exist");
+        assertThat(exception.getMessage()).isEqualTo("ERROR: Email not exist");
     }
 
     @Test
@@ -97,15 +86,12 @@ class UserServiceTest {
     void loginPasswordNotMatch() {
         // given
         LoginForm loginForm = new LoginForm("test@gmail.com", "카북화이팅123");
-        String exceptionMsg = "";
         // when
-        try{
+        Throwable exception = assertThrows(PasswordNotMatchException.class, () -> {
             Message resultMsg = userService.login(loginForm, new MockHttpSession());
-        } catch (PasswordNotMatchException e) {
-            exceptionMsg = e.getMessage();
-        }
+        });
         // then
-        assertThat(exceptionMsg).isEqualTo("ERROR: Password not match");
+        assertThat(exception.getMessage()).isEqualTo("ERROR: Password not match");
     }
 
 }
