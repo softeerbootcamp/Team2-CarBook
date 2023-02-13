@@ -18,7 +18,7 @@ export default () =>
     server: {
       proxy: {
         '/api': {
-          target: 'http://3.39.1.92:8080',
+          target: 'http://localhost:8080',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, ''),
           secure: false,
