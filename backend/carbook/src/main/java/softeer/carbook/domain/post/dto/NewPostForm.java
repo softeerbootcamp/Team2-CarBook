@@ -22,12 +22,20 @@ public class NewPostForm {
 
     private final String content;
 
-    public String getContent() {
-        return content;
-    }
-
     public MultipartFile getImage() {
         return image;
+    }
+
+    public List<String> getHashtag() {
+        return hashtag;
+    }
+
+    public String getModel() {
+        return model;
+    }
+
+    public String getContent() {
+        return content;
     }
 
     public NewPostForm(MultipartFile image, List<String> hashtag, String type, String model, String content) {
@@ -37,24 +45,5 @@ public class NewPostForm {
         this.model = model;
         this.content = content;
     }
-    /*
-    @Email(message = "이메일 형식이 맞지 않습니다.")
-    @NotBlank(message = "이메일을 입력해 주세요.")
-    private final String email;
 
-    @Size(max = 16, message = "비밀번호는 16자 이하여야 합니다.")
-    @NotBlank(message = "비밀번호를 입력해 주세요.")
-    private final String password;
-
-    @Size(max = 16, message = "닉네임은 16자 이하여야 합니다.")
-    @NotBlank(message = "닉네임을 입력해 주세요.")
-    private final String nickname;
-
-    public SignupForm(String email, String password, String nickname) {
-        this.email = email;
-        this.password = password;
-        this.nickname = nickname;
-    }
-
-     */
 }

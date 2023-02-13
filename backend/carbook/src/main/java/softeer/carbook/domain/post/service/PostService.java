@@ -87,7 +87,8 @@ public class PostService {
 
 
     public Message createPost(NewPostForm newPostForm, User loginUser) {
-        Post post = new Post(loginUser.getId(), newPostForm.getContent());
+        int model_id = 0;
+        Post post = new Post(loginUser.getId(), newPostForm.getContent(), model_id);
         int postId = postRepository.addPost(post);
         String imageURL = "";
         try {

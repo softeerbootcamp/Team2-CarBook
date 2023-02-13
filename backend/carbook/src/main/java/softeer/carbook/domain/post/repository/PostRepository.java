@@ -58,7 +58,8 @@ public class PostRepository {
                 rs.getInt("user_id"),
                 rs.getTimestamp("create_date"),
                 rs.getTimestamp("update_date"),
-                rs.getString("content")
+                rs.getString("content"),
+                rs.getInt("model_id")
         );
     }
 
