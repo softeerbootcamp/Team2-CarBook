@@ -59,6 +59,11 @@ public class FollowController {
         return new ResponseEntity<>(followService.getFollowings(nickname), HttpStatus.OK);
     }
 
-        // 팔로잉 리스트 조회 > follow 로
+    @DeleteMapping("profile/follower")
+    public ResponseEntity<Message> deleteFollower(@RequestParam String follower){
+        Message resultMsg = followService.deleteFollower(follower);
+        return Message.make200Response(resultMsg.getMessage());
+    }
+
 
 }
