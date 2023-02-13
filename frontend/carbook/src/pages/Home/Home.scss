@@ -199,7 +199,7 @@
     flex-direction: column;
     align-items: center;
     padding: 35px;
-    gap: 20px;
+    gap: 15px;
     font-family: 'Pretendard Variable';
     position: relative;
 
@@ -214,6 +214,8 @@
       width: 100%;
       gap: 10px;
       overflow-x: scroll;
+      padding: 0 5%;
+      min-height: 30px;
       -ms-overflow-style: none;
       scrollbar-width: none;
       &::-webkit-scrollbar {
@@ -228,6 +230,17 @@
         padding: 5px 10px;
         border-radius: 5px;
         font-size: 16px;
+        font-weight: 200;
+        white-space: nowrap;
+      }
+
+      .msg {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        color: $main-blue;
+        padding: 5px 10px;
+        font-size: 14px;
         font-weight: 200;
         white-space: nowrap;
       }
@@ -253,10 +266,6 @@
           border-radius: 10px;
           background-color: rgb(215, 215, 215);
           cursor: pointer;
-          background-image: url('@/assets/images/car.jpg');
-
-          background-size: cover;
-          background-position: center;
         }
 
         &--skelton {
