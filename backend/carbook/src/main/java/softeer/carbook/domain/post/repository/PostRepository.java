@@ -37,6 +37,13 @@ public class PostRepository {
 
      */
 
+    public void addPost(Post post){
+        jdbcTemplate.update("insert into POST(user_id, content) values(?, ?)",
+                post.getUserId(),
+                post.getContent()
+        );
+    }
+
     private RowMapper<Post> postRowMapper() {
         return (rs, rowNum) -> new Post(
                 rs.getInt("id"),
