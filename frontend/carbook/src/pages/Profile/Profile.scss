@@ -15,8 +15,8 @@
     visibility: hidden;
     opacity: 0;
   }
-  .gray {
-    background-color: lightgray;
+  .blue {
+    background-color: $main-light-blue;
   }
   .pink {
     background-color: $main-pink;
@@ -220,7 +220,7 @@
 
   .modify-modal {
     position: fixed;
-    top: 5vh;
+    bottom: -5vh;
     background-color: $main-white;
     width: 100vw;
     min-width: 300px;
