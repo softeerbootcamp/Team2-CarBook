@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import softeer.carbook.domain.hashtag.dto.HashtagSearchResponse;
+import softeer.carbook.domain.hashtag.dto.ModelsResponse;
 import softeer.carbook.domain.hashtag.dto.TagSearchResopnse;
 import softeer.carbook.domain.hashtag.dto.TypesResponse;
 import softeer.carbook.domain.hashtag.service.HashtagService;
@@ -39,5 +40,12 @@ public class HashtagController {
     public ResponseEntity<TypesResponse> getAllTypes() {
         TypesResponse typesResponse = hashtagService.findAllTypes();
         return new ResponseEntity<>(typesResponse, HttpStatus.OK);
+    }
+
+    // 차량 모델 전체 조회
+    @GetMapping("/model")
+    public ResponseEntity<ModelsResponse> getAllModels() {
+        ModelsResponse modelsResponse = hashtagService.findAllModels();
+        return new ResponseEntity<>(modelsResponse, HttpStatus.OK);
     }
 }
