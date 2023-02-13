@@ -2,104 +2,148 @@ package softeer.carbook.domain.user.service;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mindrot.jbcrypt.BCrypt;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.transaction.annotation.Transactional;
 import softeer.carbook.domain.user.dto.LoginForm;
-import softeer.carbook.domain.user.dto.Message;
+import softeer.carbook.global.dto.Message;
 import softeer.carbook.domain.user.dto.SignupForm;
 import softeer.carbook.domain.user.exception.LoginEmailNotExistException;
 import softeer.carbook.domain.user.exception.NicknameDuplicateException;
+import softeer.carbook.domain.user.exception.PasswordNotMatchException;
 import softeer.carbook.domain.user.exception.SignupEmailDuplicateException;
+import softeer.carbook.domain.user.model.User;
+import softeer.carbook.domain.user.repository.UserRepository;
+
+import javax.servlet.http.HttpServletRequest;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-@SpringBootTest
-@Transactional
+@ExtendWith(MockitoExtension.class)
 class UserServiceTest {
-    @Autowired
-    UserService userService;
+    @InjectMocks
+    private UserService userService;
+    @Mock
+    private UserRepository userRepository;
 
     @Test
     @DisplayName("회원가입 성공 테스트")
-    void signup_success() {
-        // given
-        SignupForm signupForm = new SignupForm("test123@gmail.com", "testNickname", "testtest123");
-        // when
-        Message resultMsg = userService.signup(signupForm);
-        // then
-        assertThat(resultMsg.getMessage()).isEqualTo("SignUp Success");
+    void signup_Success() {
+        // Given
+        SignupForm signupForm = new SignupForm("email@example.com", "password", "nickname");
+        given(userRepository.isEmailDuplicated(any())).willReturn(false);
+        given(userRepository.isNicknameDuplicated(any())).willReturn(false);
+
+        // When
+        Message result = userService.signup(signupForm);
+
+        // Then
+        assertThat(result.getMessage()).isEqualTo("SignUp Success");
+        verify(userRepository).isEmailDuplicated(signupForm.getEmail());
+        verify(userRepository).isNicknameDuplicated(signupForm.getNickname());
     }
 
     @Test
     @DisplayName("회원가입 중복된 이메일 입력될 경우")
     void signupEmailDuplicate() {
-        // given
-        SignupForm signupForm = new SignupForm("test@gmail.com", "testNickname", "testtest123");
-        String exceptionMsg = "";
-        // when
-        try {
+        // Given
+        SignupForm signupForm = new SignupForm("email@example.com", "password", "nickname");
+        given(userRepository.isEmailDuplicated(any())).willReturn(true);
+
+        // When
+        Throwable exception = assertThrows(SignupEmailDuplicateException.class, () -> {
             Message resultMsg = userService.signup(signupForm);
-        } catch (SignupEmailDuplicateException e) {
-            exceptionMsg = e.getMessage();
-        }
-        // then
-        assertThat(exceptionMsg).isEqualTo("ERROR: Duplicated email");
+        });
+
+        // Then
+        assertThat(exception.getMessage()).isEqualTo("ERROR: Duplicated email");
+        verify(userRepository).isEmailDuplicated(signupForm.getEmail());
     }
 
     @Test
     @DisplayName("회원가입 중복된 닉네임 입력될 경우")
     void signupNicknameDuplicate() {
-        // given
-        SignupForm signupForm = new SignupForm("test123@gmail.com", "carbook123", "15번유저");
-        String exceptionMsg = "";
-        // when
-        try {
+        // Given
+        SignupForm signupForm = new SignupForm("email@example.com", "password", "nickname");
+        given(userRepository.isEmailDuplicated(any())).willReturn(false);
+        given(userRepository.isNicknameDuplicated(any())).willReturn(true);
+
+        // When
+        Throwable exception = assertThrows(NicknameDuplicateException.class, () -> {
             Message resultMsg = userService.signup(signupForm);
-        } catch (NicknameDuplicateException e) {
-            exceptionMsg = e.getMessage();
-        }
-        // then
-        assertThat(exceptionMsg).isEqualTo("ERROR: Duplicated nickname");
+        });
+
+        // Then
+        assertThat(exception.getMessage()).isEqualTo("ERROR: Duplicated nickname");
+        verify(userRepository).isEmailDuplicated(signupForm.getEmail());
+        verify(userRepository).isNicknameDuplicated(signupForm.getNickname());
     }
 
     @Test
     @DisplayName("로그인 성공 테스트")
     void loginSuccess() {
-        // given
-        LoginForm loginForm = new LoginForm("test@gmail.com", "carbook");
-        // when
+        // Given
+        LoginForm loginForm = new LoginForm("test@gmail.com",
+                "password");
+        User user = new User("test@gmail.com", "nickname",
+                BCrypt.hashpw("password", BCrypt.gensalt()));
+        given(userRepository.findUserByEmail(any())).willReturn(user);
+
+        // When
         Message resultMsg = userService.login(loginForm, new MockHttpSession());
-        // then
+
+        // Then
         assertThat(resultMsg.getMessage()).isEqualTo("Login Success");
+        verify(userRepository).findUserByEmail(loginForm.getEmail());
     }
 
     @Test
     @DisplayName("로그인 실패 테스트 - 이메일 없을 경우")
     void loginEmailNotExist() {
-        // given
-        LoginForm loginForm = new LoginForm("test123@gmail.com", "카북화이팅");
-        String exceptionMsg = "";
-        // when
-        try {
+        // Given
+        LoginForm loginForm = new LoginForm("test@gmail.com", "password");
+        given(userRepository.findUserByEmail(any())).willThrow(new LoginEmailNotExistException());
+
+        // When
+        Throwable exception = assertThrows(LoginEmailNotExistException.class, () -> {
             Message resultMsg = userService.login(loginForm, new MockHttpSession());
-        } catch (LoginEmailNotExistException e) {
-            exceptionMsg = e.getMessage();
-        }
-        // then
-        assertThat(exceptionMsg).isEqualTo("ERROR: Email not exist");
+        });
+
+        // Then
+        assertThat(exception.getMessage()).isEqualTo("ERROR: Email not exist");
+        verify(userRepository).findUserByEmail(loginForm.getEmail());
     }
 
     @Test
     @DisplayName("로그인 실패 테스트 - 비밀번호 불일치")
     void loginPasswordNotMatch() {
-        // given
-        LoginForm loginForm = new LoginForm("test@gmail.com", "카북화이팅123");
-        // when
-        Message resultMsg = userService.login(loginForm, new MockHttpSession());
-        // then
-        assertThat(resultMsg.getMessage()).isEqualTo("ERROR: Password not match");
-    }
+        // Given
+        LoginForm loginForm = new LoginForm("test@gmail.com", "password");
+        User user = new User("test@gmail.com", "nickname",
+                BCrypt.hashpw("password123", BCrypt.gensalt()));
+        given(userRepository.findUserByEmail(any())).willReturn(user);
 
+        // When
+        Throwable exception = assertThrows(PasswordNotMatchException.class, () -> {
+            Message resultMsg = userService.login(loginForm, new MockHttpSession());
+        });
+
+        // Then
+        assertThat(exception.getMessage()).isEqualTo("ERROR: Password not match");
+        verify(userRepository).findUserByEmail(loginForm.getEmail());
+    }
 }

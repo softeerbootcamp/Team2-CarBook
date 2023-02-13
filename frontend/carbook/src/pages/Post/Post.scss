@@ -5,7 +5,7 @@
   background-color: $main-blue;
 
   .header {
-    height:20%;
+    height: 20%;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -27,7 +27,6 @@
     &__sub {
       font-size: 10px;
     }
-
   }
 
   section {
@@ -39,7 +38,7 @@
     border-radius: 20px 20px 0 0;
     position: relative;
 
-    .wrapper {
+    .form-container {
       max-width: 425px;
       margin: 0 auto;
     }
@@ -53,14 +52,21 @@
       justify-content: center;
       align-items: center;
       position: absolute;
-      border: 1px solid #FFFFFF;
+      border: 1px solid #ffffff;
       box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
       background-color: white;
       color: black;
       top: -70px;
       left: calc(50% - 150px);
       cursor: pointer;
-      gap:10px;
+      gap: 10px;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: contain;
+
+      .hide {
+        display: none;
+      }
     }
 
     .form {
@@ -84,7 +90,7 @@
           &__box {
             display: flex;
             align-items: center;
-            
+
             label {
               width: 40%;
               text-align: center;
@@ -92,15 +98,15 @@
 
             select {
               width: 60%;
-              border: 1px solid #DBE2EF;
-              border-radius: 5px;  
-              padding: 12px; 
+              border: 1px solid #dbe2ef;
+              border-radius: 5px;
+              padding: 12px;
               color: $main-light-blue;
               font-size: 14px;
               appearance: none;
-              background: white url("@/assets/icons/arrow-down.svg") no-repeat right 12px center;;
+              background: white url('@/assets/icons/arrow-down.svg') no-repeat
+                right 12px center;
             }
-
           }
 
           &__box--hashtag {
@@ -113,9 +119,8 @@
               position: relative;
             }
 
-
             .input {
-              border: 1px solid #DBE2EF;
+              border: 1px solid #dbe2ef;
               border-radius: 30px;
               height: 45px;
               width: 300px;
@@ -145,14 +150,13 @@
                 font-weight: 200;
                 white-space: nowrap;
                 color: white;
-                font-family: "Pretendard";
+                font-family: 'Pretendard';
               }
             }
- 
-          } 
+          }
 
           &__textarea {
-            border: 1px solid #DBE2EF;
+            border: 1px solid #dbe2ef;
             border-radius: 5px;
             height: 200px;
             padding: 15px;
@@ -183,10 +187,6 @@
           cursor: pointer;
         }
       }
-      
     }
-
-
-  
   }
 }

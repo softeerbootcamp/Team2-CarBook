@@ -5,14 +5,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import softeer.carbook.domain.user.dto.Message;
+import softeer.carbook.global.dto.Message;
 import softeer.carbook.domain.user.dto.LoginForm;
 import softeer.carbook.domain.user.dto.ModifyPasswordForm;
 import softeer.carbook.domain.user.dto.SignupForm;
-import softeer.carbook.domain.user.exception.NicknameNotExistException;
-import softeer.carbook.domain.user.exception.NotLoginStatementException;
-import softeer.carbook.domain.user.exception.SignupEmailDuplicateException;
-import softeer.carbook.domain.user.exception.NicknameDuplicateException;
+import softeer.carbook.domain.user.exception.*;
 import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.repository.UserRepository;
 
@@ -55,7 +52,7 @@ public class UserService {
             return new Message("Login Success");
         }
         // 패스워드 불일치
-        return new Message("ERROR: Password not match");
+        throw new PasswordNotMatchException();
     }
 
     public Message logout(HttpServletRequest httpServletRequest) {

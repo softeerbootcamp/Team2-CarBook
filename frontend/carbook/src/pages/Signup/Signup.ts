@@ -1,8 +1,16 @@
-import { Component } from '@/core';
-import './Signup.scss';
-import car from '@/assets/images/car.svg';
-import { push } from '@/utils/router/navigate';
-import { EMPTYID, EMPTYPW, EMPTYNICKNAME } from '@/constants/errorMessage';
+import { Component } from "@/core";
+import "./Signup.scss";
+import car from "@/assets/images/car.svg";
+import { push } from "@/utils/router/navigate";
+import {
+  EMPTYID,
+  EMPTYPW,
+  EMPTYNICKNAME,
+  DUPPLICATEDID,
+  DUPPLICATEDNICKNAME,
+  SUCCESSSIGNUP,
+} from "@/constants/errorMessage";
+import { basicAPI } from "@/api";
 
 export default class SignupPage extends Component {
   template(): string {
@@ -35,32 +43,75 @@ export default class SignupPage extends Component {
 
   setEvent(): void {
     const form = document.body.querySelector(
-      '.signup-container .input-form'
+      ".signup-container .input-form"
     ) as HTMLFormElement;
-    form?.addEventListener('submit', (e) => {
+    form?.addEventListener("submit", (e) => {
       e.preventDefault();
 
       const id = form.signupid.value.trim();
       const password = form.password.value.trim();
       const nickname = form.nickname.value.trim();
 
-      const modal = document.body.querySelector('.alert-modal') as HTMLElement;
+      const modal = document.body.querySelector(".alert-modal") as HTMLElement;
 
-      if (isEmpty(id, password, nickname, modal)) return false;
+      if (isEmpty(id, password, nickname, modal)) return;
+      sendUserInfo(id, password, nickname, modal);
+    });
+  }
 
-      push('/login');
-      return false;
+  mounted(): void {
+    this.$target.addEventListener("click", (e: Event) => {
+      const target = e.target as HTMLElement;
+      const loginLink = target.closest(".footer-login");
+      if (!loginLink) return;
+      push("/login");
     });
   }
 }
 
+async function sendUserInfo(
+  email: string,
+  password: string,
+  nickname: string,
+  modal: HTMLElement
+) {
+  await basicAPI
+    .post("/api/signup", {
+      email,
+      password,
+      nickname,
+    })
+    .then(() => {
+      const LOGINDELAY = 2300;
+      showErrorModal(modal, SUCCESSSIGNUP);
+      setTimeout(() => {
+        push("/login");
+      }, LOGINDELAY);
+    })
+    .catch((error) => {
+      if (error.response.data.message === "ERROR: Duplicated email") {
+        showErrorModal(modal, DUPPLICATEDID);
+        return;
+      }
+      if (error.response.data.message === "ERROR: Duplicated nickname")
+        showErrorModal(modal, DUPPLICATEDNICKNAME);
+    });
+}
+
 function showErrorModal(modal: HTMLElement, errorMessage: string): void {
-  if (modal.classList.contains('FadeInAndOut')) return;
+  const FADEINOUTDELAY = 2000;
+  const ModalStatus = errorMessage === SUCCESSSIGNUP ? "success" : "fail";
+
+  if (modal.classList.contains("FadeInAndOut")) return;
+
   modal.innerHTML = errorMessage;
-  modal.classList.toggle('FadeInAndOut');
+  modal.classList.toggle(ModalStatus);
+  modal.classList.toggle("FadeInAndOut");
+
   setTimeout(() => {
-    modal.classList.toggle('FadeInAndOut');
-  }, 2000);
+    modal.classList.toggle("FadeInAndOut");
+    modal.classList.toggle(ModalStatus);
+  }, FADEINOUTDELAY);
 }
 
 function isEmpty(
@@ -69,15 +120,15 @@ function isEmpty(
   nickname: string,
   modal: HTMLElement
 ) {
-  if (id === '') {
+  if (id === "") {
     showErrorModal(modal, EMPTYID);
     return true;
   }
-  if (password === '') {
+  if (password === "") {
     showErrorModal(modal, EMPTYPW);
     return true;
   }
-  if (nickname === '') {
+  if (nickname === "") {
     showErrorModal(modal, EMPTYNICKNAME);
     return true;
   }

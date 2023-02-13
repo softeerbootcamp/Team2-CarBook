@@ -6,33 +6,9 @@ import { push } from '@/utils/router/navigate';
 
 export default class HomePage extends Component {
   setup(): void {
-    this.setState({
-      // 더미 데이터
-      isLogin: true,
-      nickname: '카북닉네임',
-      images: [
-        { postid: 1, imageUrl: '스트링' },
-        { postid: 2, imageUrl: '2번째 이미지' },
-        { postid: 3, imageUrl: '3번째 이미지' },
-      ],
-      hashtags: [
-        {
-          id: '1',
-          category: 'model',
-          tag: '경차',
-        },
-        {
-          id: '2',
-          category: 'type',
-          tag: 'sonata',
-        },
-        {
-          id: '3',
-          category: 'hashtag',
-          tag: '내부',
-        },
-      ],
-    });
+    this.state = {
+      nickname: 'nickname',
+    };
   }
 
   template(): string {
@@ -47,6 +23,8 @@ export default class HomePage extends Component {
         <div class="main__hashtags">
         </div>
         <div class="main__gallery">
+          <div class="gallery"></div>
+          <div class="spinner"></div>
         </div>
         <div class="main__button">+</div>
       </main>
@@ -57,21 +35,41 @@ export default class HomePage extends Component {
   mounted(): void {
     const header = this.$target.querySelector('.header') as HTMLElement;
     const section = this.$target.querySelector('.section') as HTMLElement;
-    const hastagList = this.$target.querySelector('.main__hashtags') as HTMLElement;
-    const postList = this.$target.querySelector('.main__gallery') as HTMLElement;
+    const hastagList = this.$target.querySelector(
+      '.main__hashtags'
+    ) as HTMLElement;
+    const postList = this.$target.querySelector('.gallery') as HTMLElement;
 
-    new Header(header);
+    new Header(header, { text: '차 사진의 모든 것' });
     new SearchForm(section);
-    new HashTagList(hastagList, { hashtagList: this.state.hashtags });
-    new PostList(postList, { postList: this.state.images });
+    new HashTagList(hastagList);
+    new PostList(postList, {
+      setUserInfo: (isLogin: boolean, nickname: string) => {
+        this.setUserInfo(isLogin, nickname);
+      },
+    });
   }
 
   setEvent(): void {
     this.$target.addEventListener('click', (e: Event) => {
       const target = e.target as HTMLElement;
+      const { isLogin, nickname } = this.state;
 
       const profileBtn = target.closest('.header__right-box');
-      if (profileBtn) push(`/profile/${this.state.nickname}`);
+      const plusBtn = target.closest('.main__button');
+
+      if (profileBtn && isLogin) {
+        push(`/profile/${nickname}`);
+      } else if (plusBtn && isLogin) {
+        push(`/post/new`);
+      } else if (profileBtn || plusBtn) {
+        push('/login');
+      }
     });
+  }
+
+  setUserInfo(isLogin: boolean, nickname: string) {
+    this.state.nickname = nickname;
+    this.state.isLogin = isLogin;
   }
 }
