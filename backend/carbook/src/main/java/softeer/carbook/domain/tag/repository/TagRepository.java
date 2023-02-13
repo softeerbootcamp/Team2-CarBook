@@ -49,6 +49,10 @@ public class TagRepository {
         return jdbcTemplate.query("SELECT m.id, m.type_id, m.tag FROM MODEL m", modelRowMapper());
     }
 
+    public Model findModelByName(String tag){
+        return jdbcTemplate.queryForObject("SELECT m.id, m.type_id, m.tag FROM MODEL m WHERE m.tag = ?", Model.class, tag);
+    }
+
     private RowMapper<Type> typeRowMapper() {
         return (rs, rowNum) -> new Type(
                 rs.getInt("id"),
