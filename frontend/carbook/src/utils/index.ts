@@ -6,6 +6,10 @@ export function qs(target: HTMLElement | Document, className: string) {
   return target.querySelector(className) as HTMLElement;
 }
 
+export function qsa(target: HTMLElement | Document, className: string) {
+  return target.querySelectorAll(className) as NodeList;
+}
+
 export function isEmptyObj(obj: object) {
   if (obj.constructor === Object && Object.keys(obj).length === 0) {
     return true;
