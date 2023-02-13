@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.multipart.MultipartFile;
 import softeer.carbook.domain.post.model.Image;
 
 import javax.sql.DataSource;
@@ -79,10 +80,15 @@ public class ImageRepository {
         return conditionalStatement.substring(0, conditionalStatement.length() - 4);
     }
 
+    public void addImage(MultipartFile image) {
+        
+    }
+
     private RowMapper<Image> imageRowMapper(){
         return (rs, rowNum) -> new Image(
                 rs.getInt("post_id"),
                 rs.getString("image_url")
         );
     }
+
 }
