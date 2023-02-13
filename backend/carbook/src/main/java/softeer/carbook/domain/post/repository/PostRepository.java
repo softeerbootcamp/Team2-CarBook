@@ -3,6 +3,8 @@ package softeer.carbook.domain.post.repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import softeer.carbook.domain.post.model.Post;
 
@@ -37,11 +39,14 @@ public class PostRepository {
 
      */
 
-    public void addPost(Post post){
+    public int addPost(Post post){
+        KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update("insert into POST(user_id, content) values(?, ?)",
                 post.getUserId(),
-                post.getContent()
+                post.getContent(),
+                keyHolder
         );
+        return keyHolder.getKey().intValue();
     }
 
     private RowMapper<Post> postRowMapper() {

@@ -26,24 +26,26 @@ public class S3Repository {
         this.amazonS3Client = (AmazonS3Client) amazonS3Client;
     }
 
-    public String upload(MultipartFile multipartFile, String dirName, int postId) throws IOException {
+    public String upload(MultipartFile multipartFile, String dirName, int postId) {
         File uploadImage = makeLocalFile(multipartFile).orElseThrow(() -> new IllegalArgumentException("Local File Creation Failed"));
         return upload(uploadImage, dirName, postId);
     }
 
-    private Optional<File> makeLocalFile(MultipartFile file) throws IOException {
+    private Optional<File> makeLocalFile(MultipartFile file){
         File convertFile = new File(file.getOriginalFilename());
-        if (convertFile.createNewFile()) {
-            try (FileOutputStream fos = new FileOutputStream(convertFile)){
+        try {
+            if (convertFile.createNewFile()) {
+                FileOutputStream fos = new FileOutputStream(convertFile);
                 fos.write(file.getBytes());
-            }
-            return Optional.of(convertFile);
+                return Optional.of(convertFile);
+            } return Optional.empty();
+        } catch (IOException e) {
+            return Optional.empty();
         }
-        return Optional.empty();
     }
 
     private String upload(File uploadImage, String dirName, int postId){
-        String fileName = dirName + "/" + Integer.toString(postId)+"_"+uploadImage.getName();
+        String fileName = dirName + "/" + postId +"_"+uploadImage.getName();
         String uploadImageUrl = uploadS3(uploadImage, fileName);
         uploadImage.delete();
         return uploadImageUrl;

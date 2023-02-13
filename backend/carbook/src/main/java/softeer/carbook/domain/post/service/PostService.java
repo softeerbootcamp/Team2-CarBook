@@ -8,10 +8,12 @@ import softeer.carbook.domain.post.model.Image;
 import softeer.carbook.domain.post.model.Post;
 import softeer.carbook.domain.post.repository.ImageRepository;
 import softeer.carbook.domain.post.repository.PostRepository;
+import softeer.carbook.domain.post.repository.S3Repository;
 import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.repository.UserRepository;
 import softeer.carbook.global.dto.Message;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -20,6 +22,7 @@ public class PostService {
     private final ImageRepository imageRepository;
     private final UserRepository userRepository;
     private final FollowRepository followRepository;
+    private final S3Repository s3Repository;
     private final int POST_COUNT = 10;
 
     @Autowired
@@ -27,11 +30,13 @@ public class PostService {
             PostRepository postRepository,
             ImageRepository imageRepository,
             UserRepository userRepository,
-            FollowRepository followRepository) {
+            FollowRepository followRepository,
+            S3Repository s3Repository) {
         this.postRepository = postRepository;
         this.imageRepository = imageRepository;
         this.userRepository = userRepository;
         this.followRepository = followRepository;
+        this.s3Repository = s3Repository;
     }
 
     public GuestPostsResponse getRecentPosts(int index) {
@@ -80,10 +85,19 @@ public class PostService {
                 .build();
     }
 
+
     public Message createPost(NewPostForm newPostForm, User loginUser) {
         Post post = new Post(loginUser.getId(), newPostForm.getContent());
-        postRepository.addPost(post);
-        imageRepository.addImage(newPostForm.getImage());
+        int postId = postRepository.addPost(post);
+        String imageURL = "";
+        try {
+            imageURL = s3Repository.upload(newPostForm.getImage(), "images", postId);
+        } catch (IllegalArgumentException iae){
+            throw iae;
+        }
+        Image image = new Image(postId, imageURL);
+        imageRepository.addImage(image);
         return new Message("Post create success");
     }
+
 }
