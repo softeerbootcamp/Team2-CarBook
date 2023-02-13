@@ -2,16 +2,11 @@ package softeer.carbook.domain.user.service;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mindrot.jbcrypt.BCrypt;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.transaction.annotation.Transactional;
 import softeer.carbook.domain.user.dto.LoginForm;
@@ -24,20 +19,17 @@ import softeer.carbook.domain.user.exception.SignupEmailDuplicateException;
 import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.repository.UserRepository;
 
-import javax.servlet.http.HttpServletRequest;
-
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest(UserService.class)
 class UserServiceTest {
-    @InjectMocks
+    @Autowired
     private UserService userService;
-    @Mock
+    @MockBean
     private UserRepository userRepository;
 
     @Test
@@ -63,6 +55,7 @@ class UserServiceTest {
         // Given
         SignupForm signupForm = new SignupForm("email@example.com", "password", "nickname");
         given(userRepository.isEmailDuplicated(any())).willReturn(true);
+        given(userRepository.isNicknameDuplicated(any())).willReturn(false);
 
         // When
         Throwable exception = assertThrows(SignupEmailDuplicateException.class, () -> {
@@ -146,4 +139,5 @@ class UserServiceTest {
         assertThat(exception.getMessage()).isEqualTo("ERROR: Password not match");
         verify(userRepository).findUserByEmail(loginForm.getEmail());
     }
+
 }
