@@ -1,20 +1,39 @@
+import { basicAPI } from "@/api";
 import { Component } from "@/core";
-import { IFollows } from "@/interfaces";
+// import { IFollows } from "@/interfaces";
 import { push } from "@/utils/router/navigate";
 
 export default class Followlists extends Component {
+  setup(): void {
+    this.setState({ follows: [] });
+    this.receiveFollowLists();
+  }
+
+  async receiveFollowLists() {
+    const { profileMode, nickname } = this.props;
+
+    const mode = profileMode === "follower" ? "followers" : "followings";
+    const data = await basicAPI
+      .get(`/api/profile/${mode}?nickname=${nickname}`)
+      .then((response) => response.data)
+      .catch((error) => error);
+
+    this.setState({
+      ...this.state,
+      follows: data.nicknames,
+    });
+  }
+
   template(): string {
-    const { profileMode, isMyProfile, follows } = this.props;
+    const { profileMode, isMyProfile } = this.props;
     return /*html*/ `
         <h2 class = 'profile__contents-header'>
           ${profileMode === "follower" ? "팔로워" : "팔로잉"}
         </h2>
         <ul class = 'profile__contents-followers'>
-          ${follows
-            .map(({ nickname }: IFollows) =>
-              FollowlistsItem(isMyProfile, nickname)
-            )
-            .join("")}
+        ${this.state.follows
+          .map((nickname: string) => FollowlistsItem(isMyProfile, nickname))
+          .join("")}
         </ul>
         `;
   }

@@ -6,10 +6,10 @@ export default class HeaderInfo extends Component {
     const { nickname, email } = this.props;
     return /*html*/ `
       <div class = 'header-info-header'>
-        <div class ='user-nickname'>${nickname}</div>
+        <div class ='user-nickname'>${nickname ?? ""}</div>
         <div class ='modify-status'></div>
       </div>
-      <div class ='user-email'>${email}</div>
+      <div class ='user-email'>${email ?? ""}</div>
       `;
   }
 

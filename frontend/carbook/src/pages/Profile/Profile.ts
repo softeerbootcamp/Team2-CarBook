@@ -1,6 +1,5 @@
 import { Component } from "@/core";
 import "./Profile.scss";
-import IMAGEURL from "@/assets/images/car.jpg";
 
 import {
   HeaderInfo,
@@ -9,40 +8,36 @@ import {
   Followlists,
 } from "@/components/Profile";
 
+import { basicAPI } from "@/api";
+
 export default class ProfilePage extends Component {
   setup(): void {
+    //path에서 닉네임 가져오기
+    // console.log(location.pathname.split("/").slice(-1)[0]);
+    const urlnickname = location.pathname.split("/").slice(-1)[0];
+    this.setState({ nickname: urlnickname });
+    this.fetchProfilePage(urlnickname);
+  }
+
+  async fetchProfilePage(urlnickname: string) {
+    const data = await basicAPI
+      .get(`/api/profile?nickname=${urlnickname}`)
+      .then((response) => response.data)
+      .catch((error) => error);
     this.setState({
-      isMyProfile: true,
-      isFollow: false,
-      nickname: "유저닉네임",
-      email: "useremail@gmail.com",
+      isMyProfile: data.myProfile,
+      isFollow: data.follow,
+      nickname: data.nickname,
+      email: data.email,
       profileMode: "posts",
-      images: [
-        { postId: 1, imageUrl: IMAGEURL },
-        { postId: 2, imageUrl: IMAGEURL },
-        { postId: 3, imageUrl: IMAGEURL },
-        { postId: 4, imageUrl: IMAGEURL },
-        { postId: 5, imageUrl: IMAGEURL },
-        { postId: 6, imageUrl: IMAGEURL },
-        { postId: 7, imageUrl: IMAGEURL },
-        { postId: 8, imageUrl: IMAGEURL },
-      ],
-      posts: 11,
-      follower: 164,
-      following: 272,
-      followers: [
-        { nickname: "1번째팔로워" },
-        { nickname: "2번째팔로워" },
-        { nickname: "3번째팔로워" },
-      ],
-      followings: [
-        { nickname: "1번째팔로잉" },
-        { nickname: "2번째팔로잉" },
-        { nickname: "3번째팔로잉" },
-        { nickname: "4번째팔로잉" },
-      ],
+      images: data.images,
+      follower: data.follower,
+      following: data.following,
     });
   }
+
+  async receiveFollower() {}
+
   template(): string {
     return /*html*/ `
     <div class = 'profile__container'>
@@ -74,7 +69,7 @@ export default class ProfilePage extends Component {
       email: this.state.email,
     });
     new HeaderContents(header_contents, {
-      posts: this.state.images.length,
+      posts: this.state.images?.length,
       follower: this.state.follower,
       following: this.state.following,
     });
@@ -91,6 +86,7 @@ export default class ProfilePage extends Component {
         profileMode: this.state.profileMode,
         isMyProfile: this.state.isMyProfile,
         follows: this.state.followers,
+        nickname: this.state.nickname,
       });
 
     this.state.profileMode === "following" &&
@@ -98,6 +94,7 @@ export default class ProfilePage extends Component {
         profileMode: this.state.profileMode,
         isMyProfile: this.state.isMyProfile,
         follows: this.state.followings,
+        nickname: this.state.nickname,
       });
   }
 
@@ -108,7 +105,7 @@ export default class ProfilePage extends Component {
     modifyInfoButton?.addEventListener("click", (e: Event) => {
       e.preventDefault();
       const modal = document.body.querySelector(".alert-modal") as HTMLElement;
-      modal.classList.add("gray");
+      modal.classList.add("blue");
       showErrorModal(modal, "회원정보가 변경되었습니다");
       setTimeout(() => {
         document.body
@@ -122,6 +119,9 @@ export default class ProfilePage extends Component {
        * 2-2. 만약 실패하면 경고창 띄우고 모달창 유지
        */
     });
+
+    if (this.$target.classList.contains("once")) return;
+    this.$target.classList.add("once");
 
     this.$target.addEventListener("click", (e: Event) => {
       e.preventDefault();
@@ -160,9 +160,17 @@ export default class ProfilePage extends Component {
       }
 
       if (followButton) {
-        this.setState({ ...this.state, isFollow: !this.state.isFollow });
+        this.toggleFollow();
       }
     });
+  }
+
+  async toggleFollow() {
+    this.setState({ ...this.state, isFollow: !this.state.isFollow });
+    await basicAPI.post(`/api/profile/follow`, {
+      followingNickname: this.state.nickname,
+    });
+    this.fetchProfilePage(this.state.nickname);
   }
 }
 
