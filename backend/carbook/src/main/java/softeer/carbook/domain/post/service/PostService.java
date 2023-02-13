@@ -9,6 +9,7 @@ import softeer.carbook.domain.post.model.Post;
 import softeer.carbook.domain.post.repository.ImageRepository;
 import softeer.carbook.domain.post.repository.PostRepository;
 import softeer.carbook.domain.post.repository.S3Repository;
+import softeer.carbook.domain.tag.model.Model;
 import softeer.carbook.domain.tag.repository.TagRepository;
 import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.repository.UserRepository;
@@ -90,7 +91,8 @@ public class PostService {
 
 
     public Message createPost(NewPostForm newPostForm, User loginUser) {
-        int model_id = 0;
+        Model model = tagRepository.findModelByName(newPostForm.getModel());
+        int model_id = model.getId();
         Post post = new Post(loginUser.getId(), newPostForm.getContent(), model_id);
         int postId = postRepository.addPost(post);
         String imageURL = "";
