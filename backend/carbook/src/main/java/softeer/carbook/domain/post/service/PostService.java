@@ -3,16 +3,14 @@ package softeer.carbook.domain.post.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import softeer.carbook.domain.follow.repository.FollowRepository;
-import softeer.carbook.domain.post.dto.GuestPostsResponse;
-import softeer.carbook.domain.post.dto.LoginPostsResponse;
-import softeer.carbook.domain.post.dto.PostsSearchResponse;
-import softeer.carbook.domain.post.dto.MyProfileResponse;
-import softeer.carbook.domain.post.dto.OtherProfileResponse;
+import softeer.carbook.domain.post.dto.*;
 import softeer.carbook.domain.post.model.Image;
+import softeer.carbook.domain.post.model.Post;
 import softeer.carbook.domain.post.repository.ImageRepository;
 import softeer.carbook.domain.post.repository.PostRepository;
 import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.repository.UserRepository;
+import softeer.carbook.global.dto.Message;
 
 import java.util.List;
 
@@ -80,5 +78,11 @@ public class PostService {
                 .following(followRepository.getFollowingCount(profileUser.getId()))
                 .images(imageRepository.findImagesByNickName(profileUserNickname))
                 .build();
+    }
+
+    public Message createPost(NewPostForm newPostForm, User loginUser) {
+        Post post = new Post(loginUser.getId(), newPostForm.getContent());
+        postRepository.addPost(post);
+        return new Message("Post create success");
     }
 }
