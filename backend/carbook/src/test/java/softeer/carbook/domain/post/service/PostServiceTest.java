@@ -28,6 +28,7 @@ import static org.mockito.Mockito.verify;
 class PostServiceTest {
     @InjectMocks
     private PostService postService;
+    @Mock private PostRepository postRepository;
     @Mock private ImageRepository imageRepository;
     @Mock private UserRepository userRepository;
     @Mock private FollowRepository followRepository;
@@ -190,7 +191,7 @@ class PostServiceTest {
                 new Image(7, "/seventh/image.jpg")
         ));
         OtherProfileResponse expectedResult = new OtherProfileResponse.OtherProfileResponseBuilder()
-                .nickname(profileUser.getNickname())
+                .nickname(profileUserNickname)
                 .email(profileUser.getEmail())
                 .follow(true)
                 .follower(3)
