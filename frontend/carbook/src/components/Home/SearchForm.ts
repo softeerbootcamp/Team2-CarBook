@@ -46,7 +46,10 @@ export default class SearchForm extends Component {
       },
     });
 
-    const searchList = new SearchList(cards, { keywords: this.data.keywords });
+    const searchList = new SearchList(cards, {
+      keywords: this.data.keywords,
+      option: this.data.option,
+    });
     this.searchList = searchList;
   }
 
@@ -72,7 +75,7 @@ export default class SearchForm extends Component {
 
       if (timer) clearTimeout(timer);
       timer = setTimeout(() => {
-        this.getSearchedData(value, this.data.option);
+        this.getSearchedData(value);
       }, 200);
     });
   }
@@ -90,11 +93,12 @@ export default class SearchForm extends Component {
 
   setOption(option: CategoryType) {
     this.data.option = option;
+    this.searchList.setState({ option: this.data.option });
   }
 
-  async getSearchedData(keyword: string, category = 'hashtag') {
+  async getSearchedData(keyword: string) {
     const searchedData = await basicAPI.get(
-      `/api/search/${category}/?keyword=${keyword.trim()}`
+      `/api/search/hashtag/?keyword=${keyword.trim()}`
     );
     this.data = { ...this.data, keywords: searchedData.data.hashtags };
     this.searchList.setState({ keywords: searchedData.data.hashtags });
