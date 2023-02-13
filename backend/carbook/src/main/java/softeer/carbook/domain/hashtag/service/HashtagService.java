@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import softeer.carbook.domain.hashtag.dto.HashtagSearchResponse;
 import softeer.carbook.domain.hashtag.dto.TagSearchResult;
 import softeer.carbook.domain.hashtag.dto.TagSearchResopnse;
-import softeer.carbook.domain.hashtag.dto.TypeResponse;
+import softeer.carbook.domain.hashtag.dto.TypesResponse;
 import softeer.carbook.domain.hashtag.model.Hashtag;
 import softeer.carbook.domain.hashtag.model.Model;
 import softeer.carbook.domain.hashtag.model.Type;
@@ -48,11 +48,9 @@ public class HashtagService {
         return new HashtagSearchResponse(hashtags);
     }
 
-//    public TypeSearchResponse searchType(String keyword) {
-//        List<Type> types = hashtagRepository.searchTypeByPrefix(keyword);
-//
-//        return new TypeSearchResponse.TypeSearchResponseBuilder()
-//                .types(types)
-//                .build();
-//    }
+    public TypesResponse findAllTypes() {
+        List<Type> types = hashtagRepository.findAllTypes();
+
+        return new TypesResponse(types);
+    }
 }
