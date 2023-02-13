@@ -99,8 +99,13 @@
       border-radius: 5px;
       bottom: -165px;
 
+      .dropdown__cards {
+        height: 153px;
+        overflow-y: hidden;
+      }
+
       .dropdown__cards--scroll {
-        height: 180px;
+        height: 153px;
         overflow-y: scroll;
         -ms-overflow-style: none;
         scrollbar-width: none;

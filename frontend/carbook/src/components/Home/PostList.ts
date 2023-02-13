@@ -78,19 +78,24 @@ export default class PostList extends Component {
     this.setState({ isLoading: true, isInit: false });
 
     const url = getSearchUrl(index);
-    const res = await basicAPI.get(url);
-    const { images, login, nickname } = res.data;
 
-    this.props.setUserInfo(login, nickname);
+    try {
+      const res = await basicAPI.get(url);
+      const { images, login, nickname } = res.data;
 
-    const end = images.length === 0;
-    this.setState({
-      isLogin: login,
-      images: this.state.images.concat(images),
-      index: index + 8,
-      isLoading: false,
-      isEnd: end,
-    });
+      this.props.setUserInfo(login, nickname);
+
+      const end = images.length === 0;
+      this.setState({
+        isLogin: login,
+        images: this.state.images.concat(images),
+        index: index + 8,
+        isLoading: false,
+        isEnd: end,
+      });
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   makeSkeleton() {
