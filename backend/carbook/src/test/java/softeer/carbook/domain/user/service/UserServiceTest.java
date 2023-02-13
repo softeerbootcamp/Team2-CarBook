@@ -2,7 +2,11 @@ package softeer.carbook.domain.user.service;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mindrot.jbcrypt.BCrypt;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,11 +29,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
-@WebMvcTest(UserService.class)
+@ExtendWith(MockitoExtension.class)
 class UserServiceTest {
-    @Autowired
+    @InjectMocks
     private UserService userService;
-    @MockBean
+    @Mock
     private UserRepository userRepository;
 
     @Test
@@ -55,7 +59,6 @@ class UserServiceTest {
         // Given
         SignupForm signupForm = new SignupForm("email@example.com", "password", "nickname");
         given(userRepository.isEmailDuplicated(any())).willReturn(true);
-        given(userRepository.isNicknameDuplicated(any())).willReturn(false);
 
         // When
         Throwable exception = assertThrows(SignupEmailDuplicateException.class, () -> {
