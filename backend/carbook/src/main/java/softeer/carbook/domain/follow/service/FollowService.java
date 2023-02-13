@@ -51,4 +51,14 @@ public class FollowService {
     public FollowListResponse getFollowers(String nickname){
         return new FollowListResponse(userRepository.getFollowerNicknames(nickname));
     }
+
+    public Message deleteFollower(User loginUser, String nickname) {
+        User deletedUser = userRepository.findUserByNickname(nickname);
+        Optional<Integer> followId = followRepository.findFollowId(deletedUser.getId(), loginUser.getId());
+        if(followId.isPresent()){
+            followRepository.unFollow(followId.get());
+            return new Message("Follower delete success");
+        }
+        return new Message("Follower delete failed");
+    }
 }

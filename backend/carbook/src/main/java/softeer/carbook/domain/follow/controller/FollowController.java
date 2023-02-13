@@ -60,8 +60,9 @@ public class FollowController {
     }
 
     @DeleteMapping("profile/follower")
-    public ResponseEntity<Message> deleteFollower(@RequestParam String follower){
-        Message resultMsg = followService.deleteFollower(follower);
+    public ResponseEntity<Message> deleteFollower(@RequestParam String follower, HttpServletRequest httpServletRequest){
+        User loginUser = userService.findLoginedUser(httpServletRequest);
+        Message resultMsg = followService.deleteFollower(loginUser, follower);
         return Message.make200Response(resultMsg.getMessage());
     }
 
