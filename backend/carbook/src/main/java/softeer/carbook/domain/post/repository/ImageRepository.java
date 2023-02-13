@@ -80,8 +80,11 @@ public class ImageRepository {
         return conditionalStatement.substring(0, conditionalStatement.length() - 4);
     }
 
-    public void addImage(MultipartFile image) {
-        
+    public void addImage(Image image) {
+        jdbcTemplate.update("insert into IMAGE(post_id, image_url) values(?, ?)",
+                image.getPostId(),
+                image.getImageUrl()
+        );
     }
 
     private RowMapper<Image> imageRowMapper(){
