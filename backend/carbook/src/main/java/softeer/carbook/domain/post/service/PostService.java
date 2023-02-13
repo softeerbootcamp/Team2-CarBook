@@ -83,6 +83,7 @@ public class PostService {
     public Message createPost(NewPostForm newPostForm, User loginUser) {
         Post post = new Post(loginUser.getId(), newPostForm.getContent());
         postRepository.addPost(post);
+        imageRepository.addImage(newPostForm.getImage());
         return new Message("Post create success");
     }
 }

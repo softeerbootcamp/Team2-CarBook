@@ -25,6 +25,10 @@ public class NewPostForm {
         return content;
     }
 
+    public MultipartFile getImage() {
+        return image;
+    }
+
     public NewPostForm(MultipartFile image, List<String> hashtag, String type, String model, String content) {
         this.image = image;
         this.hashtag = hashtag;

@@ -117,10 +117,10 @@ public class PostController {
     // 글 작성 페이지
 
     @PostMapping("/post")
-    public ResponseEntity<Message> createPost(@RequestBody @Valid NewPostForm newPostForm){
-        Message resultMsg = postService.createPost(newPostForm);
+    public ResponseEntity<Message> createPost(@RequestBody @Valid NewPostForm newPostForm, HttpServletRequest httpServletRequest){
+        User loginUser = userService.findLoginedUser(httpServletRequest);
+        Message resultMsg = postService.createPost(newPostForm, loginUser);
         return Message.make200Response(resultMsg.getMessage());
     }
-
 
 }
