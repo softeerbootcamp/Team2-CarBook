@@ -1,13 +1,13 @@
-package softeer.carbook.domain.hashtag.repository;
+package softeer.carbook.domain.tag.repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import softeer.carbook.domain.hashtag.exception.HashtagNotExistException;
-import softeer.carbook.domain.hashtag.model.Hashtag;
-import softeer.carbook.domain.hashtag.model.Model;
-import softeer.carbook.domain.hashtag.model.Type;
+import softeer.carbook.domain.tag.exception.HashtagNotExistException;
+import softeer.carbook.domain.tag.model.Hashtag;
+import softeer.carbook.domain.tag.model.Model;
+import softeer.carbook.domain.tag.model.Type;
 
 import javax.sql.DataSource;
 import java.util.List;

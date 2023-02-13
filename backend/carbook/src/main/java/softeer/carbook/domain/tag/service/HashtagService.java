@@ -1,12 +1,12 @@
-package softeer.carbook.domain.hashtag.service;
+package softeer.carbook.domain.tag.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import softeer.carbook.domain.hashtag.dto.*;
-import softeer.carbook.domain.hashtag.model.Hashtag;
-import softeer.carbook.domain.hashtag.model.Model;
-import softeer.carbook.domain.hashtag.model.Type;
-import softeer.carbook.domain.hashtag.repository.HashtagRepository;
+import softeer.carbook.domain.tag.dto.*;
+import softeer.carbook.domain.tag.model.Hashtag;
+import softeer.carbook.domain.tag.model.Model;
+import softeer.carbook.domain.tag.model.Type;
+import softeer.carbook.domain.tag.repository.HashtagRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;

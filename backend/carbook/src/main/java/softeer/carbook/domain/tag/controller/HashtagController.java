@@ -1,4 +1,4 @@
-package softeer.carbook.domain.hashtag.controller;
+package softeer.carbook.domain.tag.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -6,11 +6,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import softeer.carbook.domain.hashtag.dto.HashtagSearchResponse;
-import softeer.carbook.domain.hashtag.dto.ModelsResponse;
-import softeer.carbook.domain.hashtag.dto.TagSearchResopnse;
-import softeer.carbook.domain.hashtag.dto.TypesResponse;
-import softeer.carbook.domain.hashtag.service.HashtagService;
+import softeer.carbook.domain.tag.dto.HashtagSearchResponse;
+import softeer.carbook.domain.tag.dto.ModelsResponse;
+import softeer.carbook.domain.tag.dto.TagSearchResopnse;
+import softeer.carbook.domain.tag.dto.TypesResponse;
+import softeer.carbook.domain.tag.service.HashtagService;
 
 @RestController
 public class HashtagController {

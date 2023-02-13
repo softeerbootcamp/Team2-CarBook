@@ -1,20 +1,15 @@
-package softeer.carbook.domain.hashtag.service;
+package softeer.carbook.domain.tag.service;
 
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
-import softeer.carbook.domain.hashtag.dto.HashtagSearchResponse;
-import softeer.carbook.domain.hashtag.model.Hashtag;
-import softeer.carbook.domain.hashtag.repository.HashtagRepository;
-import softeer.carbook.domain.post.service.PostService;
+import softeer.carbook.domain.tag.dto.HashtagSearchResponse;
+import softeer.carbook.domain.tag.model.Hashtag;
+import softeer.carbook.domain.tag.repository.HashtagRepository;
 
 import java.util.ArrayList;
 import java.util.List;
