@@ -21,3 +21,29 @@ export function isEmptyObj(obj: object) {
 export function isSameObj(obj1: object, obj2: object) {
   return Object.entries(obj1).toString() === Object.entries(obj2).toString();
 }
+
+export function onChangeInputHandler(
+  input: HTMLInputElement,
+  callback: (value: string) => void
+) {
+  let timer: ReturnType<typeof setTimeout>;
+  input?.addEventListener('keyup', () => {
+    const { value } = input;
+
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(() => {
+      callback(value);
+    }, 200);
+  });
+}
+
+export function onVisibleHandler(input: HTMLInputElement, className: string) {
+  const isActive = document.activeElement;
+  const dropdown = document.querySelector(className);
+
+  if (isActive !== input) {
+    dropdown?.classList.remove('active');
+  } else {
+    dropdown?.classList.add('active');
+  }
+}

@@ -39,12 +39,14 @@ export default class HashTagList extends Component {
       const target = e.target as HTMLElement;
       const hashtag = getClosest(target, '.hashtag');
 
-      const id = hashtag.dataset.id as string;
+      if (hashtag) {
+        const id = hashtag.dataset.id as string;
 
-      tagStore.dispach({
-        type: actionType.DELETE_TAG,
-        payload: { id },
-      });
+        tagStore.dispach({
+          type: actionType.DELETE_TAG,
+          payload: { id },
+        });
+      }
     });
   }
 }
