@@ -3,21 +3,15 @@ package softeer.carbook.domain.post.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import softeer.carbook.domain.post.dto.GuestPostsResponse;
-import softeer.carbook.domain.post.dto.LoginPostsResponse;
-import softeer.carbook.domain.post.dto.PostsSearchResponse;
-import softeer.carbook.domain.post.dto.MyProfileResponse;
-import softeer.carbook.domain.post.dto.OtherProfileResponse;
+import org.springframework.web.bind.annotation.*;
+import softeer.carbook.domain.post.dto.*;
 import softeer.carbook.domain.post.service.PostService;
 import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.service.UserService;
+import softeer.carbook.global.dto.Message;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 @RestController
 public class PostController {
@@ -122,6 +116,11 @@ public class PostController {
 
     // 글 작성 페이지
 
-        // todo 글 생성 로직
+    @PostMapping("/post")
+    public ResponseEntity<Message> createPost(@RequestBody @Valid NewPostForm newPostForm){
+        Message resultMsg = postService.createPost(newPostForm);
+        return Message.make200Response(resultMsg.getMessage());
+    }
+
 
 }
