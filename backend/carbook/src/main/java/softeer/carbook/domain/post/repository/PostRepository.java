@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import softeer.carbook.domain.post.model.Post;
 
 import javax.sql.DataSource;
+import java.sql.PreparedStatement;
 
 @Repository
 public class PostRepository {
@@ -41,11 +42,13 @@ public class PostRepository {
 
     public int addPost(Post post){
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update("insert into POST(user_id, content) values(?, ?)",
-                post.getUserId(),
-                post.getContent(),
-                keyHolder
-        );
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection
+                    .prepareStatement("insert into POST(user_id, content) values(?, ?)");
+            ps.setInt(1, post.getUserId());
+            ps.setString(2, post.getContent());
+            return ps;
+        }, keyHolder);
         return keyHolder.getKey().intValue();
     }
 
