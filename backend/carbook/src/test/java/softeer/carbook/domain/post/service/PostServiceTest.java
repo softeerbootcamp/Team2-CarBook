@@ -18,9 +18,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Transactional
 class PostServiceTest {
 
-    @Autowired
-    PostService postService;
-
     private final List<Image> images = new ArrayList<>(List.of(
             new Image(8, "/eighth/image.jpg"),
             new Image(7, "/seventh/image.jpg"),
@@ -31,13 +28,14 @@ class PostServiceTest {
             new Image(2, "/second/image.jpg"),
             new Image(1, "/first/image.jpg")
     ));
-
     private final List<Image> user15FollowingImages = new ArrayList<>(List.of(
             new Image(8, "/eighth/image.jpg"),
             new Image(7, "/seventh/image.jpg"),
             new Image(6, "/sixth/image.jpg"),
             new Image(5, "/fifth/image.jpg")
     ));
+    @Autowired
+    PostService postService;
 
     @Test
     @DisplayName("비로그인 상태 메인 페이지 테스트")
