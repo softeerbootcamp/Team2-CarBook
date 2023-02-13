@@ -15,12 +15,12 @@ export default class ProfilePage extends Component {
     //path에서 닉네임 가져오기
     // console.log(location.pathname.split("/").slice(-1)[0]);
 
-    this.initProfilePage();
+    this.fetchProfilePage();
   }
 
-  async initProfilePage() {
+  async fetchProfilePage() {
     const data = await basicAPI
-      .get("/api/profile?nickname=Tea")
+      .get("/api/profile?nickname=dongja")
       .then((response) => response.data)
       .catch((error) => error);
     console.log(data);
@@ -119,6 +119,9 @@ export default class ProfilePage extends Component {
        */
     });
 
+    if (this.$target.classList.contains("once")) return;
+    this.$target.classList.add("once");
+
     this.$target.addEventListener("click", (e: Event) => {
       e.preventDefault();
       const target = e.target as HTMLElement;
@@ -157,9 +160,18 @@ export default class ProfilePage extends Component {
       }
 
       if (followButton) {
-        this.setState({ ...this.state, isFollow: !this.state.isFollow });
+        this.toggleFollow();
       }
     });
+  }
+
+  async toggleFollow() {
+    this.setState({ ...this.state, isFollow: !this.state.isFollow });
+    console.log(this.state.nickname);
+    await basicAPI.post(`/api/profile/follow`, {
+      followingNickname: this.state.nickname,
+    });
+    this.fetchProfilePage();
   }
 }
 

@@ -1,10 +1,11 @@
 import { basicAPI } from "@/api";
 import { Component } from "@/core";
-import { IFollows } from "@/interfaces";
+// import { IFollows } from "@/interfaces";
 import { push } from "@/utils/router/navigate";
 
 export default class Followlists extends Component {
   setup(): void {
+    this.setState({ follows: [] });
     this.receiveFollowLists();
   }
 
@@ -32,7 +33,9 @@ export default class Followlists extends Component {
           ${profileMode === "follower" ? "팔로워" : "팔로잉"}
         </h2>
         <ul class = 'profile__contents-followers'>
-        
+        ${this.state.follows
+          .map((nickname: string) => FollowlistsItem(isMyProfile, nickname))
+          .join("")}
         </ul>
         `;
   }
