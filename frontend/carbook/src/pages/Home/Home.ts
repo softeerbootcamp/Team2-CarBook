@@ -43,15 +43,33 @@ export default class HomePage extends Component {
     new Header(header);
     new SearchForm(section);
     new HashTagList(hastagList);
-    new PostList(postList);
+    new PostList(postList, {
+      setUserInfo: (isLogin: boolean, nickname: string) => {
+        this.setUserInfo(isLogin, nickname);
+      },
+    });
   }
 
   setEvent(): void {
     this.$target.addEventListener('click', (e: Event) => {
       const target = e.target as HTMLElement;
+      const { isLogin, nickname } = this.state;
 
       const profileBtn = target.closest('.header__right-box');
-      if (profileBtn) push(`/profile/${this.state.nickname}`);
+      const plusBtn = target.closest('.main__button');
+
+      if (profileBtn && isLogin) {
+        push(`/profile/${nickname}`);
+      } else if (plusBtn && isLogin) {
+        push(`/post/new`);
+      } else if (profileBtn || plusBtn) {
+        push('/login');
+      }
     });
+  }
+
+  setUserInfo(isLogin: boolean, nickname: string) {
+    this.state.nickname = nickname;
+    this.state.isLogin = isLogin;
   }
 }
