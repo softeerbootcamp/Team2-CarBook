@@ -3,9 +3,8 @@ package softeer.carbook.domain.hashtag.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import softeer.carbook.domain.hashtag.dto.HashtagSearchResponse;
-import softeer.carbook.domain.hashtag.dto.Keyword;
+import softeer.carbook.domain.hashtag.dto.TagSearchResult;
 import softeer.carbook.domain.hashtag.dto.TagSearchResopnse;
-import softeer.carbook.domain.hashtag.dto.TypeSearchResponse;
 import softeer.carbook.domain.hashtag.model.Hashtag;
 import softeer.carbook.domain.hashtag.model.Model;
 import softeer.carbook.domain.hashtag.model.Type;
@@ -29,18 +28,18 @@ public class HashtagService {
         List<Model> models = hashtagRepository.searchModelByPrefix(keyword);
         List<Hashtag> hashtags = hashtagRepository.searchHashtagByPrefix(keyword);
 
-        List<Keyword> keywords = types.stream()
-                .map(Keyword::of)
+        List<TagSearchResult> results = types.stream()
+                .map(TagSearchResult::of)
                 .collect(Collectors.toList());
-        keywords.addAll(models.stream()
-                .map(Keyword::of)
+        results.addAll(models.stream()
+                .map(TagSearchResult::of)
                 .collect(Collectors.toList()));
-        keywords.addAll(hashtags.stream()
-                .map(Keyword::of)
+        results.addAll(hashtags.stream()
+                .map(TagSearchResult::of)
                 .collect(Collectors.toList()));
 
         return new TagSearchResopnse.TagSearchResponseBuilder()
-                .keywords(keywords)
+                .keywords(results)
                 .build();
     }
 

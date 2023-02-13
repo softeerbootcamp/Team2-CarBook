@@ -4,28 +4,28 @@ import softeer.carbook.domain.hashtag.model.Hashtag;
 import softeer.carbook.domain.hashtag.model.Model;
 import softeer.carbook.domain.hashtag.model.Type;
 
-public class Keyword {
+public class TagSearchResult {
     private final int id;
     private final String category;
     private final String tag;
 
-    public Keyword(int id, String category, String tag) {
+    public TagSearchResult(int id, String category, String tag) {
         this.id = id;
         this.category = category;
         this.tag = tag;
     }
 
     // Entity -> DTO
-    public static Keyword of(Type type) {
-        return new Keyword(type.getId(), "type", type.getTag());
+    public static TagSearchResult of(Type type) {
+        return new TagSearchResult(type.getId(), "type", type.getTag());
     }
 
-    public static Keyword of(Model model) {
-        return new Keyword(model.getId(), "model", model.getTag());
+    public static TagSearchResult of(Model model) {
+        return new TagSearchResult(model.getId(), "model", model.getTag());
     }
 
-    public static Keyword of(Hashtag hashtag) {
-        return new Keyword(hashtag.getId(), "hashtag", hashtag.getTag());
+    public static TagSearchResult of(Hashtag hashtag) {
+        return new TagSearchResult(hashtag.getId(), "hashtag", hashtag.getTag());
     }
 
     public int getId() {

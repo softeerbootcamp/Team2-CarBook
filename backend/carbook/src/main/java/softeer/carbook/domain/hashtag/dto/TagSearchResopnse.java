@@ -3,24 +3,24 @@ package softeer.carbook.domain.hashtag.dto;
 import java.util.List;
 
 public class TagSearchResopnse {
-    private List<Keyword> keywords;
+    private List<TagSearchResult> keywords;
 
     public TagSearchResopnse(TagSearchResponseBuilder builder) {
         this.keywords = builder.keywords;
     }
 
-    public List<Keyword> getKeywords() {
+    public List<TagSearchResult> getKeywords() {
         return keywords;
     }
 
     public static class TagSearchResponseBuilder {
 
-        private List<Keyword> keywords;
+        private List<TagSearchResult> keywords;
 
         public TagSearchResponseBuilder() {
         }
 
-        public TagSearchResponseBuilder keywords(List<Keyword> keywords) {
+        public TagSearchResponseBuilder keywords(List<TagSearchResult> keywords) {
             this.keywords = keywords;
             return this;
         }
