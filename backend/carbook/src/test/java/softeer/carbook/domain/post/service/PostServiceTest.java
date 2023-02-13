@@ -28,7 +28,6 @@ import static org.mockito.Mockito.verify;
 class PostServiceTest {
     @InjectMocks
     private PostService postService;
-    @Mock private PostRepository postRepository;
     @Mock private ImageRepository imageRepository;
     @Mock private UserRepository userRepository;
     @Mock private FollowRepository followRepository;
