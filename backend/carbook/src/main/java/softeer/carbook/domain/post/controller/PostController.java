@@ -118,7 +118,7 @@ public class PostController {
 
 
     @PostMapping("/post")
-    public ResponseEntity<Message> createPost(@RequestBody @Valid NewPostForm newPostForm, HttpServletRequest httpServletRequest){
+    public ResponseEntity<Message> createPost(@ModelAttribute @Valid NewPostForm newPostForm, HttpServletRequest httpServletRequest){
         User loginUser = userService.findLoginedUser(httpServletRequest);
         Message resultMsg = postService.createPost(newPostForm, loginUser);
         return Message.make200Response(resultMsg.getMessage());
