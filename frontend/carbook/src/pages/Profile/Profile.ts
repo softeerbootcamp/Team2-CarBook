@@ -1,6 +1,5 @@
 import { Component } from "@/core";
 import "./Profile.scss";
-import IMAGEURL from "@/assets/images/car.jpg";
 
 import {
   HeaderInfo,
@@ -9,40 +8,37 @@ import {
   Followlists,
 } from "@/components/Profile";
 
+import { basicAPI } from "@/api";
+
 export default class ProfilePage extends Component {
   setup(): void {
-    this.setState({
-      isMyProfile: true,
-      isFollow: false,
-      nickname: "유저닉네임",
-      email: "useremail@gmail.com",
-      profileMode: "posts",
-      images: [
-        { postId: 1, imageUrl: IMAGEURL },
-        { postId: 2, imageUrl: IMAGEURL },
-        { postId: 3, imageUrl: IMAGEURL },
-        { postId: 4, imageUrl: IMAGEURL },
-        { postId: 5, imageUrl: IMAGEURL },
-        { postId: 6, imageUrl: IMAGEURL },
-        { postId: 7, imageUrl: IMAGEURL },
-        { postId: 8, imageUrl: IMAGEURL },
-      ],
-      posts: 11,
-      follower: 164,
-      following: 272,
-      followers: [
-        { nickname: "1번째팔로워" },
-        { nickname: "2번째팔로워" },
-        { nickname: "3번째팔로워" },
-      ],
-      followings: [
-        { nickname: "1번째팔로잉" },
-        { nickname: "2번째팔로잉" },
-        { nickname: "3번째팔로잉" },
-        { nickname: "4번째팔로잉" },
-      ],
-    });
+    //path에서 닉네임 가져오기
+    // console.log(location.pathname.split("/").slice(-1)[0]);
+
+    this.initProfilePage();
   }
+
+  async initProfilePage() {
+    const data = await basicAPI
+      .get("/api/profile?nickname=Tea")
+      .then((response) => response.data)
+      .catch((error) => error);
+    console.log(data);
+    this.setState({
+      isMyProfile: data.myProfile,
+      isFollow: data.follow,
+      nickname: data.nickname,
+      email: data.email,
+      profileMode: "posts",
+      images: data.images,
+      follower: data.follower,
+      following: data.following,
+    });
+    console.log("img", this.state.images.length);
+  }
+
+  async receiveFollower() {}
+
   template(): string {
     return /*html*/ `
     <div class = 'profile__container'>
@@ -74,7 +70,7 @@ export default class ProfilePage extends Component {
       email: this.state.email,
     });
     new HeaderContents(header_contents, {
-      posts: this.state.images.length,
+      posts: this.state.images?.length,
       follower: this.state.follower,
       following: this.state.following,
     });
@@ -150,6 +146,7 @@ export default class ProfilePage extends Component {
       }
 
       if (followerSection) {
+        console.log("clicked follower section");
         this.setState({ ...this.state, profileMode: "follower" });
         return;
       }
