@@ -8,7 +8,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import softeer.carbook.domain.user.dto.LoginForm;
-import softeer.carbook.domain.user.dto.Message;
+import softeer.carbook.global.dto.Message;
 import softeer.carbook.domain.user.dto.ModifyPasswordForm;
 import softeer.carbook.domain.user.dto.SignupForm;
 import softeer.carbook.domain.user.service.UserService;

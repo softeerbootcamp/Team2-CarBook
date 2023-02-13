@@ -1,15 +1,11 @@
 package softeer.carbook.domain.user.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindException;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import softeer.carbook.domain.user.dto.*;
-import softeer.carbook.domain.user.exception.*;
 import softeer.carbook.domain.user.service.UserService;
+import softeer.carbook.global.dto.Message;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
