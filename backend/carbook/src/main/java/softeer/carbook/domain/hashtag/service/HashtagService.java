@@ -2,9 +2,7 @@ package softeer.carbook.domain.hashtag.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import softeer.carbook.domain.hashtag.dto.HashtagSearchResponse;
-import softeer.carbook.domain.hashtag.dto.TagSearchResult;
-import softeer.carbook.domain.hashtag.dto.TagSearchResopnse;
+import softeer.carbook.domain.hashtag.dto.*;
 import softeer.carbook.domain.hashtag.model.Hashtag;
 import softeer.carbook.domain.hashtag.model.Model;
 import softeer.carbook.domain.hashtag.model.Type;
@@ -38,24 +36,20 @@ public class HashtagService {
                 .map(TagSearchResult::of)
                 .collect(Collectors.toList()));
 
-        return new TagSearchResopnse.TagSearchResponseBuilder()
-                .keywords(results)
-                .build();
+        return new TagSearchResopnse(results);
     }
 
     public HashtagSearchResponse searchHashTag(String keyword) {
         List<Hashtag> hashtags = hashtagRepository.searchHashtagByPrefix(keyword);
 
-        return new HashtagSearchResponse.HashtagSearchResponseBuilder()
-                .hashtags(hashtags)
-                .build();
+        return new HashtagSearchResponse(hashtags);
     }
 
-//    public TypeSearchResponse searchType(String keyword) {
-//        List<Type> types = hashtagRepository.searchTypeByPrefix(keyword);
-//
-//        return new TypeSearchResponse.TypeSearchResponseBuilder()
-//                .types(types)
-//                .build();
-//    }
+    public TypesResponse findAllTypes() {
+        return new TypesResponse(hashtagRepository.findAllTypes());
+    }
+
+    public ModelsResponse findAllModels() {
+        return new ModelsResponse(hashtagRepository.findAllModels());
+    }
 }
