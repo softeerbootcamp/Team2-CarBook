@@ -41,6 +41,10 @@ public class HashtagRepository {
         return jdbcTemplate.query("SELECT h.id, h.tag FROM HASHTAG h WHERE tag LIKE '" + keyword + "%'", hashtagRowMapper());
     }
 
+    public List<Type> findAllTypes() {
+        return jdbcTemplate.query("SELECT t.id, t.tag FROM TYPE t", typeRowMapper());
+    }
+
     private RowMapper<Type> typeRowMapper() {
         return (rs, rowNum) -> new Type(
                 rs.getInt("id"),
