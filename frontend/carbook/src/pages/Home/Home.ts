@@ -40,7 +40,7 @@ export default class HomePage extends Component {
     ) as HTMLElement;
     const postList = this.$target.querySelector('.gallery') as HTMLElement;
 
-    new Header(header);
+    new Header(header, { text: '차 사진의 모든 것' });
     new SearchForm(section);
     new HashTagList(hastagList);
     new PostList(postList, {
