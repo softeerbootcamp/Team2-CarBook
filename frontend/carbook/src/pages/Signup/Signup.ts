@@ -54,7 +54,7 @@ export default class SignupPage extends Component {
 
       const modal = document.body.querySelector(".alert-modal") as HTMLElement;
 
-      if (isEmpty(id, password, nickname, modal)) return false;
+      if (isEmpty(id, password, nickname, modal)) return;
       sendUserInfo(id, password, nickname, modal);
     });
   }
