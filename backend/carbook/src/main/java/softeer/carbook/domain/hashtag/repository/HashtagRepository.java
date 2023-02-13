@@ -45,6 +45,10 @@ public class HashtagRepository {
         return jdbcTemplate.query("SELECT t.id, t.tag FROM TYPE t", typeRowMapper());
     }
 
+    public List<Model> findAllModels() {
+        return jdbcTemplate.query("SELECT m.id, m.type_id, m.tag FROM MODEL m", modelRowMapper());
+    }
+
     private RowMapper<Type> typeRowMapper() {
         return (rs, rowNum) -> new Type(
                 rs.getInt("id"),
