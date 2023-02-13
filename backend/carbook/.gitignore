@@ -36,7 +36,7 @@ out/
 ### VS Code ###
 .vscode/
 
-### DB info ###
+### DB, S3 info ###
 src/main/resources/application.properties
 
 ### logback ###
