@@ -13,12 +13,12 @@ import javax.sql.DataSource;
 import java.util.List;
 
 @Repository
-public class HashtagRepository {
+public class TagRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public HashtagRepository(DataSource dataSource) {
+    public TagRepository(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 

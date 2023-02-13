@@ -6,25 +6,25 @@ import softeer.carbook.domain.tag.dto.*;
 import softeer.carbook.domain.tag.model.Hashtag;
 import softeer.carbook.domain.tag.model.Model;
 import softeer.carbook.domain.tag.model.Type;
-import softeer.carbook.domain.tag.repository.HashtagRepository;
+import softeer.carbook.domain.tag.repository.TagRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class HashtagService {
+public class TagService {
 
-    private final HashtagRepository hashtagRepository;
+    private final TagRepository tagRepository;
 
     @Autowired
-    public HashtagService(HashtagRepository hashtagRepository) {
-        this.hashtagRepository = hashtagRepository;
+    public TagService(TagRepository tagRepository) {
+        this.tagRepository = tagRepository;
     }
 
     public TagSearchResopnse searchAllTags(String keyword) {
-        List<Type> types = hashtagRepository.searchTypeByPrefix(keyword);
-        List<Model> models = hashtagRepository.searchModelByPrefix(keyword);
-        List<Hashtag> hashtags = hashtagRepository.searchHashtagByPrefix(keyword);
+        List<Type> types = tagRepository.searchTypeByPrefix(keyword);
+        List<Model> models = tagRepository.searchModelByPrefix(keyword);
+        List<Hashtag> hashtags = tagRepository.searchHashtagByPrefix(keyword);
 
         List<TagSearchResult> results = types.stream()
                 .map(TagSearchResult::of)
@@ -40,16 +40,16 @@ public class HashtagService {
     }
 
     public HashtagSearchResponse searchHashTag(String keyword) {
-        List<Hashtag> hashtags = hashtagRepository.searchHashtagByPrefix(keyword);
+        List<Hashtag> hashtags = tagRepository.searchHashtagByPrefix(keyword);
 
         return new HashtagSearchResponse(hashtags);
     }
 
     public TypesResponse findAllTypes() {
-        return new TypesResponse(hashtagRepository.findAllTypes());
+        return new TypesResponse(tagRepository.findAllTypes());
     }
 
     public ModelsResponse findAllModels() {
-        return new ModelsResponse(hashtagRepository.findAllModels());
+        return new ModelsResponse(tagRepository.findAllModels());
     }
 }
