@@ -15,12 +15,9 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.transaction.annotation.Transactional;
 import softeer.carbook.domain.user.dto.LoginForm;
+import softeer.carbook.domain.user.exception.*;
 import softeer.carbook.global.dto.Message;
 import softeer.carbook.domain.user.dto.SignupForm;
-import softeer.carbook.domain.user.exception.LoginEmailNotExistException;
-import softeer.carbook.domain.user.exception.NicknameDuplicateException;
-import softeer.carbook.domain.user.exception.PasswordNotMatchException;
-import softeer.carbook.domain.user.exception.SignupEmailDuplicateException;
 import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.repository.UserRepository;
 
@@ -170,5 +167,24 @@ class UserServiceTest {
         verify(userRepository).isNicknameDuplicated(newNickname);
         verify(userRepository).modifyNickname(nickname, newNickname);
     }
+
+    @Test
+    @DisplayName("닉네임 변경 테스트 - 로그인 상태 아닐 때")
+    void modifyNicknameNotLogin(){
+        // Given
+        String nickname = "nickname";
+        String newNickname = "newnickname";
+        MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
+
+        // When
+        Throwable exception = assertThrows(NotLoginStatementException.class, () -> {
+            Message resultMsg = userService.modifyNickname(nickname, newNickname, httpServletRequest);
+        });
+
+        // Then
+        assertThat(exception.getMessage()).isEqualTo("ERROR: Session Has Expired");
+    }
+
+
 
 }
