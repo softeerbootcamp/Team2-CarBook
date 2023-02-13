@@ -33,7 +33,7 @@ export function onChangeInputHandler(
     if (timer) clearTimeout(timer);
     timer = setTimeout(() => {
       callback(value);
-    }, 200);
+    }, 400);
   });
 }
 
