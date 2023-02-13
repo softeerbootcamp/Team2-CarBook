@@ -3,6 +3,16 @@ import { ImageForm, Selection, HashTagForm, TextForm } from '@/components/Post';
 import { qs, qsa } from '@/utils';
 
 export default class Form extends Component {
+  setup(): void {
+    this.state = {
+      type: '',
+      model: '',
+      image: '',
+      hashtag: [],
+      content: '',
+    };
+  }
+
   template(): string {
     return `
       <section class="section">

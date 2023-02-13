@@ -60,6 +60,13 @@
       left: calc(50% - 150px);
       cursor: pointer;
       gap: 10px;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: contain;
+
+      .hide {
+        display: none;
+      }
     }
 
     .form {
