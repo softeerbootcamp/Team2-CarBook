@@ -7,13 +7,12 @@ import org.springframework.web.bind.annotation.*;
 import softeer.carbook.domain.follow.dto.FollowListResponse;
 import softeer.carbook.domain.follow.dto.ModifyFollowInfoForm;
 import softeer.carbook.domain.follow.service.FollowService;
-import softeer.carbook.domain.user.dto.Message;
+import softeer.carbook.global.dto.Message;
 import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import javax.validation.constraints.Positive;
 
 @RestController
 public class FollowController {
@@ -59,6 +58,12 @@ public class FollowController {
         return new ResponseEntity<>(followService.getFollowings(nickname), HttpStatus.OK);
     }
 
-        // 팔로잉 리스트 조회 > follow 로
+    @DeleteMapping("profile/follower")
+    public ResponseEntity<Message> deleteFollower(@RequestParam String follower, HttpServletRequest httpServletRequest){
+        User loginUser = userService.findLoginedUser(httpServletRequest);
+        Message resultMsg = followService.deleteFollower(loginUser, follower);
+        return Message.make200Response(resultMsg.getMessage());
+    }
+
 
 }

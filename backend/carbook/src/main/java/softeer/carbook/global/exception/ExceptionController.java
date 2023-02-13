@@ -7,7 +7,7 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import softeer.carbook.domain.user.dto.Message;
+import softeer.carbook.global.dto.Message;
 import softeer.carbook.domain.user.exception.*;
 
 @RestControllerAdvice

@@ -1,4 +1,4 @@
-package softeer.carbook.domain.user.dto;
+package softeer.carbook.global.dto;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
