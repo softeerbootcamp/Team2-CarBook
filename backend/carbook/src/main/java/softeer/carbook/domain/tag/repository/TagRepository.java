@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import softeer.carbook.domain.tag.dto.TagSearchResult;
 import softeer.carbook.domain.tag.exception.HashtagNotExistException;
 import softeer.carbook.domain.tag.model.Hashtag;
 import softeer.carbook.domain.tag.model.Model;
@@ -15,6 +16,7 @@ import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class TagRepository {
@@ -31,6 +33,48 @@ public class TagRepository {
         return hashtags.stream()
                 .findAny()
                 .orElseThrow(() -> new HashtagNotExistException());
+    }
+
+    public List<TagSearchResult> searchPostTagsByPostIdAndModelId(int postId, int modelId) {
+        List<Hashtag> hashtags = findHashtagsByPostId(postId);
+        List<Model> models = findModelByModelId(modelId);
+        List<Type> types = findTypeByModel(models.get(0).getTag());
+
+        // todo refactor
+        List<TagSearchResult> results = types.stream()
+                .map(TagSearchResult::of)
+                .collect(Collectors.toList());
+        results.addAll(models.stream()
+                .map(TagSearchResult::of)
+                .collect(Collectors.toList()));
+        results.addAll(hashtags.stream()
+                .map(TagSearchResult::of)
+                .collect(Collectors.toList()));
+        
+        return results;
+    }
+
+    private List<Type> findTypeByModel(String model) {
+        return jdbcTemplate.query(
+                "select id, tag from MODEL where tag = ?",
+                typeRowMapper(), model
+        );
+    }
+
+    private List<Model> findModelByModelId(int modelId) {
+        return jdbcTemplate.query(
+                "SELECT id, type_id, tag FROM MODEL " +
+                        "WHERE id = ?",
+                modelRowMapper(), modelId);
+    }
+
+    private List<Hashtag> findHashtagsByPostId(int postId) {
+        return jdbcTemplate.query(
+                "SELECT h.id, h.tag FROM HASHTAG h " +
+                        "INNER JOIN POST_HASHTAG " +
+                        "ON h.id = POST_HASHTAG.tag_id " +
+                        "WHERE post_id = ?",
+                hashtagRowMapper(), postId);
     }
 
     public List<Type> searchTypeByPrefix(String keyword) {

@@ -108,7 +108,14 @@ public class PostController {
     // 글 상세 페이지
 
         // todo 작성한 글 불러오기
-
+    @GetMapping("/post")
+    public ResponseEntity<?> getPostDetails(
+            @RequestParam int postId,
+            HttpServletRequest httpServletRequest){
+        // 로그인한 사용자 인가요?
+        User user = userService.findLoginedUser(httpServletRequest);
+        return new ResponseEntity<>(postService.getPostDetails(postId, user), HttpStatus.OK);
+    }
         // 로그인한 사용자인지 > user 로
 
         // 좋아요           > like 로

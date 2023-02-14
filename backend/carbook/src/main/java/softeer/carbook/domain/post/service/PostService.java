@@ -1,10 +1,14 @@
 package softeer.carbook.domain.post.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import softeer.carbook.domain.follow.repository.FollowRepository;
+import softeer.carbook.domain.like.repository.LikeRepository;
 import softeer.carbook.domain.post.dto.*;
 import softeer.carbook.domain.post.model.Image;
 import softeer.carbook.domain.post.model.Post;
@@ -17,8 +21,12 @@ import softeer.carbook.domain.tag.model.Model;
 import softeer.carbook.domain.tag.repository.TagRepository;
 import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.repository.UserRepository;
+import softeer.carbook.domain.user.service.UserService;
 import softeer.carbook.global.dto.Message;
 
+import javax.servlet.http.HttpServletRequest;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.sql.Timestamp;
@@ -32,7 +40,9 @@ public class PostService {
     private final FollowRepository followRepository;
     private final S3Repository s3Repository;
     private final TagRepository tagRepository;
+    private final LikeRepository likeRepository;
     private final int POST_COUNT = 10;
+    private static final Logger logger = LoggerFactory.getLogger(PostService.class);
 
     @Autowired
     public PostService(
@@ -41,13 +51,15 @@ public class PostService {
             UserRepository userRepository,
             FollowRepository followRepository,
             S3Repository s3Repository,
-            TagRepository tagRepository) {
+            TagRepository tagRepository,
+            LikeRepository likeRepository) {
         this.postRepository = postRepository;
         this.imageRepository = imageRepository;
         this.userRepository = userRepository;
         this.followRepository = followRepository;
         this.s3Repository = s3Repository;
         this.tagRepository = tagRepository;
+        this.likeRepository = likeRepository;
     }
 
     public GuestPostsResponse getRecentPosts(int index) {
@@ -112,6 +124,27 @@ public class PostService {
         Image image = new Image(postId, imageURL);
         imageRepository.addImage(image);
         return new Message("Post create success");
+    }
+
+    public PostDetailResponse getPostDetails(int postId, User user) {
+        // 내가 쓴 글인지 남이 쓴 글인지 판단
+        Post post = postRepository.findPostById(postId);
+        boolean isMyPost = (post.getUserId() == user.getId());
+        return new PostDetailResponse.PostDetailResponseBuilder()
+                .isMyPost(isMyPost)
+                .nickname(user.getNickname())
+                .imageUrl(imageRepository.getImageByPostId(postId).getImageUrl())
+                .like(likeRepository.findLikeCountByPostId(postId))
+                .createDate(dateToString(post.getCreateDate()))
+                .updateDate(dateToString(post.getUpdateDate()))
+                .keywords(tagRepository.searchPostTagsByPostIdAndModelId(postId, post.getModelId()))
+                .content(post.getContent())
+                .build();
+    }
+
+    private String dateToString(Timestamp date){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return sdf.format(date);
     }
 
     @Transactional
