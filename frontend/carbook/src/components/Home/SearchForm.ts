@@ -52,6 +52,7 @@ export default class SearchForm extends Component {
     });
 
     const searchList = new SearchList(cards, {
+      isLoading: false,
       keywords: this.data.keywords,
       option: this.data.option,
     });
@@ -60,7 +61,11 @@ export default class SearchForm extends Component {
 
   setEvent(): void {
     const input = qs(this.$target, '.section__input') as HTMLInputElement;
-    onChangeInputHandler(input, this.getSearchedData.bind(this));
+    onChangeInputHandler(
+      input,
+      this.getSearchedData.bind(this),
+      '.section__dropdown'
+    );
 
     const container = qs(document, '.home-container');
     container.addEventListener('click', ({ target }) => {
@@ -78,11 +83,22 @@ export default class SearchForm extends Component {
   }
 
   async getSearchedData(keyword: string) {
+    this.searchList.setState({
+      keywords: [],
+      isLoading: true,
+    });
+
+    const trimKeyword = keyword.trim();
+    if (trimKeyword.length === 0) return;
+
     const searchedData = await basicAPI.get(
-      `/api/search/?keyword=${keyword.trim()}`
+      `/api/search/?keyword=${trimKeyword.trim()}`
     );
 
     this.data = { ...this.data, keywords: searchedData.data.keywords };
-    this.searchList.setState({ keywords: searchedData.data.keywords });
+    this.searchList.setState({
+      keywords: searchedData.data.keywords,
+      isLoading: false,
+    });
   }
 }
