@@ -1,6 +1,6 @@
-package softeer.carbook.domain.hashtag.dto;
+package softeer.carbook.domain.tag.dto;
 
-import softeer.carbook.domain.hashtag.model.Type;
+import softeer.carbook.domain.tag.model.Type;
 
 import java.util.List;
 

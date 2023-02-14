@@ -1,8 +1,8 @@
-package softeer.carbook.domain.hashtag.dto;
+package softeer.carbook.domain.tag.dto;
 
-import softeer.carbook.domain.hashtag.model.Hashtag;
-import softeer.carbook.domain.hashtag.model.Model;
-import softeer.carbook.domain.hashtag.model.Type;
+import softeer.carbook.domain.tag.model.Hashtag;
+import softeer.carbook.domain.tag.model.Model;
+import softeer.carbook.domain.tag.model.Type;
 
 public class TagSearchResult {
     private final int id;

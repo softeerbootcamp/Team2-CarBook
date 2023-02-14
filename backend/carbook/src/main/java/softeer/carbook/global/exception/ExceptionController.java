@@ -64,4 +64,10 @@ public class ExceptionController {
         logger.debug(notLoginE.getMessage());
         return Message.make400Response(notLoginE.getMessage());
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Message> IllegalArgumentException(IllegalArgumentException illegalArgumentException){
+        logger.debug(illegalArgumentException.getMessage());
+        return Message.make400Response(illegalArgumentException.getMessage());
+    }
 }
