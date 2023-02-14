@@ -119,7 +119,7 @@ public class PostService {
     public PostDetailResponse getPostDetails(int postId, User user) {
         // 내가 쓴 글인지 남이 쓴 글인지 판단
         Post post = postRepository.findPostById(postId);
-        boolean isMyPost = (post.getId() == user.getId());
+        boolean isMyPost = (post.getUserId() == user.getId());
         return new PostDetailResponse.PostDetailResponseBuilder()
                 .isMyPost(isMyPost)
                 .nickname(user.getNickname())
