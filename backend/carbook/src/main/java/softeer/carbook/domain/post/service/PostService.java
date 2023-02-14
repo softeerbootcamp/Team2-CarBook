@@ -18,6 +18,7 @@ import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.repository.UserRepository;
 import softeer.carbook.global.dto.Message;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Service
@@ -95,8 +96,8 @@ public class PostService {
     @Transactional
     public Message createPost(NewPostForm newPostForm, User loginUser) {
         Model model = tagRepository.findModelByName(newPostForm.getModel());
-        int model_id = model.getId();
-        Post post = new Post(loginUser.getId(), newPostForm.getContent(), model_id);
+        int modelId = model.getId();
+        Post post = new Post(loginUser.getId(), newPostForm.getContent(), modelId);
         int postId = postRepository.addPost(post);
         for (String tagName: newPostForm.getHashtag()){
             int tagId;
@@ -118,4 +119,17 @@ public class PostService {
         return new Message("Post create success");
     }
 
+    @Transactional
+    public Message modifyPost(ModifiedPostForm modifiedPostForm) {
+        Model model = tagRepository.findModelByName(modifiedPostForm.getModel());
+        int modelId = model.getId();
+        Post post = new Post(
+                modifiedPostForm.getPostId(),
+                new Timestamp(System.currentTimeMillis()),
+                modifiedPostForm.getContent(),
+                modelId
+                );
+        postRepository.updatePost(post);
+        return new Message("Post modify success");
+    }
 }
