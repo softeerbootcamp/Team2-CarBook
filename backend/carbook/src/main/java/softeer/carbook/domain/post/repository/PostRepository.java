@@ -67,11 +67,6 @@ public class PostRepository {
                 post.getUpdateDate(), post.getContent(), post.getModelId(), post.getId());
     }
 
-    public Post findPostById(int postId){
-        return jdbcTemplate.query("select p.id, p.user_id, p.create_date, p.update_date, p.content, p.model_id " +
-                "from POST p where id = ?", postRowMapper(), postId).stream().findAny().get();
-    }
-
     private RowMapper<Post> postRowMapper() {
         return (rs, rowNum) -> new Post(
                 rs.getInt("id"),
