@@ -62,7 +62,7 @@ public class PostController {
 
     // todo 해시태그의 게시물 조회
     @GetMapping("/posts/m/search")
-    public ResponseEntity<PostsSearchResponse> searchPostsByTags(
+    public ResponseEntity<PostsSearchResponse> searchPostByTags(
             @RequestParam int index,
             @RequestParam(required = false) String hashtag,
             @RequestParam(required = false) String type,
