@@ -18,6 +18,7 @@ import {
   EMPTYPW,
   NotMatchedPassword,
 } from "@/constants/errorMessage";
+import { replace } from "@/utils/router/navigate";
 
 export default class ProfilePage extends Component {
   setup(): void {
@@ -156,14 +157,11 @@ export default class ProfilePage extends Component {
          * 4. 중복됐다면 알려줌
          */
         if (modifyModal.classList.contains("nickname")) {
-          if (
-            checkInvalidNickname({
-              alertModal: modal,
-              modal: modifyModal,
-              beforeNickname: this.state.nickname,
-            })
-          )
-            return;
+          this.modifyNickname({
+            alertModal: modal,
+            modal: modifyModal,
+            beforeNickname: this.state.nickname,
+          });
 
           return;
         }
@@ -206,13 +204,41 @@ export default class ProfilePage extends Component {
     });
   }
 
-  // async modifyUserInfo(){
-  //   this.setState({ ...this.state, isFollow: !this.state.isFollow });
-  //   await basicAPI.post(`/api/profile/follow`, {
-  //     followingNickname: this.state.nickname,
-  //   });
-  //   this.fetchProfilePage(this.state.nickname);
-  // }
+  async modifyNickname({
+    alertModal,
+    modal,
+    beforeNickname,
+  }: {
+    alertModal: HTMLElement;
+    modal: HTMLElement;
+    beforeNickname: string;
+  }) {
+    const newNicknameInput = modal.querySelector(
+      ".modify-modal-form-nickname input"
+    ) as HTMLInputElement;
+    const newNickname = newNicknameInput.value.trim();
+
+    if (
+      IsInvalidNickname({
+        alertModal,
+        beforeNickname,
+        newNickname,
+      })
+    )
+      return;
+
+    await basicAPI
+      .patch(`/api/profile/modify/${this.state.nickname}`, {
+        newNickname,
+      })
+      .then(() => {
+        this.setState({ ...this.state, nickname: newNickname });
+        replace(`/profile/${newNickname}`);
+      })
+      .catch(() => {
+        showErrorModal(alertModal, DUPPLICATEDNICKNAME);
+      });
+  }
 
   async toggleFollow() {
     this.setState({ ...this.state, isFollow: !this.state.isFollow });
@@ -223,28 +249,24 @@ export default class ProfilePage extends Component {
   }
 }
 
-function checkInvalidNickname({
+function IsInvalidNickname({
   alertModal,
-  modal,
   beforeNickname,
+  newNickname,
 }: {
   alertModal: HTMLElement;
-  modal: HTMLElement;
   beforeNickname: string;
+  newNickname: string;
 }) {
-  const nicknameInput = modal.querySelector(
-    ".modify-modal-form-nickname input"
-  ) as HTMLInputElement;
-  const nickname = nicknameInput.value.trim();
-  console.log("alertmodal", alertModal);
-  if (nickname.length === 0) {
+  if (newNickname.length === 0) {
     showErrorModal(alertModal, EMPTYNICKNAME);
     return true;
   }
-  if (nickname === beforeNickname) {
+  if (newNickname === beforeNickname) {
     showErrorModal(alertModal, DUPPLICATEDNICKNAME);
     return true;
   }
+
   return false;
 }
 
