@@ -8,7 +8,7 @@ import javax.validation.constraints.Size;
 import java.util.List;
 
 public class ModifiedPostForm {
-    @NotBlank(message = "게시글 id 정보가 필요합니다.")
+    @NotNull(message = "게시글 id 정보가 필요합니다.")
     private final int postId;
 
     @NotNull(message = "사진을 등록해 주세요.")
