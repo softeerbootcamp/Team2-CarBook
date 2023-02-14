@@ -99,8 +99,24 @@
       border-radius: 5px;
       bottom: -165px;
 
+      .dropdown__cards {
+        height: 153px;
+        overflow-y: hidden;
+
+        .spinner__container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100%;
+          .spinner {
+            width: 100px;
+            animation: spin 2000ms infinite linear;
+          }
+        }
+      }
+
       .dropdown__cards--scroll {
-        height: 180px;
+        height: 153px;
         overflow-y: scroll;
         -ms-overflow-style: none;
         scrollbar-width: none;

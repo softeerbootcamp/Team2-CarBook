@@ -3,21 +3,15 @@ package softeer.carbook.domain.post.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import softeer.carbook.domain.post.dto.GuestPostsResponse;
-import softeer.carbook.domain.post.dto.LoginPostsResponse;
-import softeer.carbook.domain.post.dto.PostsSearchResponse;
-import softeer.carbook.domain.post.dto.MyProfileResponse;
-import softeer.carbook.domain.post.dto.OtherProfileResponse;
+import org.springframework.web.bind.annotation.*;
+import softeer.carbook.domain.post.dto.*;
 import softeer.carbook.domain.post.service.PostService;
 import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.service.UserService;
+import softeer.carbook.global.dto.Message;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 @RestController
 public class PostController {
@@ -114,7 +108,14 @@ public class PostController {
     // 글 상세 페이지
 
         // todo 작성한 글 불러오기
-
+    @GetMapping("/post")
+    public ResponseEntity<?> getPostDetails(
+            @RequestParam int postId,
+            HttpServletRequest httpServletRequest){
+        // 로그인한 사용자 인가요?
+        User user = userService.findLoginedUser(httpServletRequest);
+        return new ResponseEntity<>(postService.getPostDetails(postId, user), HttpStatus.OK);
+    }
         // 로그인한 사용자인지 > user 로
 
         // 좋아요           > like 로
@@ -122,6 +123,18 @@ public class PostController {
 
     // 글 작성 페이지
 
-        // todo 글 생성 로직
+
+    @PostMapping("/post")
+    public ResponseEntity<Message> createPost(@ModelAttribute @Valid NewPostForm newPostForm, HttpServletRequest httpServletRequest){
+        User loginUser = userService.findLoginedUser(httpServletRequest);
+        Message resultMsg = postService.createPost(newPostForm, loginUser);
+        return Message.make200Response(resultMsg.getMessage());
+    }
+
+    @PatchMapping("/post")
+    public ResponseEntity<Message> modifyPost(@ModelAttribute @Valid ModifiedPostForm modifiedPostForm){
+        Message resultMsg = postService.modifyPost(modifiedPostForm);
+        return Message.make200Response(resultMsg.getMessage());
+    }
 
 }

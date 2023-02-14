@@ -1,7 +1,12 @@
 import { basicAPI } from '@/api';
 import { Component } from '@/core';
 import { CategoryType } from '@/interfaces';
-import { getClosest, qs } from '@/utils';
+import {
+  getClosest,
+  onChangeInputHandler,
+  onVisibleHandler,
+  qs,
+} from '@/utils';
 import Category from './Category';
 import SearchList from './SearchList';
 
@@ -47,6 +52,7 @@ export default class SearchForm extends Component {
     });
 
     const searchList = new SearchList(cards, {
+      isLoading: false,
       keywords: this.data.keywords,
       option: this.data.option,
     });
@@ -55,7 +61,11 @@ export default class SearchForm extends Component {
 
   setEvent(): void {
     const input = qs(this.$target, '.section__input') as HTMLInputElement;
-    this.onChangeInputHandler(input);
+    onChangeInputHandler(
+      input,
+      this.getSearchedData.bind(this),
+      '.section__dropdown'
+    );
 
     const container = qs(document, '.home-container');
     container.addEventListener('click', ({ target }) => {
@@ -63,32 +73,8 @@ export default class SearchForm extends Component {
       const selections = getClosest(<HTMLElement>target, '.selections');
 
       if (dropdown || selections) return;
-
-      this.onVisibleHandler(input);
+      onVisibleHandler(input, '.section__dropdown');
     });
-  }
-
-  onChangeInputHandler(input: HTMLInputElement) {
-    let timer: ReturnType<typeof setTimeout>;
-    input?.addEventListener('keyup', () => {
-      const { value } = input;
-
-      if (timer) clearTimeout(timer);
-      timer = setTimeout(() => {
-        this.getSearchedData(value);
-      }, 200);
-    });
-  }
-
-  onVisibleHandler(input: HTMLInputElement) {
-    const isActive = document.activeElement;
-    const dropdown = this.$target.querySelector('.section__dropdown');
-
-    if (isActive !== input) {
-      dropdown?.classList.remove('active');
-    } else {
-      dropdown?.classList.add('active');
-    }
   }
 
   setOption(option: CategoryType) {
@@ -97,10 +83,22 @@ export default class SearchForm extends Component {
   }
 
   async getSearchedData(keyword: string) {
+    this.searchList.setState({
+      keywords: [],
+      isLoading: true,
+    });
+
+    const trimKeyword = keyword.trim();
+    if (trimKeyword.length === 0) return;
+
     const searchedData = await basicAPI.get(
-      `/api/search/hashtag/?keyword=${keyword.trim()}`
+      `/api/search/?keyword=${trimKeyword.trim()}`
     );
-    this.data = { ...this.data, keywords: searchedData.data.hashtags };
-    this.searchList.setState({ keywords: searchedData.data.hashtags });
+
+    this.data = { ...this.data, keywords: searchedData.data.keywords };
+    this.searchList.setState({
+      keywords: searchedData.data.keywords,
+      isLoading: false,
+    });
   }
 }

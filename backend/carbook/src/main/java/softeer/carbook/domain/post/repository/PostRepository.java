@@ -3,10 +3,15 @@ package softeer.carbook.domain.post.repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import softeer.carbook.domain.post.model.Post;
 
 import javax.sql.DataSource;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+import java.util.List;
 
 @Repository
 public class PostRepository {
@@ -36,6 +41,31 @@ public class PostRepository {
     }
 
      */
+    public Post findPostById(int postId) {
+        List<Post> post = jdbcTemplate.query(
+                "select id, user_id, create_date, update_date, content, model_id " +
+                        "from POST " +
+                        "where id = ?", postRowMapper(), postId);
+        return post.stream().findAny().orElseThrow();
+    }
+
+    public int addPost(Post post){
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection
+                    .prepareStatement("INSERT INTO POST (user_id, content, model_id) values(?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            ps.setInt(1, post.getUserId());
+            ps.setString(2, post.getContent());
+            ps.setInt(3, post.getModelId());
+            return ps;
+        }, keyHolder);
+        return keyHolder.getKey().intValue();
+    }
+
+    public void updatePost(Post post) {
+        jdbcTemplate.update("update POST set update_date=?, content=?, model_id=? where id=?",
+                post.getUpdateDate(), post.getContent(), post.getModelId(), post.getId());
+    }
 
     private RowMapper<Post> postRowMapper() {
         return (rs, rowNum) -> new Post(
@@ -43,8 +73,8 @@ public class PostRepository {
                 rs.getInt("user_id"),
                 rs.getTimestamp("create_date"),
                 rs.getTimestamp("update_date"),
-                rs.getString("content")
+                rs.getString("content"),
+                rs.getInt("model_id")
         );
     }
-
 }

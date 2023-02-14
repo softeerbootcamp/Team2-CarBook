@@ -5,22 +5,32 @@ import java.sql.Timestamp;
 public class Post {
 
     private int id;
-    private final int userId;
+    private int userId;
     private Timestamp createDate;
     private Timestamp updateDate;
     private String content;
+    private int modelId;
 
-    public Post(int userId, String content) {
+    public Post(int userId, String content, int modelId) {
         this.userId = userId;
         this.content = content;
+        this.modelId = modelId;
     }
 
-    public Post(int id, int userId, Timestamp createDate, Timestamp updateDate, String content) {
+    public Post(int id, Timestamp updateDate, String content, int modelId){
+        this.id = id;
+        this.updateDate = updateDate;
+        this.content = content;
+        this.modelId = modelId;
+    }
+
+    public Post(int id, int userId, Timestamp createDate, Timestamp updateDate, String content, int modelId) {
         this.id = id;
         this.userId = userId;
         this.createDate = createDate;
         this.updateDate = updateDate;
         this.content = content;
+        this.modelId = modelId;
     }
 
     public int getId() {
@@ -43,4 +53,6 @@ public class Post {
     public String getContent() {
         return content;
     }
+
+    public int getModelId() { return modelId; }
 }

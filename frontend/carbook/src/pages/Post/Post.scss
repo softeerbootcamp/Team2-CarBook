@@ -114,6 +114,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            position: relative;
 
             .input__wrapper {
               position: relative;
@@ -135,12 +136,83 @@
               cursor: pointer;
             }
 
+            .dropdown {
+              z-index: 1000;
+              visibility: hidden;
+              transition: all 0.2s ease-in-out;
+              opacity: 0;
+              transform: translateY(20%);
+              position: absolute;
+              width: 270px;
+              height: 180px;
+              background: white;
+              box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+              border-radius: 5px;
+              bottom: -130px;
+
+              overflow-y: scroll;
+              -ms-overflow-style: none;
+              scrollbar-width: none;
+              &::-webkit-scrollbar {
+                display: none;
+              }
+
+              &__msg {
+                display: flex;
+                align-items: center;
+                padding: 15px 25px;
+                font-size: 16px;
+                gap: 8px;
+
+                .strong {
+                  font-weight: 600;
+                }
+
+                img {
+                  width: 20px;
+                  height: 20px;
+                }
+              }
+
+              &__card {
+                padding: 15px 25px;
+                font-size: 16px;
+
+                &:hover {
+                  background-color: $main-light-blue;
+                }
+              }
+
+              .spinner__container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100%;
+                .spinner {
+                  width: 100px;
+                  animation: spin 2000ms infinite linear;
+                }
+              }
+            }
+
+            .active {
+              transform: translateY(0);
+              opacity: 1;
+              visibility: visible;
+            }
+
             .hashtag__box {
               display: flex;
+              flex-wrap: wrap;
               justify-content: flex-start;
               gap: 10px;
               padding: 10px;
               width: 100%;
+              min-height: 50px;
+
+              .msg {
+                font-size: 14px;
+              }
 
               .hashtag {
                 background: $main-blue;
@@ -151,6 +223,10 @@
                 white-space: nowrap;
                 color: white;
                 font-family: 'Pretendard';
+              }
+
+              .new {
+                background: $main-pink;
               }
             }
           }
