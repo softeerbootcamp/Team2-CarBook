@@ -3,10 +3,8 @@ package softeer.carbook.domain.post.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 import softeer.carbook.domain.follow.repository.FollowRepository;
 import softeer.carbook.domain.like.repository.LikeRepository;
 import softeer.carbook.domain.post.dto.*;
@@ -21,19 +19,16 @@ import softeer.carbook.domain.tag.model.Model;
 import softeer.carbook.domain.tag.repository.TagRepository;
 import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.repository.UserRepository;
-import softeer.carbook.domain.user.service.UserService;
 import softeer.carbook.global.dto.Message;
 
-import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.sql.Timestamp;
 import java.util.List;
 
 @Service
 public class PostService {
+
+    private static final Logger logger = LoggerFactory.getLogger(PostService.class);
     private final PostRepository postRepository;
     private final ImageRepository imageRepository;
     private final UserRepository userRepository;
@@ -42,7 +37,6 @@ public class PostService {
     private final TagRepository tagRepository;
     private final LikeRepository likeRepository;
     private final int POST_COUNT = 10;
-    private static final Logger logger = LoggerFactory.getLogger(PostService.class);
 
     @Autowired
     public PostService(
@@ -81,9 +75,7 @@ public class PostService {
         String[] tagNames = hashtags.split(" ");
 
         List<Image> images = imageRepository.getImagesOfRecentPostsByTags(tagNames, POST_COUNT, index);
-        return new PostsSearchResponse.PostsSearchResponseBuilder()
-                .images(images)
-                .build();
+        return new PostsSearchResponse(images);
     }
 
     public MyProfileResponse myProfile(User loginUser) {
@@ -107,6 +99,7 @@ public class PostService {
                 .images(imageRepository.findImagesByNickName(profileUserNickname))
                 .build();
     }
+
 
     @Transactional
     public Message createPost(NewPostForm newPostForm, User loginUser) {

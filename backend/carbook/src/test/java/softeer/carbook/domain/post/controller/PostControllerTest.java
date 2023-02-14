@@ -87,9 +87,7 @@ class PostControllerTest {
     @DisplayName("태그로 글 검색 테스트")
     void searchPostsByTags() throws Exception {
         // given
-        PostsSearchResponse postsSearchResponse = new PostsSearchResponse.PostsSearchResponseBuilder()
-                .images(images)
-                .build();
+        PostsSearchResponse postsSearchResponse = new PostsSearchResponse(images);
         given(postService.searchByTags(anyString(), anyString(), anyString(), anyInt())).willReturn(postsSearchResponse);
 
         // when & then
