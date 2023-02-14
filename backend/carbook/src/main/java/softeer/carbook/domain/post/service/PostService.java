@@ -129,8 +129,6 @@ public class PostService {
         tagRepository.deletePostHashtags(postId);
         addPostHashtags(modifiedPostForm.getHashtag(),postId);
         Image oldImage = imageRepository.getImageByPostId(postId);     // 기존 이미지 정보 (postId, url)
-        //deleteImage(image);
-        System.out.println("oldImage 경로: "+getAWSFileName(oldImage));
         s3Repository.deleteS3(getAWSFileName(oldImage));
         String imageURL = "";
         try {
@@ -143,17 +141,9 @@ public class PostService {
         return new Message("Post modify success");
     }
 
-    private void deleteImage(Image image){
-        imageRepository.deleteImageByPostId(image.getPostId());
-    }
-
     private String getAWSFileName(Image image){
         String imageURL = image.getImageUrl();
-        try {
-            return URLDecoder.decode(imageURL.split("amazonaws\\.com")[1],"utf-8");
-        } catch (UnsupportedEncodingException e) {
-            return "";
-        }
+        return imageURL.split("amazonaws\\.com/")[1];
     }
 
     private void addPostHashtags(List<String> tagNames, int postId){
