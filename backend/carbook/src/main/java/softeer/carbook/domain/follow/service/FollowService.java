@@ -33,6 +33,7 @@ public class FollowService {
         // 팔로우 여부 판단
         if(followId.isPresent()){
             // 언팔로우 진행
+
             followRepository.unFollow(followId.get());
             return new Message("Unfollow Success");
         }
