@@ -1,6 +1,7 @@
 package softeer.carbook.domain.post.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import softeer.carbook.domain.follow.repository.FollowRepository;
@@ -18,6 +19,8 @@ import softeer.carbook.domain.user.repository.UserRepository;
 import softeer.carbook.global.dto.Message;
 
 import javax.servlet.http.HttpServletRequest;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 @Service
@@ -122,10 +125,16 @@ public class PostService {
                 .nickname(user.getNickname())
                 .imageUrl(imageRepository.getImageByPostId(postId).getImageUrl())
                 .like(likeRepository.findLikeCountByPostId(postId))
-                .createDate(post.getCreateDate().toString())
-                .updateDate(post.getUpdateDate().toString())
+                .createDate(dateToString(post.getCreateDate()))
+                .updateDate(dateToString(post.getUpdateDate()))
                 .keywords(tagRepository.searchPostTagsByPostIdAndModelId(postId, post.getModelId()))
                 .content(post.getContent())
                 .build();
     }
+
+    private String dateToString(Timestamp date){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        return sdf.format(date);
+    }
+
 }

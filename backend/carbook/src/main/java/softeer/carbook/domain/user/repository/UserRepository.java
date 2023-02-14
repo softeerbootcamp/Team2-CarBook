@@ -37,10 +37,10 @@ public class UserRepository {
         );
     }
 
-    public void modifyPassword(String password, String newPassword) {
-        jdbcTemplate.update("update USER set password = ? where password = ?",
+    public void modifyPassword(int user_id, String newPassword) {
+        jdbcTemplate.update("update USER set password = ? where id = ?",
                 newPassword,
-                password
+                user_id
         );
     }
 
