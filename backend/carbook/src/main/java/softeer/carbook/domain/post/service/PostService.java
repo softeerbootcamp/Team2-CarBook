@@ -1,5 +1,7 @@
 package softeer.carbook.domain.post.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import softeer.carbook.domain.tag.model.Model;
 import softeer.carbook.domain.tag.repository.TagRepository;
 import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.repository.UserRepository;
+import softeer.carbook.domain.user.service.UserService;
 import softeer.carbook.global.dto.Message;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,6 +36,7 @@ public class PostService {
     private final TagRepository tagRepository;
     private final LikeRepository likeRepository;
     private final int POST_COUNT = 10;
+    private static final Logger logger = LoggerFactory.getLogger(PostService.class);
 
     @Autowired
     public PostService(
@@ -133,7 +137,7 @@ public class PostService {
     }
 
     private String dateToString(Timestamp date){
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return sdf.format(date);
     }
 
