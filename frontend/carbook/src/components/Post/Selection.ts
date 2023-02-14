@@ -2,11 +2,6 @@ import { Component } from '@/core';
 import { qs } from '@/utils';
 
 export default class Selection extends Component {
-  setup(): void {
-    this.state = {
-      selected: '',
-    };
-  }
   template(): string {
     const { label, options } = this.props;
 
@@ -17,8 +12,7 @@ export default class Selection extends Component {
         ${options.map(
           (option: string) =>
             `
-          <option value="${option}" 
-          ${this.setSelected(option)} >${option}</option>`
+          <option value="${option}">${option}</option>`
         )}
       </select>
     `;
@@ -32,12 +26,7 @@ export default class Selection extends Component {
     const selection = qs(this.$target, 'select') as HTMLSelectElement;
     selection.addEventListener('change', () => {
       const selected = selection.options[selection.selectedIndex].text;
-      this.setState({ selected });
+      this.props.setFormData(selected);
     });
-  }
-
-  setSelected(option: string) {
-    const { selected } = this.state;
-    return selected === option ? 'selected' : '';
   }
 }
