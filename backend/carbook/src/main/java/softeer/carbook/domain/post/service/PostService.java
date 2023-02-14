@@ -3,6 +3,7 @@ package softeer.carbook.domain.post.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import softeer.carbook.domain.follow.repository.FollowRepository;
 import softeer.carbook.domain.post.dto.*;
 import softeer.carbook.domain.post.model.Image;
@@ -99,7 +100,62 @@ public class PostService {
         int modelId = model.getId();
         Post post = new Post(loginUser.getId(), newPostForm.getContent(), modelId);
         int postId = postRepository.addPost(post);
-        for (String tagName: newPostForm.getHashtag()){
+        addPostHashtags(newPostForm.getHashtag(), postId);
+        try{
+            addImage(newPostForm.getImage(), postId);
+        } catch (IllegalArgumentException iae){
+            throw iae;
+        }
+        return new Message("Post create success");
+    }
+
+    @Transactional
+    public Message modifyPost(ModifiedPostForm modifiedPostForm) {
+        Model model = tagRepository.findModelByName(modifiedPostForm.getModel());
+        int modelId = model.getId();
+        int postId = modifiedPostForm.getPostId();
+        Post post = new Post(
+                postId,
+                new Timestamp(System.currentTimeMillis()),
+                modifiedPostForm.getContent(),
+                modelId
+                );
+        postRepository.updatePost(post);
+        tagRepository.deletePostHashtags(postId);
+        addPostHashtags(modifiedPostForm.getHashtag(),postId);
+        Image image = imageRepository.getImageByPostId(postId);
+        deleteImage(image);
+        try{
+            addImage(modifiedPostForm.getImage(), postId);
+        } catch (IllegalArgumentException iae){
+            throw iae;
+        }
+        return new Message("Post modify success");
+    }
+
+    private void addImage(MultipartFile file, int postId){
+        String imageURL = "";
+        try {
+            imageURL = s3Repository.upload(file, "images", postId);
+        } catch (IllegalArgumentException iae){
+            throw iae;
+        }
+        Image image = new Image(postId, imageURL);
+        imageRepository.addImage(image);
+    }
+
+    private void deleteImage(Image image){
+        imageRepository.deleteImageByPostId(image.getPostId());
+        s3Repository.deleteS3(getAWSFileName(image));
+    }
+
+    private String getAWSFileName(Image image){
+        String imageURL = image.getImageUrl();
+        return imageURL.split("amazonaws\\.com")[1];
+    }
+
+    private void addPostHashtags(List<String> tagNames, int postId){
+        for (String tagName: tagNames){
             int tagId;
             try {
                 tagId = tagRepository.findHashtagByName(tagName).getId();
@@ -108,28 +164,5 @@ public class PostService {
             }
             tagRepository.addPostHashtag(postId,tagId);
         }
-        String imageURL = "";
-        try {
-            imageURL = s3Repository.upload(newPostForm.getImage(), "images", postId);
-        } catch (IllegalArgumentException iae){
-            throw iae;
-        }
-        Image image = new Image(postId, imageURL);
-        imageRepository.addImage(image);
-        return new Message("Post create success");
-    }
-
-    @Transactional
-    public Message modifyPost(ModifiedPostForm modifiedPostForm) {
-        Model model = tagRepository.findModelByName(modifiedPostForm.getModel());
-        int modelId = model.getId();
-        Post post = new Post(
-                modifiedPostForm.getPostId(),
-                new Timestamp(System.currentTimeMillis()),
-                modifiedPostForm.getContent(),
-                modelId
-                );
-        postRepository.updatePost(post);
-        return new Message("Post modify success");
     }
 }

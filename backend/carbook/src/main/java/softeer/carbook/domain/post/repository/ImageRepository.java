@@ -87,6 +87,10 @@ public class ImageRepository {
         );
     }
 
+    public void deleteImageByPostId(int postId) {
+        jdbcTemplate.update("delete from IMAGE where post_id=?",postId);
+    }
+
     private RowMapper<Image> imageRowMapper(){
         return (rs, rowNum) -> new Image(
                 rs.getInt("post_id"),
