@@ -68,6 +68,12 @@ public class TagRepository {
         return keyHolder.getKey().intValue();
     }
 
+    public void addPostHashtag(int postId, int tagId){
+        jdbcTemplate.update("insert into POST_HASHTAG(post_id, tag_id) values(?, ?)",
+                postId, tagId
+        );
+    }
+
     private RowMapper<Type> typeRowMapper() {
         return (rs, rowNum) -> new Type(
                 rs.getInt("id"),
