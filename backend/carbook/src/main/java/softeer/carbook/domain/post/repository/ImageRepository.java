@@ -18,7 +18,7 @@ public class ImageRepository {
     public ImageRepository(DataSource dataSource) { this.jdbcTemplate = new JdbcTemplate(dataSource); }
 
     public Image getImageByPostId(int postId){
-        return jdbcTemplate.queryForObject("select img.post_id, img.image_url from IMAGE where post_id = ?",
+        return jdbcTemplate.queryForObject("select img.post_id, img.image_url from IMAGE img where post_id = ?",
                 imageRowMapper(), postId);
     }
 
