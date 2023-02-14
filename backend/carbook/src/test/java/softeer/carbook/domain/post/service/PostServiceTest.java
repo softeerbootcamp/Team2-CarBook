@@ -190,7 +190,7 @@ class PostServiceTest {
                 new Image(7, "/seventh/image.jpg")
         ));
         OtherProfileResponse expectedResult = new OtherProfileResponse.OtherProfileResponseBuilder()
-                .nickname(profileUser.getNickname())
+                .nickname(profileUserNickname)
                 .email(profileUser.getEmail())
                 .follow(true)
                 .follower(3)
