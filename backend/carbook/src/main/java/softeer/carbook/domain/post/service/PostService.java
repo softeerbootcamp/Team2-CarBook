@@ -23,7 +23,7 @@ import softeer.carbook.global.dto.Message;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class PostService {
@@ -72,9 +72,40 @@ public class PostService {
     }
 
     public PostsSearchResponse searchByTags(String hashtags, String type, String model, int index) {
-        String[] tagNames = hashtags.split(" ");
+        List<Post> posts = new ArrayList<>();
+        if (type != null) {
+            posts.addAll(postRepository.searchByType(type));
+        }
+        logger.debug("size: {}", posts.size());
 
-        List<Image> images = imageRepository.getImagesOfRecentPostsByTags(tagNames, POST_COUNT, index);
+        if (model != null) {
+            if (posts.size() == 0) {
+                posts.addAll(postRepository.searchByModel(model));
+            }
+            else {
+                posts.retainAll(postRepository.searchByModel(model));
+            }
+        }
+        logger.debug("size: {}", posts.size());
+
+        if (hashtags != null && check(type, model, posts.size())){
+            logger.debug("true");
+            String[] tagNames = hashtags.split(" ");
+            if (posts.size() == 0) {
+                posts.addAll(postRepository.searchByHashtag(tagNames[0]));
+            }
+            else {
+                posts.retainAll(postRepository.searchByHashtag(tagNames[0]));
+            }
+
+            for (int idx = 1; idx < tagNames.length; idx++) {
+                logger.debug("tagName: {}", tagNames[idx]);
+                posts.retainAll(postRepository.searchByHashtag(tagNames[idx]));
+            }
+        }
+        logger.debug("size: {}", posts.size());
+
+        List<Image> images = findImagesOfPostsStartsWithIndex(posts, index);
         return new PostsSearchResponse(images);
     }
 
@@ -99,7 +130,6 @@ public class PostService {
                 .images(imageRepository.findImagesByNickName(profileUserNickname))
                 .build();
     }
-
 
     @Transactional
     public Message createPost(NewPostForm newPostForm, User loginUser) {
@@ -183,4 +213,18 @@ public class PostService {
             tagRepository.addPostHashtag(postId,tagId);
         }
     }
+    private boolean check(String type, String model, int size) {
+        return (type != null || model != null && size != 0) || ((type == null && model == null) && size == 0);
+    }
+
+    private List<Image> findImagesOfPostsStartsWithIndex(List<Post> posts, int index) {
+        List<Image> images = new ArrayList<>();
+        for (int idx = index; idx < index+POST_COUNT && idx < posts.size(); idx++) {
+            Image image = imageRepository.getImageByPostId(posts.get(idx).getId());
+            images.add(image);
+        }
+
+        return images;
+    }
+
 }
