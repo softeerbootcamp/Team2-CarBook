@@ -1,13 +1,19 @@
 package softeer.carbook.domain.post.repository;
 
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
+import softeer.carbook.domain.user.service.UserService;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -16,6 +22,7 @@ import java.util.Optional;
 
 @Repository
 public class S3Repository {
+    private static final Logger logger = LoggerFactory.getLogger(S3Repository.class);
     private final AmazonS3Client amazonS3Client;
 
     @Value("${cloud.aws.s3.bucket}")
@@ -57,6 +64,10 @@ public class S3Repository {
     private String uploadS3(File image, String fileName){
         amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, image).withCannedAcl(CannedAccessControlList.PublicRead));
         return amazonS3Client.getUrl(bucket, fileName).toString();
+    }
+
+    public void deleteS3(String key){
+        amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, key));
     }
 
 }

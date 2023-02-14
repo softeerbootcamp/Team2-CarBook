@@ -131,4 +131,10 @@ public class PostController {
         return Message.make200Response(resultMsg.getMessage());
     }
 
+    @PatchMapping("/post")
+    public ResponseEntity<Message> modifyPost(@ModelAttribute @Valid ModifiedPostForm modifiedPostForm){
+        Message resultMsg = postService.modifyPost(modifiedPostForm);
+        return Message.make200Response(resultMsg.getMessage());
+    }
+
 }

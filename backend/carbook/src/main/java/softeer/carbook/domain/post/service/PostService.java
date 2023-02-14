@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import softeer.carbook.domain.follow.repository.FollowRepository;
 import softeer.carbook.domain.like.repository.LikeRepository;
 import softeer.carbook.domain.post.dto.*;
@@ -14,6 +15,8 @@ import softeer.carbook.domain.post.model.Post;
 import softeer.carbook.domain.post.repository.ImageRepository;
 import softeer.carbook.domain.post.repository.PostRepository;
 import softeer.carbook.domain.post.repository.S3Repository;
+import softeer.carbook.domain.tag.exception.HashtagNotExistException;
+import softeer.carbook.domain.tag.model.Hashtag;
 import softeer.carbook.domain.tag.model.Model;
 import softeer.carbook.domain.tag.repository.TagRepository;
 import softeer.carbook.domain.user.model.User;
@@ -24,6 +27,9 @@ import softeer.carbook.global.dto.Message;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Service
@@ -102,13 +108,13 @@ public class PostService {
                 .build();
     }
 
-
     @Transactional
     public Message createPost(NewPostForm newPostForm, User loginUser) {
         Model model = tagRepository.findModelByName(newPostForm.getModel());
-        int model_id = model.getId();
-        Post post = new Post(loginUser.getId(), newPostForm.getContent(), model_id);
+        int modelId = model.getId();
+        Post post = new Post(loginUser.getId(), newPostForm.getContent(), modelId);
         int postId = postRepository.addPost(post);
+        addPostHashtags(newPostForm.getHashtag(), postId);
         String imageURL = "";
         try {
             imageURL = s3Repository.upload(newPostForm.getImage(), "images", postId);
@@ -141,4 +147,47 @@ public class PostService {
         return sdf.format(date);
     }
 
+    @Transactional
+    public Message modifyPost(ModifiedPostForm modifiedPostForm) {
+        Model model = tagRepository.findModelByName(modifiedPostForm.getModel());
+        int modelId = model.getId();
+        int postId = modifiedPostForm.getPostId();
+        Post post = new Post(
+                postId,
+                new Timestamp(System.currentTimeMillis()),
+                modifiedPostForm.getContent(),
+                modelId
+                );
+        postRepository.updatePost(post);
+        tagRepository.deletePostHashtags(postId);
+        addPostHashtags(modifiedPostForm.getHashtag(),postId);
+        Image oldImage = imageRepository.getImageByPostId(postId);
+        s3Repository.deleteS3(getAWSFileName(oldImage));
+        String imageURL = "";
+        try {
+            imageURL = s3Repository.upload(modifiedPostForm.getImage(), "images", postId);
+        } catch (IllegalArgumentException iae){
+            throw iae;
+        }
+        Image newImage = new Image(postId, imageURL);
+        imageRepository.updateImage(newImage);
+        return new Message("Post modify success");
+    }
+
+    private String getAWSFileName(Image image){
+        String imageURL = image.getImageUrl();
+        return imageURL.split("amazonaws\\.com/")[1];
+    }
+
+    private void addPostHashtags(List<String> tagNames, int postId){
+        for (String tagName: tagNames){
+            int tagId;
+            try {
+                tagId = tagRepository.findHashtagByName(tagName).getId();
+            } catch (HashtagNotExistException hne){
+                tagId = tagRepository.addHashtag(new Hashtag(tagName));
+            }
+            tagRepository.addPostHashtag(postId,tagId);
+        }
+    }
 }
