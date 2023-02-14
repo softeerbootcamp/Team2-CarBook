@@ -67,7 +67,7 @@ public class PostController {
             @RequestParam(required = false) String hashtag,
             @RequestParam(required = false) String type,
             @RequestParam(required = false) String model){
-        logger.debug("hashtag: {}", hashtag);
+        logger.debug("hashtag: //{}//", hashtag);
         logger.debug("type: {}", type);
         logger.debug("model: {}", model);
 
