@@ -19,6 +19,7 @@ export default class HeaderInfo extends Component {
       ".modify-status"
     ) as HTMLElement;
 
+    if (isMyProfile === undefined) return;
     isMyProfile
       ? new Menu(modify_status, { nickname })
       : new FollowButton(modify_status, { isFollow });
