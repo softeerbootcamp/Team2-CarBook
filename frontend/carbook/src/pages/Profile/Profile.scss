@@ -26,6 +26,7 @@
     color: white;
     padding: 8%;
     padding-bottom: 1%;
+    height: 27%;
 
     .header-info {
       justify-content: space-between;
@@ -65,9 +66,6 @@
         background-size: cover;
         background-position: center;
         position: relative;
-        visibility: visible;
-        opacity: 1;
-        transition: ease-in-out 0.7s;
         cursor: pointer;
 
         .info-menu-items {
@@ -81,6 +79,9 @@
           box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
           background-color: white;
           color: black;
+          visibility: hidden;
+          opacity: 0;
+          transition: ease-in-out 0.7s;
 
           display: flex;
           flex-direction: column;
@@ -93,7 +94,6 @@
             cursor: auto;
             padding: 16px 0 4px 16px;
             font-weight: 700;
-            // font-size: 16px;
           }
 
           li {
@@ -104,6 +104,11 @@
               background-color: $main-light-blue;
             }
           }
+        }
+
+        .FadeInAndOut {
+          visibility: visible;
+          opacity: 1;
         }
       }
     }
@@ -123,8 +128,6 @@
         cursor: pointer;
         &:hover {
           background-color: $main-dark-blue;
-          // outline: none;
-          // box-shadow: 0 0 0 2px $main-light-blue;
         }
       }
 
@@ -142,7 +145,7 @@
   .profile__contents {
     min-width: 300px;
     background-color: $main-white;
-    height: 100%;
+    height: 73%;
     border-radius: 20px 20px 0 0;
     display: flex;
     flex-direction: column;
@@ -220,20 +223,36 @@
 
   .modify-modal {
     position: fixed;
-    bottom: -5vh;
+    bottom: -100%;
     background-color: $main-white;
     width: 100vw;
     min-width: 300px;
-    height: 95vh;
-    z-index: 1;
+    height: 100%;
+    // opacity: 0;
+    // visibility: hidden;
+    z-index: 500;
     border-radius: 30px 30px 0px 0px;
     padding: 10% 10%;
     font-family: "LINESeedKR-Rg";
+    transition: all ease-in-out 0.5s;
 
     .title {
+      position: relative;
       text-align: center;
       margin-bottom: 32px;
       font-size: 20px;
+
+      .cancel-button {
+        position: absolute;
+        width: 15px;
+        height: 15px;
+        background-image: url("@/assets/icons/xButton.svg");
+        background-size: cover;
+        background-position: center;
+        top: 5px;
+        right: 5px;
+        cursor: pointer;
+      }
     }
 
     .modify-modal-form {
@@ -244,7 +263,9 @@
           margin-bottom: 4px;
         }
       }
+
       .modify-modal-form-password,
+      .modify-modal-form-modify-password,
       .modify-modal-form-password-confirm {
         position: relative;
         .eyes {
@@ -292,6 +313,22 @@
     }
   }
 
+  .modify-modal.FadeInAndOut {
+    bottom: -3%;
+  }
+
+  .password .modify-modal-form-nickname,
+  .nickname .modify-modal-form-password,
+  .nickname .modify-modal-form-modify-password,
+  .nickname .modify-modal-form-password-confirm {
+    display: none;
+  }
+
+  .hidden {
+    visibility: visible;
+    opacity: 1;
+  }
+
   .alert-modal {
     width: 80%;
     margin: 0 10%;
@@ -303,12 +340,16 @@
     opacity: 0;
 
     text-align: center;
-    transition: all ease-in-out 0.5s;
-    z-index: 3;
+    transition: all ease-in-out 1s;
+    z-index: 990;
   }
+
   .FadeInAndOut {
     visibility: visible;
     opacity: 1;
+  }
+
+  .alert-modal.FadeInAndOut {
     top: 60px;
   }
 }

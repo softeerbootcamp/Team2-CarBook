@@ -15,10 +15,10 @@ export default class Menu extends Component {
       </div>`;
   }
   mounted(): void {
+    const { nickname } = this.props;
     /**todo
      * 1. 닉네임 변경 누르면 닉네임 변경 모달창
      * 2. 비밀번호 변경 누르면 비밀번호 변경 모달창
-     * 3. 로그아웃 누르면 로그아웃
      */
     this.$target.addEventListener("click", (e: Event) => {
       const target = e.target as HTMLElement;
@@ -30,11 +30,44 @@ export default class Menu extends Component {
         this.doLogout(modal);
         return;
       }
-      document.body.querySelector(".modify-modal")?.classList.toggle("hidden");
+
+      const modifyModal = document.body.querySelector(
+        ".modify-modal"
+      ) as HTMLElement;
+
+      /**
+       * 닉네임 수정
+       * 모달창의 닉네임 창에 기존 닉네임 입력
+       * 입력 변경버튼 누르면
+       * 1. 원래 닉네임이랑 같은지 체크
+       * 2. 다른 유저의 닉네임과 중복 체크
+       */
+      if (li.classList.contains("modify-nickname")) {
+        const nicknameInput = modifyModal.querySelector(
+          ".modify-modal-form-nickname input"
+        ) as HTMLInputElement;
+        nicknameInput.value = nickname;
+        nicknameInput.focus();
+        modifyModal.classList.add("nickname");
+      }
+
+      /**
+       * 비밀번호 수정
+       * 기존 비밀번호
+       * 입력 변경버튼 누르면 전송
+       * 1. 기존 비밀번호와 같은지 체크
+       * 2. 기존 비밀번호가 맞는지 체크
+       * 3. 변경 성공하면 모달창 닫음
+       */
+      if (li.classList.contains("modify-password")) {
+        modifyModal.classList.add("password");
+      }
+
+      modifyModal.classList.toggle("FadeInAndOut");
       const menu = this.$target.querySelector(
         ".info-menu-items"
       ) as HTMLElement;
-      menu.classList.toggle("hidden");
+      menu.classList.toggle("FadeInAndOut");
     });
   }
 
@@ -55,7 +88,7 @@ export default class Menu extends Component {
       const target = e.target as HTMLElement;
       const menu = target.querySelector(".info-menu-items") as HTMLElement;
       if (!menu) return;
-      menu.classList.toggle("hidden");
+      menu.classList.toggle("FadeInAndOut");
     });
   }
 }
