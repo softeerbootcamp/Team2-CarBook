@@ -1,12 +1,7 @@
 import { Component } from '@/core';
-import { qs } from '@/utils';
+import { onChangeInputHandler, qs } from '@/utils';
 
 export default class TextForm extends Component {
-  setup(): void {
-    this.state = {
-      content: '',
-    };
-  }
   template(): string {
     return `
       <div class="input__text">글 내용</div>
@@ -24,8 +19,6 @@ export default class TextForm extends Component {
       '.input__textarea'
     ) as HTMLTextAreaElement;
 
-    textarea.addEventListener('keyup', () => {
-      this.state.content = textarea.value;
-    });
+    onChangeInputHandler(textarea, this.props.setFormData);
   }
 }
