@@ -182,6 +182,17 @@
                   background-color: $main-light-blue;
                 }
               }
+
+              .spinner__container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100%;
+                .spinner {
+                  width: 100px;
+                  animation: spin 2000ms infinite linear;
+                }
+              }
             }
 
             .active {
