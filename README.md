@@ -18,7 +18,7 @@
 [API 명세서 POSTMAN](https://documenter.getpostman.com/view/25607734/2s935kPm4y)
 
 ## 팀 소개
-<a href="https://github.com/rladuswl">
+<a href="https://github.com/jhchoi57">
     <img src="https://avatars.githubusercontent.com/u/46276276?v=4" width="90">
 </a>
 <a href="https://github.com/beni1026">
