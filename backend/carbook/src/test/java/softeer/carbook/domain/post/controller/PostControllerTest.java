@@ -141,7 +141,7 @@ class PostControllerTest {
     }
 
     @Test
-    @DisplayName("해당 사용자의 프로필 페이지 조회 - 내 프로필 페이지")
+    @DisplayName("해당 사용자의 프로필 페이지 조회 - 타인 프로필 페이지")
     void otherProfile() throws Exception {
         // given
         User user = new User("test@gmail.com", "nickname",
