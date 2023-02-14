@@ -67,6 +67,7 @@ public class S3Repository {
     }
 
     public void deleteS3(String key){
+        amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, key));
         try{
             amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, key));
         } catch (SdkClientException e){

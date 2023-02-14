@@ -19,6 +19,8 @@ import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.repository.UserRepository;
 import softeer.carbook.global.dto.Message;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -101,11 +103,14 @@ public class PostService {
         Post post = new Post(loginUser.getId(), newPostForm.getContent(), modelId);
         int postId = postRepository.addPost(post);
         addPostHashtags(newPostForm.getHashtag(), postId);
-        try{
-            addImage(newPostForm.getImage(), postId);
+        String imageURL = "";
+        try {
+            imageURL = s3Repository.upload(newPostForm.getImage(), "images", postId);
         } catch (IllegalArgumentException iae){
             throw iae;
         }
+        Image image = new Image(postId, imageURL);
+        imageRepository.addImage(image);
         return new Message("Post create success");
     }
 
@@ -123,35 +128,32 @@ public class PostService {
         postRepository.updatePost(post);
         tagRepository.deletePostHashtags(postId);
         addPostHashtags(modifiedPostForm.getHashtag(),postId);
-        Image image = imageRepository.getImageByPostId(postId);
-        deleteImage(image);
-        try{
-            addImage(modifiedPostForm.getImage(), postId);
-        } catch (IllegalArgumentException iae){
-            throw iae;
-        }
-        return new Message("Post modify success");
-    }
-
-    private void addImage(MultipartFile file, int postId){
+        Image oldImage = imageRepository.getImageByPostId(postId);     // 기존 이미지 정보 (postId, url)
+        //deleteImage(image);
+        System.out.println("oldImage 경로: "+getAWSFileName(oldImage));
+        s3Repository.deleteS3(getAWSFileName(oldImage));
         String imageURL = "";
         try {
-            imageURL = s3Repository.upload(file, "images", postId);
+            imageURL = s3Repository.upload(modifiedPostForm.getImage(), "images", postId);
         } catch (IllegalArgumentException iae){
             throw iae;
         }
-        Image image = new Image(postId, imageURL);
-        imageRepository.addImage(image);
+        Image newImage = new Image(postId, imageURL);
+        imageRepository.updateImage(newImage);
+        return new Message("Post modify success");
     }
 
     private void deleteImage(Image image){
         imageRepository.deleteImageByPostId(image.getPostId());
-        s3Repository.deleteS3(getAWSFileName(image));
     }
 
     private String getAWSFileName(Image image){
         String imageURL = image.getImageUrl();
-        return imageURL.split("amazonaws\\.com")[1];
+        try {
+            return URLDecoder.decode(imageURL.split("amazonaws\\.com")[1],"utf-8");
+        } catch (UnsupportedEncodingException e) {
+            return "";
+        }
     }
 
     private void addPostHashtags(List<String> tagNames, int postId){
