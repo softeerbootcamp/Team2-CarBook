@@ -58,8 +58,12 @@ public class PostController {
 
     // todo 해시태그의 게시물 조회
     @GetMapping("/posts/m/search")
-    public ResponseEntity<PostsSearchResponse> searchPostsByTags(@RequestParam int index, @RequestParam String hashtag){
-        return new ResponseEntity<>(postService.searchByTags(hashtag, index), HttpStatus.OK);
+    public ResponseEntity<PostsSearchResponse> searchPostsByTags(
+            @RequestParam int index,
+            @RequestParam String hashtag,
+            @RequestParam String type,
+            @RequestParam String model){
+        return new ResponseEntity<>(postService.searchByTags(hashtag, type, model, index), HttpStatus.OK);
     }
 
     // 프로필 페이지

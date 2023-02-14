@@ -6,35 +6,24 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.web.servlet.MockMvc;
 import softeer.carbook.domain.post.dto.*;
 import softeer.carbook.domain.post.model.Image;
 import softeer.carbook.domain.post.service.PostService;
-import softeer.carbook.domain.user.controller.UserController;
-import softeer.carbook.domain.user.dto.SignupForm;
 import softeer.carbook.domain.user.exception.NotLoginStatementException;
-import softeer.carbook.domain.user.exception.PasswordNotMatchException;
 import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.service.UserService;
-import softeer.carbook.global.dto.Message;
 
 import javax.servlet.http.HttpServletRequest;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(PostController.class)
 class PostControllerTest {
@@ -101,10 +90,10 @@ class PostControllerTest {
         PostsSearchResponse postsSearchResponse = new PostsSearchResponse.PostsSearchResponseBuilder()
                 .images(images)
                 .build();
-        given(postService.searchByTags(anyString(), anyInt())).willReturn(postsSearchResponse);
+        given(postService.searchByTags(anyString(), anyString(), anyString(), anyInt())).willReturn(postsSearchResponse);
 
         // when & then
-        mockMvc.perform(get("/posts/m?index=0&hashtag=맑음+흐림+서울&type=suv+세단+수소차&model=소나타+제네시스+아반"))
+        mockMvc.perform(get("/posts/m?index=0&hashtag=맑음+흐림+서울&type=세단&model=소나타"))
                 .andExpect(status().isOk());
     }
 
