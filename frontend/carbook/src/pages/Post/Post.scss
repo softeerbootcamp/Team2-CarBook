@@ -177,6 +177,10 @@
               &__card {
                 padding: 15px 25px;
                 font-size: 16px;
+
+                &:hover {
+                  background-color: $main-light-blue;
+                }
               }
             }
 
@@ -194,6 +198,10 @@
               padding: 10px;
               width: 100%;
               min-height: 50px;
+
+              .msg {
+                font-size: 14px;
+              }
 
               .hashtag {
                 background: $main-blue;

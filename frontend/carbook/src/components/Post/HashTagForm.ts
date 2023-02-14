@@ -26,12 +26,7 @@ export default class HashTagForm extends Component {
         <div class="dropdown">
         </div>
         <div class="hashtag__box">
-          ${hashtags
-            .map(
-              ({ tag, type }: { tag: string; type: string }) =>
-                `<div class="hashtag ${type}"># ${tag}</div> `
-            )
-            .join('')}
+          ${this.makeHashtagCards(hashtags)}
         </div> 
       </div>
     `;
@@ -61,6 +56,20 @@ export default class HashTagForm extends Component {
     });
 
     onChangeInputHandler(input, this.getSearchTags.bind(this));
+  }
+
+  makeHashtagCards(hashtags: []) {
+    if (hashtags.length === 0) {
+      return '<div class="msg">🔍 검색을 통해 원하는 해시태그를 추가하세요</div>';
+    } else {
+      return `
+        ${hashtags
+          .map(
+            ({ tag, type }: { tag: string; type: string }) =>
+              `<div class="hashtag ${type}"># ${tag}</div> `
+          )
+          .join('')}`;
+    }
   }
 
   addHashTag(hashtag: IHashTag) {
