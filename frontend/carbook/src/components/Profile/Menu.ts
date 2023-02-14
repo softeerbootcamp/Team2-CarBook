@@ -15,10 +15,10 @@ export default class Menu extends Component {
       </div>`;
   }
   mounted(): void {
+    const { nickname } = this.props;
     /**todo
      * 1. 닉네임 변경 누르면 닉네임 변경 모달창
      * 2. 비밀번호 변경 누르면 비밀번호 변경 모달창
-     * 3. 로그아웃 누르면 로그아웃
      */
     this.$target.addEventListener("click", (e: Event) => {
       const target = e.target as HTMLElement;
@@ -30,11 +30,29 @@ export default class Menu extends Component {
         this.doLogout(modal);
         return;
       }
-      document.body.querySelector(".modify-modal")?.classList.toggle("hidden");
+
+      const modifyModal = document.body.querySelector(
+        ".modify-modal"
+      ) as HTMLElement;
+
+      if (li.classList.contains("modify-nickname")) {
+        const nicknameInput = modifyModal.querySelector(
+          ".modify-modal-form-nickname input"
+        ) as HTMLInputElement;
+        nicknameInput.value = nickname;
+        nicknameInput.focus();
+        modifyModal.classList.add("nickname");
+      }
+
+      if (li.classList.contains("modify-password")) {
+        modifyModal.classList.add("password");
+      }
+
+      modifyModal.classList.toggle("FadeInAndOut");
       const menu = this.$target.querySelector(
         ".info-menu-items"
       ) as HTMLElement;
-      menu.classList.toggle("hidden");
+      menu.classList.toggle("FadeInAndOut");
     });
   }
 
@@ -55,7 +73,7 @@ export default class Menu extends Component {
       const target = e.target as HTMLElement;
       const menu = target.querySelector(".info-menu-items") as HTMLElement;
       if (!menu) return;
-      menu.classList.toggle("hidden");
+      menu.classList.toggle("FadeInAndOut");
     });
   }
 }

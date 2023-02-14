@@ -11,7 +11,7 @@ export default class Postlists extends Component {
       </h2>
       <div class="profile__contents-posts">
         ${images
-          .map(
+          ?.map(
             (image: IImage) =>
               `<img class="profile__contents-post" src= '${image.imageUrl}' data-id = "${image.postId}"></img>`
           )
