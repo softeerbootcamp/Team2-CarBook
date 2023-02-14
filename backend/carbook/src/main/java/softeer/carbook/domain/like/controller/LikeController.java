@@ -39,8 +39,8 @@ public class LikeController {
 
         // 로그인한 유저 정보와 좋아요/좋아요취소를 할 게시글의 id를 파라미터로 전달
         Message resultMsg = likeService.modifyLikeInfo(
-                loginUser,
-                httpServletRequest
+                loginUser.getId(),
+                modifyLikeInfoForm.getPostId()
         );
         return Message.make200Response(resultMsg.getMessage());
 
