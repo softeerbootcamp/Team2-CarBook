@@ -7,14 +7,17 @@ export default class TextForm extends Component {
       <textarea class="input__textarea" placeholder="글 내용을 입력해주세요"></textarea>
     `;
   }
+  
   setEvent(): void {
     this.onChangeHandler();
   }
+  
   onChangeHandler() {
     const textarea = qs(
       this.$target,
       '.input__textarea'
     ) as HTMLTextAreaElement;
+    
     this.onChangeInputHandler(textarea, this.props.setFormData);
   }
   onChangeInputHandler(
