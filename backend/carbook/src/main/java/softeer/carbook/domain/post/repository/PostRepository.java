@@ -54,6 +54,11 @@ public class PostRepository {
         return keyHolder.getKey().intValue();
     }
 
+    public void updatePost(Post post) {
+        jdbcTemplate.update("update POST set update_date=?, content=?, model_id=? where id=?",
+                post.getUpdateDate(), post.getContent(), post.getModelId(), post.getId());
+    }
+
     public Post findPostById(int postId){
         return jdbcTemplate.query("select p.id, p.user_id, p.create_date, p.update_date, p.content, p.model_id " +
                 "from POST p where id = ?", postRowMapper(), postId).stream().findAny().get();
