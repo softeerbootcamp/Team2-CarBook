@@ -10,6 +10,14 @@ import {
 } from "@/components/Profile";
 
 import { basicAPI } from "@/api";
+import {
+  DUPPLICATEDNICKNAME,
+  EMPTYMODIFYCONFIRMPW,
+  EMPTYMODIFYPW,
+  EMPTYNICKNAME,
+  EMPTYPW,
+  NotMatchedPassword,
+} from "@/constants/errorMessage";
 
 export default class ProfilePage extends Component {
   setup(): void {
@@ -99,38 +107,7 @@ export default class ProfilePage extends Component {
     ) as HTMLElement;
     new ModifyModal(modifyModal);
   }
-
-  // async modifyUserInfo(){
-  //   this.setState({ ...this.state, isFollow: !this.state.isFollow });
-  //   await basicAPI.post(`/api/profile/follow`, {
-  //     followingNickname: this.state.nickname,
-  //   });
-  //   this.fetchProfilePage(this.state.nickname);
-  // }
-
   setEvent(): void {
-    // const modifyInfoButton = this.$target.querySelector(
-    //   ".modify-button"
-    // ) as HTMLFormElement;
-    // modifyInfoButton?.addEventListener("click", (e: Event) => {
-    //   console.log("clicked button");
-    //   e.preventDefault();
-    //   const modal = document.body.querySelector(".alert-modal") as HTMLElement;
-    //   modal.classList.add("blue");
-    //   showErrorModal(modal, "회원정보가 변경되었습니다");
-    //   setTimeout(() => {
-    //     document.body
-    //       .querySelector(".modify-modal")
-    //       ?.classList.toggle("FadeInAndOut");
-    //   }, 2000);
-
-    //   /**todo
-    //    * 1. 서버와 통신후 응답받음
-    //    * 2-1. 유저 정보 변경 성공하면 정보 변경 알려주고 모달창 없애기
-    //    * 2-2. 만약 실패하면 경고창 띄우고 모달창 유지
-    //    */
-    // });
-
     if (this.$target.classList.contains("once")) return;
     this.$target.classList.add("once");
 
@@ -164,11 +141,60 @@ export default class ProfilePage extends Component {
       }
 
       if (modifyInfoButton) {
-        console.log("clicked button");
         e.preventDefault();
-        const modal = document.body.querySelector(
-          ".alert-modal"
-        ) as HTMLElement;
+        const modal = this.$target.querySelector(".alert-modal") as HTMLElement;
+        const modifyModal = target.closest(".modify-modal") as HTMLElement;
+
+        /**
+         * 닉네임 수정
+         * 모달창의 닉네임 창에 기존 닉네임 입력 o
+         * 입력 변경버튼 누르면
+         * 1. 빈값인지 체크 o
+         * 2. 원래 닉네임이랑 같은지 체크 o
+         * 3. 닉네임 변경 신청
+         * 4. 다른 유저의 닉네임과 중복 체크
+         * 4. 중복됐다면 알려줌
+         */
+        if (modifyModal.classList.contains("nickname")) {
+          if (
+            checkInvalidNickname({
+              alertModal: modal,
+              modal: modifyModal,
+              beforeNickname: this.state.nickname,
+            })
+          )
+            return;
+
+          return;
+        }
+
+        /**
+         * 비밀번호 수정
+         * 기존 비밀번호
+         * 입력 변경버튼 누르면 전송
+         * 1. 기존 비밀번호와 같은지 체크
+         * 2. 기존 비밀번호가 맞는지 체크
+         * 3. 변경 성공하면 모달창 닫음
+         */
+        if (modifyModal.classList.contains("password")) {
+          if (
+            checkInvalidPassword({
+              alertModal: modal,
+              modal: modifyModal,
+            })
+          )
+            return;
+
+          return;
+        }
+
+        //   /**todo
+        //    * 1. 서버와 통신후 응답받음
+        //    * 2-1. 유저 정보 변경 성공하면 정보 변경 알려주고 모달창 없애기
+        //    * 2-2. 만약 실패하면 경고창 띄우고 모달창 유지
+        //    */
+        // });
+
         modal.classList.add("blue");
         showErrorModal(modal, "회원정보가 변경되었습니다");
         // setTimeout(() => {
@@ -180,6 +206,14 @@ export default class ProfilePage extends Component {
     });
   }
 
+  // async modifyUserInfo(){
+  //   this.setState({ ...this.state, isFollow: !this.state.isFollow });
+  //   await basicAPI.post(`/api/profile/follow`, {
+  //     followingNickname: this.state.nickname,
+  //   });
+  //   this.fetchProfilePage(this.state.nickname);
+  // }
+
   async toggleFollow() {
     this.setState({ ...this.state, isFollow: !this.state.isFollow });
     await basicAPI.post(`/api/profile/follow`, {
@@ -189,11 +223,83 @@ export default class ProfilePage extends Component {
   }
 }
 
+function checkInvalidNickname({
+  alertModal,
+  modal,
+  beforeNickname,
+}: {
+  alertModal: HTMLElement;
+  modal: HTMLElement;
+  beforeNickname: string;
+}) {
+  const nicknameInput = modal.querySelector(
+    ".modify-modal-form-nickname input"
+  ) as HTMLInputElement;
+  const nickname = nicknameInput.value.trim();
+  console.log("alertmodal", alertModal);
+  if (nickname.length === 0) {
+    showErrorModal(alertModal, EMPTYNICKNAME);
+    return true;
+  }
+  if (nickname === beforeNickname) {
+    showErrorModal(alertModal, DUPPLICATEDNICKNAME);
+    return true;
+  }
+  return false;
+}
+
+function checkInvalidPassword({
+  alertModal,
+  modal,
+}: {
+  alertModal: HTMLElement;
+  modal: HTMLElement;
+}) {
+  // 변경할 비밀번호와 비밀번호 확인이 일치하는지 체크
+  const beforePasswordInput = modal.querySelector(
+    ".modify-modal-form-password input"
+  ) as HTMLInputElement;
+  const afterPasswordInput = modal.querySelector(
+    ".modify-modal-form-modify-password input"
+  ) as HTMLInputElement;
+  const afterPasswordConfirmInput = modal.querySelector(
+    ".modify-modal-form-password-confirm input"
+  ) as HTMLInputElement;
+
+  const beforePassword = beforePasswordInput.value.trim();
+  const afterPassword = afterPasswordInput.value.trim();
+  const afterPasswordConfirm = afterPasswordConfirmInput.value.trim();
+
+  if (beforePassword.length === 0) {
+    showErrorModal(alertModal, EMPTYPW);
+    return true;
+  }
+
+  if (afterPassword.length === 0) {
+    showErrorModal(alertModal, EMPTYMODIFYPW);
+    return true;
+  }
+
+  if (afterPasswordConfirm.length === 0) {
+    showErrorModal(alertModal, EMPTYMODIFYCONFIRMPW);
+    return true;
+  }
+
+  if (afterPassword !== afterPasswordConfirm) {
+    showErrorModal(alertModal, NotMatchedPassword);
+    return true;
+  }
+
+  return false;
+}
+
 function showErrorModal(modal: HTMLElement, errorMessage: string): void {
   if (modal.classList.contains("FadeInAndOut")) return;
   modal.innerHTML = errorMessage;
+  modal.classList.add("pink");
   modal.classList.toggle("FadeInAndOut");
   setTimeout(() => {
     modal.classList.toggle("FadeInAndOut");
+    modal.classList.add("pink");
   }, 2000);
 }

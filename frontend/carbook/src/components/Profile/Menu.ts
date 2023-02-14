@@ -35,13 +35,6 @@ export default class Menu extends Component {
         ".modify-modal"
       ) as HTMLElement;
 
-      /**
-       * 닉네임 수정
-       * 모달창의 닉네임 창에 기존 닉네임 입력
-       * 입력 변경버튼 누르면
-       * 1. 원래 닉네임이랑 같은지 체크
-       * 2. 다른 유저의 닉네임과 중복 체크
-       */
       if (li.classList.contains("modify-nickname")) {
         const nicknameInput = modifyModal.querySelector(
           ".modify-modal-form-nickname input"
@@ -51,14 +44,6 @@ export default class Menu extends Component {
         modifyModal.classList.add("nickname");
       }
 
-      /**
-       * 비밀번호 수정
-       * 기존 비밀번호
-       * 입력 변경버튼 누르면 전송
-       * 1. 기존 비밀번호와 같은지 체크
-       * 2. 기존 비밀번호가 맞는지 체크
-       * 3. 변경 성공하면 모달창 닫음
-       */
       if (li.classList.contains("modify-password")) {
         modifyModal.classList.add("password");
       }

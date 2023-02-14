@@ -21,3 +21,9 @@ export const [NONEXISTENTID, NONEXISTENTPW, LOGINSUCCESS] = [
   "존재하지 않는 비밀번호입니다",
   "로그인에 성공하였습니다",
 ];
+
+export const [EMPTYMODIFYPW, EMPTYMODIFYCONFIRMPW, NotMatchedPassword] = [
+  "변경할 비밀번호를 입력해주세요",
+  "변경할 비밀번호를 한번 더 입력해주세요",
+  "변경할 비밀번호가 일치하지 않습니다",
+];
