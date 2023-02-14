@@ -48,14 +48,14 @@ export default class SearchList extends Component {
 
       if (card) {
         const { tag } = card.dataset;
-        this.props.addHashTag({ tag, type: 'old' });
+        this.props.addHashTag({ [tag]: 'old' });
         return;
       }
 
       if (msg) {
         const { tag } = msg.dataset;
         if (tag?.length !== 0) {
-          this.props.addHashTag({ tag, type: 'new' });
+          this.props.addHashTag({ [tag]: 'new' });
         }
       }
     });
