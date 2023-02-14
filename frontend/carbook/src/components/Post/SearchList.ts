@@ -31,7 +31,7 @@ export default class SearchList extends Component {
           새로운 <div class="strong">"${keyword}"</div> 추가하기     
         </div>`;
       } else {
-        return `<div class="dropdown__msg">
+        return `<div class="dropdown__msg" data-tag="">
           검색어를 입력해 주세요 
         </div>`;
       }
@@ -48,14 +48,15 @@ export default class SearchList extends Component {
 
       if (card) {
         const { tag } = card.dataset;
-        this.props.addHashTag({ tag, type: 'old' });
+        this.props.addHashTag({ [tag]: 'old' });
         return;
       }
 
       if (msg) {
         const { tag } = msg.dataset;
-        this.props.addHashTag({ tag, type: 'new' });
-        return;
+        if (tag?.length !== 0) {
+          this.props.addHashTag({ [tag]: 'new' });
+        }
       }
     });
   }

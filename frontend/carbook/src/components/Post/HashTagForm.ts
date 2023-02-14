@@ -1,6 +1,13 @@
 import { Component } from '@/core';
 import search from '@/assets/icons/search-blue.svg';
-import { onChangeInputHandler, onVisibleHandler, qs } from '@/utils';
+import {
+  getClosest,
+  getObjectKeyArray,
+  isEmptyObj,
+  onChangeInputHandler,
+  onVisibleHandler,
+  qs,
+} from '@/utils';
 import { basicAPI } from '@/api';
 import SearchList from './SearchList';
 import { IHashTag } from '@/interfaces';
@@ -10,7 +17,7 @@ export default class HashTagForm extends Component {
   setup(): void {
     this.state = {
       value: '',
-      hashtags: [],
+      hashtags: {},
     };
   }
   template(): string {
@@ -26,12 +33,7 @@ export default class HashTagForm extends Component {
         <div class="dropdown">
         </div>
         <div class="hashtag__box">
-          ${hashtags
-            .map(
-              ({ tag, type }: { tag: string; type: string }) =>
-                `<div class="hashtag ${type}"># ${tag}</div> `
-            )
-            .join('')}
+          ${this.makeHashtagCards(hashtags)}
         </div> 
       </div>
     `;
@@ -52,6 +54,7 @@ export default class HashTagForm extends Component {
   setEvent(): void {
     const form = qs(document, '.form');
     const input = qs(this.$target, '.input') as HTMLInputElement;
+    const hashtagBox = qs(this.$target, '.hashtag__box');
 
     form.addEventListener('click', ({ target }) => {
       const dropdown = (<HTMLElement>target).closest('.dropdown');
@@ -60,11 +63,57 @@ export default class HashTagForm extends Component {
       onVisibleHandler(input, '.dropdown');
     });
 
+    hashtagBox.addEventListener('click', ({ target }) => {
+      const hashtag = getClosest(<HTMLElement>target, '.hashtag');
+
+      if (hashtag) {
+        const hashtagName = hashtag.dataset.tag as string;
+        this.removeHashTag(hashtagName);
+      }
+    });
+
     onChangeInputHandler(input, this.getSearchTags.bind(this));
   }
 
+  makeHashtagCards(hashtags: object) {
+    if (isEmptyObj(hashtags)) {
+      return '<div class="msg">🔍 검색을 통해 원하는 해시태그를 추가하세요</div>';
+    } else {
+      return `
+        ${Object.entries(hashtags)
+          .map(
+            ([key, value]) => `
+           <div class="hashtag ${value}" data-tag="${key}"># ${key}</div>`
+          )
+          .join('')}
+      `;
+    }
+  }
+
   addHashTag(hashtag: IHashTag) {
-    this.setState({ hashtags: [...this.state.hashtags, hashtag] });
+    const { hashtags } = this.state;
+    const input = qs(this.$target, '.input') as HTMLInputElement;
+
+    this.setState({
+      hashtags: { ...hashtags, ...hashtag },
+      value: input.value,
+    });
+
+    const hashTagsName = getObjectKeyArray(hashtags);
+    this.props.setFormData(hashTagsName);
+  }
+
+  removeHashTag(hashtagName: string) {
+    const input = qs(this.$target, '.input') as HTMLInputElement;
+    delete this.state.hashtags[hashtagName];
+
+    this.setState({
+      hashtags: { ...this.state.hashtags },
+      value: input.value,
+    });
+
+    const hashTagsName = getObjectKeyArray(this.state.hashtags);
+    this.props.setFormData(hashTagsName);
   }
 
   async getSearchTags(keyword: string) {

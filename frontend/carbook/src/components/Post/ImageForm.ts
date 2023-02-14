@@ -5,7 +5,7 @@ import { qs } from '@/utils';
 export default class ImageForm extends Component {
   setup(): void {
     this.state = {
-      imageFile: null,
+      imageUrl: null,
     };
   }
   template(): string {
@@ -42,7 +42,8 @@ export default class ImageForm extends Component {
     const url = (<FileReader>e.target).result;
     this.$target.style.backgroundImage = `url(${url})`;
     this.$target.setAttribute('data-file', file.name);
-    this.setState({ imageFile: url });
+    this.setState({ imageUrl: url });
+    this.props.setFormData(file);
 
     this.hideInnerContent();
   }
