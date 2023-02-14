@@ -22,8 +22,12 @@ export function isSameObj(obj1: object, obj2: object) {
   return Object.entries(obj1).toString() === Object.entries(obj2).toString();
 }
 
+export function getObjectKeyArray(object: object) {
+  return Object.entries(object).map(([key, _]) => key);
+}
+
 export function onChangeInputHandler(
-  input: HTMLInputElement,
+  input: HTMLInputElement | HTMLTextAreaElement,
   callback: (value: string) => void
 ) {
   let timer: ReturnType<typeof setTimeout>;
@@ -32,7 +36,7 @@ export function onChangeInputHandler(
 
     if (timer) clearTimeout(timer);
     timer = setTimeout(() => {
-      callback(value);
+      callback && callback(value);
     }, 400);
   });
 }
