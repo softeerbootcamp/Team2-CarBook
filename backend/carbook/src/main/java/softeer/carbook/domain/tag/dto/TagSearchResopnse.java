@@ -1,4 +1,4 @@
-package softeer.carbook.domain.hashtag.dto;
+package softeer.carbook.domain.tag.dto;
 
 import java.util.List;
 

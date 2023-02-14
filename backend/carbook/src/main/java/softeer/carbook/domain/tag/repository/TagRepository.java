@@ -1,24 +1,24 @@
-package softeer.carbook.domain.hashtag.repository;
+package softeer.carbook.domain.tag.repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import softeer.carbook.domain.hashtag.exception.HashtagNotExistException;
-import softeer.carbook.domain.hashtag.model.Hashtag;
-import softeer.carbook.domain.hashtag.model.Model;
-import softeer.carbook.domain.hashtag.model.Type;
+import softeer.carbook.domain.tag.exception.HashtagNotExistException;
+import softeer.carbook.domain.tag.model.Hashtag;
+import softeer.carbook.domain.tag.model.Model;
+import softeer.carbook.domain.tag.model.Type;
 
 import javax.sql.DataSource;
 import java.util.List;
 
 @Repository
-public class HashtagRepository {
+public class TagRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public HashtagRepository(DataSource dataSource) {
+    public TagRepository(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
@@ -47,6 +47,10 @@ public class HashtagRepository {
 
     public List<Model> findAllModels() {
         return jdbcTemplate.query("SELECT m.id, m.type_id, m.tag FROM MODEL m", modelRowMapper());
+    }
+
+    public Model findModelByName(String tag){
+        return jdbcTemplate.query("SELECT m.id, m.type_id, m.tag FROM MODEL m WHERE m.tag = ?", modelRowMapper(), tag).get(0);
     }
 
     private RowMapper<Type> typeRowMapper() {

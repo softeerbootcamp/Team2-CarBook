@@ -2,17 +2,19 @@ package softeer.carbook.domain.post.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import softeer.carbook.domain.follow.repository.FollowRepository;
-import softeer.carbook.domain.post.dto.GuestPostsResponse;
-import softeer.carbook.domain.post.dto.LoginPostsResponse;
-import softeer.carbook.domain.post.dto.PostsSearchResponse;
-import softeer.carbook.domain.post.dto.MyProfileResponse;
-import softeer.carbook.domain.post.dto.OtherProfileResponse;
+import softeer.carbook.domain.post.dto.*;
 import softeer.carbook.domain.post.model.Image;
+import softeer.carbook.domain.post.model.Post;
 import softeer.carbook.domain.post.repository.ImageRepository;
 import softeer.carbook.domain.post.repository.PostRepository;
+import softeer.carbook.domain.post.repository.S3Repository;
+import softeer.carbook.domain.tag.model.Model;
+import softeer.carbook.domain.tag.repository.TagRepository;
 import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.repository.UserRepository;
+import softeer.carbook.global.dto.Message;
 
 import java.util.List;
 
@@ -22,6 +24,8 @@ public class PostService {
     private final ImageRepository imageRepository;
     private final UserRepository userRepository;
     private final FollowRepository followRepository;
+    private final S3Repository s3Repository;
+    private final TagRepository tagRepository;
     private final int POST_COUNT = 10;
 
     @Autowired
@@ -29,11 +33,15 @@ public class PostService {
             PostRepository postRepository,
             ImageRepository imageRepository,
             UserRepository userRepository,
-            FollowRepository followRepository) {
+            FollowRepository followRepository,
+            S3Repository s3Repository,
+            TagRepository tagRepository) {
         this.postRepository = postRepository;
         this.imageRepository = imageRepository;
         this.userRepository = userRepository;
         this.followRepository = followRepository;
+        this.s3Repository = s3Repository;
+        this.tagRepository = tagRepository;
     }
 
     public GuestPostsResponse getRecentPosts(int index) {
@@ -81,4 +89,23 @@ public class PostService {
                 .images(imageRepository.findImagesByNickName(profileUserNickname))
                 .build();
     }
+
+
+    @Transactional
+    public Message createPost(NewPostForm newPostForm, User loginUser) {
+        Model model = tagRepository.findModelByName(newPostForm.getModel());
+        int model_id = model.getId();
+        Post post = new Post(loginUser.getId(), newPostForm.getContent(), model_id);
+        int postId = postRepository.addPost(post);
+        String imageURL = "";
+        try {
+            imageURL = s3Repository.upload(newPostForm.getImage(), "images", postId);
+        } catch (IllegalArgumentException iae){
+            throw iae;
+        }
+        Image image = new Image(postId, imageURL);
+        imageRepository.addImage(image);
+        return new Message("Post create success");
+    }
+
 }

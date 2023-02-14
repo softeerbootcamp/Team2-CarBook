@@ -1,4 +1,4 @@
-package softeer.carbook.domain.hashtag.model;
+package softeer.carbook.domain.tag.model;
 
 public class Hashtag {
 
