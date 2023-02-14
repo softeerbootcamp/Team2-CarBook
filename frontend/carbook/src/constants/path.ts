@@ -5,7 +5,9 @@ import {
   PostPage,
   ProfilePage,
   SignupPage,
-} from "@/pages";
+} from '@/pages';
+
+const dd = decodeURI('한녕');
 
 export const routes = [
   { path: /^\/$/, element: HomePage },
@@ -13,6 +15,6 @@ export const routes = [
   { path: /^\/signup$/, element: SignupPage },
   { path: /^\/post\/[\d]+$/, element: PostDetailPage },
   { path: /^\/post\/[\d]+\/edit$/, element: PostPage },
-  { path: /^\/post\/[a-z]+$/, element: PostPage },
-  { path: /^\/profile\/[\w]+$/, element: ProfilePage },
+  { path: /^\/post\/new$/, element: PostPage },
+  { path: /^\/profile\/.+$/, element: ProfilePage },
 ];
