@@ -10,6 +10,8 @@ import softeer.carbook.domain.post.model.Post;
 import softeer.carbook.domain.post.repository.ImageRepository;
 import softeer.carbook.domain.post.repository.PostRepository;
 import softeer.carbook.domain.post.repository.S3Repository;
+import softeer.carbook.domain.tag.exception.HashtagNotExistException;
+import softeer.carbook.domain.tag.model.Hashtag;
 import softeer.carbook.domain.tag.model.Model;
 import softeer.carbook.domain.tag.repository.TagRepository;
 import softeer.carbook.domain.user.model.User;
@@ -90,13 +92,21 @@ public class PostService {
                 .build();
     }
 
-
     @Transactional
     public Message createPost(NewPostForm newPostForm, User loginUser) {
         Model model = tagRepository.findModelByName(newPostForm.getModel());
         int model_id = model.getId();
         Post post = new Post(loginUser.getId(), newPostForm.getContent(), model_id);
         int postId = postRepository.addPost(post);
+        for (String tagName: newPostForm.getHashtag()){
+            int tagId;
+            try {
+                tagId = tagRepository.findHashtagByName(tagName).getId();
+            } catch (HashtagNotExistException hne){
+                tagId = tagRepository.addHashtag(new Hashtag(tagName));
+            }
+            tagRepository.addPostHashtag(postId,tagId);
+        }
         String imageURL = "";
         try {
             imageURL = s3Repository.upload(newPostForm.getImage(), "images", postId);

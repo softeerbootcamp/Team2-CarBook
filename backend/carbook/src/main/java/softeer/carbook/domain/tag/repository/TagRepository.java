@@ -3,6 +3,8 @@ package softeer.carbook.domain.tag.repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import softeer.carbook.domain.tag.exception.HashtagNotExistException;
 import softeer.carbook.domain.tag.model.Hashtag;
@@ -10,6 +12,8 @@ import softeer.carbook.domain.tag.model.Model;
 import softeer.carbook.domain.tag.model.Type;
 
 import javax.sql.DataSource;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
 
 @Repository
@@ -51,6 +55,23 @@ public class TagRepository {
 
     public Model findModelByName(String tag){
         return jdbcTemplate.query("SELECT m.id, m.type_id, m.tag FROM MODEL m WHERE m.tag = ?", modelRowMapper(), tag).get(0);
+    }
+
+    public int addHashtag(Hashtag hashtag){
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection
+                    .prepareStatement("INSERT INTO HASHTAG (tag) values(?)", Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, hashtag.getTag());
+            return ps;
+        }, keyHolder);
+        return keyHolder.getKey().intValue();
+    }
+
+    public void addPostHashtag(int postId, int tagId){
+        jdbcTemplate.update("insert into POST_HASHTAG(post_id, tag_id) values(?, ?)",
+                postId, tagId
+        );
     }
 
     private RowMapper<Type> typeRowMapper() {
