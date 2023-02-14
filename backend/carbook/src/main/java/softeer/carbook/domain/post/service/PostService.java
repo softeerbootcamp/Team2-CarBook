@@ -128,7 +128,7 @@ public class PostService {
         postRepository.updatePost(post);
         tagRepository.deletePostHashtags(postId);
         addPostHashtags(modifiedPostForm.getHashtag(),postId);
-        Image oldImage = imageRepository.getImageByPostId(postId);     // 기존 이미지 정보 (postId, url)
+        Image oldImage = imageRepository.getImageByPostId(postId);
         s3Repository.deleteS3(getAWSFileName(oldImage));
         String imageURL = "";
         try {
