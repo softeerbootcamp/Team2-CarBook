@@ -16,6 +16,7 @@ import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.repository.UserRepository;
 import softeer.carbook.global.dto.Message;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Service
@@ -108,4 +109,7 @@ public class PostService {
         return new Message("Post create success");
     }
 
+    public Object getPostDetails(int postId, HttpServletRequest httpServletRequest) {
+
+    }
 }
