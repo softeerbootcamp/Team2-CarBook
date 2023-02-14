@@ -4,6 +4,7 @@ import { IHashTag } from '@/interfaces';
 import { actionType, tagStore } from '@/store/tagStore';
 import { getClosest } from '@/utils';
 import { getTagIcon } from './helper';
+import spinner from '@/assets/images/spinner.png';
 
 export default class SearchList extends Component {
   setup(): void {
@@ -14,11 +15,7 @@ export default class SearchList extends Component {
     const { keywords, option } = this.state;
 
     return `
-      ${
-        !keywords.length
-          ? `<div class="dropdown__msg">검색 결과가 없습니다.</div>`
-          : ''
-      }
+      ${this.getMsg()}
       <div class="dropdown__cards--scroll">
       ${keywords
         .filter(({ category = 'hashtag' }: IHashTag) => category === option)
@@ -36,6 +33,17 @@ export default class SearchList extends Component {
         .join('')}
         </div>
     `;
+  }
+
+  getMsg() {
+    const { isLoading, keywords } = this.state;
+    if (isLoading) {
+      return `<div class="spinner__container"><img class="spinner" src="${spinner}" alt="spinner" /> </div>`;
+    }
+    if (keywords.length === 0) {
+      return `<div class="dropdown__msg">검색 결과가 없습니다.</div>`;
+    }
+    return '';
   }
 
   setEvent(): void {
