@@ -7,8 +7,6 @@ import {
   SignupPage,
 } from '@/pages';
 
-const dd = decodeURI('한녕');
-
 export const routes = [
   { path: /^\/$/, element: HomePage },
   { path: /^\/login$/, element: LoginPage },
