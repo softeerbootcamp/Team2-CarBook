@@ -74,6 +74,10 @@ public class TagRepository {
         );
     }
 
+    public void deletePostHashtags(int postId){
+        jdbcTemplate.update("delete from POST_HASHTAG where post_id=?",postId);
+    }
+
     private RowMapper<Type> typeRowMapper() {
         return (rs, rowNum) -> new Type(
                 rs.getInt("id"),
