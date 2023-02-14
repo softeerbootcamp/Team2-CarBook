@@ -124,7 +124,7 @@ public class PostService {
                 .like(likeRepository.findLikeCountByPostId(postId))
                 .createDate(post.getCreateDate().toString())
                 .updateDate(post.getUpdateDate().toString())
-                .keywords(tagRepository.searchPostTagsByPostId(postId))
+                .keywords(tagRepository.searchPostTagsByPostIdAndModelId(postId, post.getModelId()))
                 .content(post.getContent())
                 .build();
     }

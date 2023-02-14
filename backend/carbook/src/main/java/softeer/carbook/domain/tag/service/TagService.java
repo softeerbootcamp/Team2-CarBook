@@ -26,6 +26,7 @@ public class TagService {
         List<Model> models = tagRepository.searchModelByPrefix(keyword);
         List<Hashtag> hashtags = tagRepository.searchHashtagByPrefix(keyword);
 
+        // todo refactor
         List<TagSearchResult> results = types.stream()
                 .map(TagSearchResult::of)
                 .collect(Collectors.toList());
