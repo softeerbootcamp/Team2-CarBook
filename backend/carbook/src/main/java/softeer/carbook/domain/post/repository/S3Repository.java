@@ -27,12 +27,12 @@ public class S3Repository {
     }
 
     public String upload(MultipartFile multipartFile, String dirName, int postId) {
-        File uploadImage = makeLocalFile(multipartFile).orElseThrow(() -> new IllegalArgumentException("Local File Creation Failed"));
-        return upload(uploadImage, dirName, postId);
+        File uploadImage = makeLocalFile(multipartFile, postId).orElseThrow(() -> new IllegalArgumentException("Local File Creation Failed"));
+        return upload(uploadImage, dirName);
     }
 
-    private Optional<File> makeLocalFile(MultipartFile file){
-        File convertFile = new File(file.getOriginalFilename());
+    private Optional<File> makeLocalFile(MultipartFile file, int postId){
+        File convertFile = new File(postId+"_"+file.getOriginalFilename());
         try {
             if (convertFile.createNewFile()) {
                 FileOutputStream fos = new FileOutputStream(convertFile);
@@ -47,8 +47,8 @@ public class S3Repository {
         }
     }
 
-    private String upload(File uploadImage, String dirName, int postId){
-        String fileName = dirName + "/" + postId +"_"+uploadImage.getName();
+    private String upload(File uploadImage, String dirName){
+        String fileName = dirName + "/" +uploadImage.getName();
         String uploadImageUrl = uploadS3(uploadImage, fileName);
         uploadImage.delete();
         return uploadImageUrl;
