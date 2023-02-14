@@ -1,11 +1,13 @@
 import { Component } from '@/core';
 import { ImageForm, Selection, HashTagForm, TextForm } from '@/components/Post';
 import { qs, qsa } from '@/utils';
-import { basicAPI } from '@/api';
+import { basicAPI, formAPI } from '@/api';
+import { push } from '@/utils/router/navigate';
 
 export default class Form extends Component {
+  data: any;
   setup(): void {
-    this.state = {
+    this.data = {
       type: '',
       model: '',
       image: '',
@@ -40,25 +42,67 @@ export default class Form extends Component {
     `;
   }
 
+  setEvent(): void {
+    this.onClickBtnHandler();
+  }
+
+  onClickBtnHandler() {
+    this.$target.addEventListener('click', (e: Event) => {
+      const className = (<HTMLElement>e.target).className;
+
+      switch (className) {
+        case 'form__buttons--cancel':
+          history.back();
+          return;
+        case 'form__buttons--submit':
+          e.preventDefault();
+          this.onSubmitHandler();
+          return;
+      }
+    });
+  }
+
+  setData(prevData: object, dataType: string) {
+    this.data[dataType] = prevData;
+  }
+
   async mounted() {
     const section = qs(this.$target, '.section');
     const inputBoxs = qsa(this.$target, '.input__box');
     const hastagInput = qs(this.$target, '.tag');
     const textInput = qs(this.$target, '.text');
 
-    new ImageForm(section);
+    new ImageForm(section, {
+      setFormData: (newData: any) => {
+        this.setData(newData, 'image');
+      },
+    });
 
     const { modelOption, typeOption } = await this.getCarOptions();
     new Selection(<HTMLElement>inputBoxs[0], {
       label: '차 종류',
       options: typeOption,
+      setFormData: (newData: any) => {
+        this.setData(newData, 'type');
+      },
     });
     new Selection(<HTMLElement>inputBoxs[1], {
       label: '차 모델',
       options: modelOption,
+      setFormData: (newData: any) => {
+        this.setData(newData, 'model');
+      },
     });
-    new HashTagForm(hastagInput);
-    new TextForm(textInput);
+    new HashTagForm(hastagInput, {
+      setFormData: (newData: any) => {
+        this.setData(newData, 'hashtag');
+      },
+    });
+    new TextForm(textInput, {
+      setFormData: (newData: any) => {
+        this.setData(newData, 'content');
+      },
+    });
   }
 
   async getCarOptions() {
@@ -73,6 +117,24 @@ export default class Form extends Component {
     } catch (error) {
       console.log(error);
       return { modelOption: [], typeOption: [] };
+    }
+  }
+
+  async onSubmitHandler() {
+    const { type, model, image, hashtag, content } = this.state;
+
+    const formdata = new FormData();
+    formdata.append('image', image);
+    formdata.append('hashtag', hashtag);
+    formdata.append('type', type);
+    formdata.append('model', model);
+    formdata.append('content', content);
+
+    try {
+      await formAPI.post('/api/post', formdata);
+      push('/');
+    } catch (error) {
+      console.error(error);
     }
   }
 }
