@@ -42,6 +42,7 @@ export default class HashTagForm extends Component {
   mounted(): void {
     const dropdown = qs(this.$target, '.dropdown');
     const searchList = new SearchList(dropdown, {
+      isLoading: false,
       hashtags: [],
       keyword: '',
       addHashTag: (hashtag: IHashTag) => {
@@ -61,6 +62,7 @@ export default class HashTagForm extends Component {
 
       if (dropdown) return;
       onVisibleHandler(input, '.dropdown');
+      this.getSearchTags(input.value);
     });
 
     hashtagBox.addEventListener('click', ({ target }) => {
@@ -72,7 +74,7 @@ export default class HashTagForm extends Component {
       }
     });
 
-    onChangeInputHandler(input, this.getSearchTags.bind(this));
+    onChangeInputHandler(input, this.getSearchTags.bind(this), '.dropdown');
   }
 
   makeHashtagCards(hashtags: object) {
@@ -119,17 +121,28 @@ export default class HashTagForm extends Component {
   async getSearchTags(keyword: string) {
     const searchKeyword = keyword.trim();
 
+    this.searchList.setState({
+      isLoading: true,
+      hashtags: [],
+      keyword: searchKeyword,
+    });
+
     if (searchKeyword.length !== 0) {
       const searchedData = await basicAPI.get(
         `/api/search/hashtag/?keyword=${keyword.trim()}`
       );
 
       this.searchList.setState({
+        isLoading: false,
         hashtags: searchedData.data.hashtags,
         keyword: searchKeyword,
       });
     } else {
-      this.searchList.setState({ hashtags: [], keyword: searchKeyword });
+      this.searchList.setState({
+        isLoading: false,
+        hashtags: [],
+        keyword: searchKeyword,
+      });
     }
   }
 }

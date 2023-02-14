@@ -28,7 +28,8 @@ export function getObjectKeyArray(object: object) {
 
 export function onChangeInputHandler(
   input: HTMLInputElement | HTMLTextAreaElement,
-  callback: (value: string) => void
+  callback: (value: string) => void,
+  className: string
 ) {
   let timer: ReturnType<typeof setTimeout>;
   input?.addEventListener('keyup', () => {
@@ -36,16 +37,20 @@ export function onChangeInputHandler(
 
     if (timer) clearTimeout(timer);
     timer = setTimeout(() => {
+      onVisibleHandler(input, className);
       callback && callback(value);
     }, 400);
   });
 }
 
-export function onVisibleHandler(input: HTMLInputElement, className: string) {
+export function onVisibleHandler(
+  input: HTMLInputElement | HTMLTextAreaElement,
+  className: string
+) {
   const isActive = document.activeElement;
   const dropdown = document.querySelector(className);
 
-  if (isActive !== input) {
+  if (isActive !== input || input.value.length === 0) {
     dropdown?.classList.remove('active');
   } else {
     dropdown?.classList.add('active');
