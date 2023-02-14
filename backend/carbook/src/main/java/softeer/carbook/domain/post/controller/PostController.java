@@ -112,7 +112,9 @@ public class PostController {
     public ResponseEntity<?> getPostDetails(
             @RequestParam int postId,
             HttpServletRequest httpServletRequest){
-        return new ResponseEntity<>(postService.getPostDetails(postId, httpServletRequest), HttpStatus.OK);
+        // 로그인한 사용자 인가요?
+        User user = userService.findLoginedUser(httpServletRequest);
+        return new ResponseEntity<>(postService.getPostDetails(postId, user), HttpStatus.OK);
     }
         // 로그인한 사용자인지 > user 로
 

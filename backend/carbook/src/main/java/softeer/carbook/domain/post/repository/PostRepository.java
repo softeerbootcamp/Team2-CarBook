@@ -11,6 +11,7 @@ import softeer.carbook.domain.post.model.Post;
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.List;
 
 @Repository
 public class PostRepository {
@@ -40,6 +41,13 @@ public class PostRepository {
     }
 
      */
+    public Post findPostById(int postId) {
+        List<Post> post = jdbcTemplate.query(
+                "select id, user_id, create_date, update_date, content, model_id " +
+                        "from POST " +
+                        "where id = ?", postRowMapper(), postId);
+        return post.stream().findAny().orElseThrow();
+    }
 
     public int addPost(Post post){
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -64,5 +72,4 @@ public class PostRepository {
                 rs.getInt("model_id")
         );
     }
-
 }

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import softeer.carbook.domain.tag.dto.TagSearchResult;
 import softeer.carbook.domain.tag.exception.HashtagNotExistException;
 import softeer.carbook.domain.tag.model.Hashtag;
 import softeer.carbook.domain.tag.model.Model;
@@ -27,6 +28,10 @@ public class TagRepository {
         return hashtags.stream()
                 .findAny()
                 .orElseThrow(() -> new HashtagNotExistException());
+    }
+
+    public List<TagSearchResult> searchPostTagsByPostId(int postId) {
+        return null;
     }
 
     public List<Type> searchTypeByPrefix(String keyword) {

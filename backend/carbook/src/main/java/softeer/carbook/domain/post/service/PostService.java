@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import softeer.carbook.domain.follow.repository.FollowRepository;
+import softeer.carbook.domain.like.repository.LikeRepository;
 import softeer.carbook.domain.post.dto.*;
 import softeer.carbook.domain.post.model.Image;
 import softeer.carbook.domain.post.model.Post;
@@ -27,6 +28,7 @@ public class PostService {
     private final FollowRepository followRepository;
     private final S3Repository s3Repository;
     private final TagRepository tagRepository;
+    private final LikeRepository likeRepository;
     private final int POST_COUNT = 10;
 
     @Autowired
@@ -36,13 +38,15 @@ public class PostService {
             UserRepository userRepository,
             FollowRepository followRepository,
             S3Repository s3Repository,
-            TagRepository tagRepository) {
+            TagRepository tagRepository,
+            LikeRepository likeRepository) {
         this.postRepository = postRepository;
         this.imageRepository = imageRepository;
         this.userRepository = userRepository;
         this.followRepository = followRepository;
         this.s3Repository = s3Repository;
         this.tagRepository = tagRepository;
+        this.likeRepository = likeRepository;
     }
 
     public GuestPostsResponse getRecentPosts(int index) {
@@ -109,7 +113,19 @@ public class PostService {
         return new Message("Post create success");
     }
 
-    public Object getPostDetails(int postId, HttpServletRequest httpServletRequest) {
-
+    public PostDetailResponse getPostDetails(int postId, User user) {
+        // 내가 쓴 글인지 남이 쓴 글인지 판단
+        Post post = postRepository.findPostById(postId);
+        boolean isMyPost = (post.getId() == user.getId());
+        return new PostDetailResponse.PostDetailResponseBuilder()
+                .isMyPost(isMyPost)
+                .nickname(user.getNickname())
+                .imageUrl(imageRepository.getImageByPostId(postId).getImageUrl())
+                .like(likeRepository.findLikeCountByPostId(postId))
+                .createDate(post.getCreateDate().toString())
+                .updateDate(post.getUpdateDate().toString())
+                .keywords(tagRepository.searchPostTagsByPostId(postId))
+                .content(post.getContent())
+                .build();
     }
 }
