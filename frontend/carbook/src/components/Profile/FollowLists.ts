@@ -1,11 +1,52 @@
 import { basicAPI } from "@/api";
 import { Component } from "@/core";
-// import { IFollows } from "@/interfaces";
 import { push } from "@/utils/router/navigate";
 
 export default class Followlists extends Component {
   setup(): void {
-    this.setState({ follows: [] });
+    this.state.follows = [];
+    this.receiveFollowLists();
+    this.$target.addEventListener("click", this.followListsHandler.bind(this));
+  }
+
+  followListsHandler(e: Event) {
+    const deleteButton = (e.target as HTMLElement).closest(
+      ".follower-delete-button"
+    );
+
+    if (deleteButton) {
+      const nickname = (
+        this.$target.querySelector(".follower-info") as HTMLElement
+      ).dataset.nickname as string;
+      const mode = this.$target.querySelector(
+        ".profile__contents-header"
+      )?.innerHTML;
+
+      mode === "팔로워"
+        ? this.deleteFollower(nickname)
+        : this.deleteFollowing(nickname);
+      return;
+    }
+
+    const target = (e.target as HTMLElement).closest(
+      ".follower-info"
+    ) as HTMLElement;
+
+    if (target.dataset.nickname) push(`/profile/${target.dataset.nickname}`);
+  }
+
+  /**
+   * param: nickname()
+   * 서버에 팔로워 삭제, 언팔로우 요청
+   *
+   */
+  async deleteFollower(nickname: string) {
+    await basicAPI.delete(`/api/profile/follower?follower=${nickname}`);
+    this.receiveFollowLists();
+  }
+
+  async deleteFollowing(nickname: string) {
+    await basicAPI.post("/api/profile/follow", { followingNickname: nickname });
     this.receiveFollowLists();
   }
 
@@ -27,25 +68,15 @@ export default class Followlists extends Component {
   template(): string {
     const { profileMode, isMyProfile } = this.props;
     return /*html*/ `
-        <h2 class = 'profile__contents-header'>
-          ${profileMode === "follower" ? "팔로워" : "팔로잉"}
-        </h2>
+        <h2 class = 'profile__contents-header'>${
+          profileMode === "follower" ? "팔로워" : "팔로잉"
+        }</h2>
         <ul class = 'profile__contents-followers'>
         ${this.state.follows
           .map((nickname: string) => FollowlistsItem(isMyProfile, nickname))
           .join("")}
         </ul>
         `;
-  }
-
-  setEvent(): void {
-    this.$target.addEventListener("click", (e: Event) => {
-      const target = (e.target as HTMLElement).closest(
-        ".follower-info"
-      ) as HTMLElement;
-      if (!target.dataset.nickname) return;
-      push("/profile/1");
-    });
   }
 }
 
