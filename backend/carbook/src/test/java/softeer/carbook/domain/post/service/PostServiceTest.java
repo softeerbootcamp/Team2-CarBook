@@ -526,4 +526,38 @@ class PostServiceTest {
         verify(tagRepository).addHashtag(any());
     }
 
+    @Test
+    @DisplayName("게시글 수정 실패 테스트 - 남의 게시글")
+    void modifyPostFailTest() throws IOException {
+        final String fileName = "modifiedTestImage";
+        final String contentType = "jpeg";
+        final String filePath = "src/test/resources/"+fileName+"."+contentType;
+        FileInputStream fileInputStream = new FileInputStream(filePath);
+        MockMultipartFile image = new MockMultipartFile("image", fileName + "." + contentType, contentType, fileInputStream);
+
+        List<Hashtag> hashtags = new ArrayList<>(){{
+            add(new Hashtag("맑음"));
+            add(new Hashtag("테스트태그"));
+        }};
+
+        List<String> hashtagNames = new ArrayList<>(){{
+            add("맑음");
+            add("테스트태그");
+        }};
+
+        ModifiedPostForm modifiedPostForm = new ModifiedPostForm(100, image, hashtagNames, "승용", "쏘나타", "테스트 쏘나타 게시글입니다");
+
+        User user = new User(17, "user17@email.com", "사용자17", "pw17");
+        Post post = new Post(1, 1, new Timestamp(12341241), new Timestamp(1231235), "asdf", 1);
+        given(postRepository.findPostById(anyInt())).willReturn(post);
+        // when
+        Throwable exception = assertThrows(InvalidPostAccessException.class, () -> {
+            Message result = postService.modifyPost(modifiedPostForm, user);
+        });
+
+        // then
+        assertThat(exception.getMessage()).isEqualTo("ERROR: Invalid Access");
+        verify(postRepository).findPostById(anyInt());
+    }
+
 }
