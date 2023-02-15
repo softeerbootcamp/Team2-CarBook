@@ -12,7 +12,7 @@ export default class SearchList extends Component {
   }
 
   template(): string {
-    const PLUS_NUMBER = 6;
+    const PLUS_NUMBER = 3;
     const { keywords, option } = this.state;
 
     const filteredKeywords = keywords.filter(({ category }: IHashTag) => {
