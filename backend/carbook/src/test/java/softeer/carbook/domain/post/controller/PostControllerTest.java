@@ -6,26 +6,37 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import softeer.carbook.domain.post.dto.*;
 import softeer.carbook.domain.post.model.Image;
 import softeer.carbook.domain.post.service.PostService;
+import softeer.carbook.domain.user.controller.UserController;
+import softeer.carbook.domain.user.dto.SignupForm;
 import softeer.carbook.domain.user.exception.NotLoginStatementException;
+import softeer.carbook.domain.user.exception.PasswordNotMatchException;
 import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.service.UserService;
 import softeer.carbook.global.dto.Message;
 
 import javax.servlet.http.HttpServletRequest;
+
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(PostController.class)
 class PostControllerTest {
@@ -219,5 +230,55 @@ class PostControllerTest {
                 .andExpect(status().isOk());
     }
 
+
+    @Test
+    @DisplayName("로그인 상태에서 글 작성 테스트")
+    void createPostTest() throws Exception {
+        User user = new User("test@gmail.com", "nickname",
+                BCrypt.hashpw("password", BCrypt.gensalt()));
+
+        given(userService.findLoginedUser(any(HttpServletRequest.class))).willReturn(user);
+        given(postService.createPost(any(), any())).willReturn(new Message("Post create success"));
+
+        final String fileName = "testImage";
+        final String contentType = "jpeg";
+        final String filePath = "src/test/resources/"+fileName+"."+contentType;
+        FileInputStream fileInputStream = new FileInputStream(filePath);
+
+        MockMultipartFile image = new MockMultipartFile("image", fileName + "." + contentType, contentType, fileInputStream);
+
+        mockMvc.perform(multipart(HttpMethod.POST, "/post")
+                .file(image)
+                .param("hashtag", new String[]{"hash", "hash2", "hash3"})
+                .param("type", "승용")
+                .param("model", "쏘나타")
+                .param("content", "테스트 글 내용입니다"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Post create success")));
+
+    }
+
+    @Test
+    @DisplayName("글 수정 테스트")
+    void modifyPostTest() throws Exception {
+        given(postService.modifyPost(any(),any())).willReturn(new Message("Post modify success"));
+
+        final String fileName = "modifiedTestImage";
+        final String contentType = "jpeg";
+        final String filePath = "src/test/resources/"+fileName+"."+contentType;
+        FileInputStream fileInputStream = new FileInputStream(filePath);
+
+        MockMultipartFile image = new MockMultipartFile("image", fileName + "." + contentType, contentType, fileInputStream);
+
+        mockMvc.perform(multipart(HttpMethod.PATCH, "/post")
+                        .file(image)
+                        .param("postId", "100")
+                        .param("hashtag", new String[]{"hash_mod", "hash_mod2", "hash_mod3"})
+                        .param("type", "승용")
+                        .param("model", "쏘나타")
+                        .param("content", "테스트 글 수정입니다"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Post modify success")));
+    }
 
 }
