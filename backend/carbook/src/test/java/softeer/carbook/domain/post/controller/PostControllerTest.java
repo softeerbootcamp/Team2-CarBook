@@ -14,6 +14,7 @@ import softeer.carbook.domain.post.service.PostService;
 import softeer.carbook.domain.user.exception.NotLoginStatementException;
 import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.service.UserService;
+import softeer.carbook.global.dto.Message;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -103,7 +105,7 @@ class PostControllerTest {
 
         // when & then
         mockMvc.perform(get("/profile?nickname=nickname"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -146,6 +148,75 @@ class PostControllerTest {
         mockMvc.perform(get("/profile?nickname=nickname12"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.myProfile").value(false));
+    }
+
+    @Test
+    @DisplayName("글 상세 페이지 글 불러오기 테스트 - 로그인 확인 실패")
+    void getPostDetailsNotLogin() throws Exception {
+        // given
+        given(userService.findLoginedUser(any(HttpServletRequest.class))).willThrow(new NotLoginStatementException());
+
+        // when & then
+        mockMvc.perform(get("/post?postId=9"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @DisplayName("글 상세 페이지 글 불러오기 테스트 - 나의 글")
+    void getMyPostDetails() throws Exception {
+        // given
+        User user = new User("test@gmail.com", "nickname",
+                BCrypt.hashpw("password", BCrypt.gensalt()));
+        given(userService.findLoginedUser(any())).willReturn(user);
+        given(postService.getPostDetails(anyInt(), eq(user))).willReturn(
+                new PostDetailResponse.PostDetailResponseBuilder().isMyPost(true).build());
+
+        // when & then
+        mockMvc.perform(get("/post?postId=9"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.myPost").value(true));
+    }
+
+    @Test
+    @DisplayName("글 상세 페이지 글 불러오기 테스트 - 타인 글")
+    void getOtherPostDetails() throws Exception {
+        // given
+        User user = new User("test@gmail.com", "nickname",
+                BCrypt.hashpw("password", BCrypt.gensalt()));
+        given(userService.findLoginedUser(any())).willReturn(user);
+        given(postService.getPostDetails(anyInt(), eq(user))).willReturn(
+                new PostDetailResponse.PostDetailResponseBuilder().isMyPost(false).build());
+
+        // when & then
+        mockMvc.perform(get("/post?postId=9"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.myPost").value(false));
+    }
+
+    @Test
+    @DisplayName("글 삭제 테스트 - 로그인 확인 실패")
+    void deletePostNotLogin() throws Exception {
+        // given
+        given(userService.findLoginedUser(any(HttpServletRequest.class))).willThrow(new NotLoginStatementException());
+
+        // when & then
+        mockMvc.perform(delete("/post/1"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @DisplayName("글 삭제 테스트 - 성공")
+    void deletePostSuccess() throws Exception {
+        // given
+        User user = new User("test@gmail.com", "nickname",
+                BCrypt.hashpw("password", BCrypt.gensalt()));
+        given(userService.findLoginedUser(any())).willReturn(user);
+        given(postService.deletePost(anyInt(), eq(user))).willReturn(
+                new Message("Post Deleted Successfully"));
+
+        // when & then
+        mockMvc.perform(delete("/post/1"))
+                .andExpect(status().isOk());
     }
 
 
