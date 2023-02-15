@@ -43,27 +43,27 @@ public class PostRepository {
      */
     public Post findPostById(int postId) {
         List<Post> post = jdbcTemplate.query(
-                "select id, user_id, create_date, update_date, content, model_id " +
-                        "from POST " +
-                        "where id = ?", postRowMapper(), postId);
+                "SELECT id, user_id, create_date, update_date, content, model_id " +
+                        "FROM POST " +
+                        "WHERE id = ? AND is_deleted = false", postRowMapper(), postId);
         return post.stream().findAny().orElseThrow();
     }
 
     public List<Post> searchByType(String type) {
         return jdbcTemplate.query("SELECT p.id, p.user_id, p.create_date, p.update_date, p.content, p.model_id FROM TYPE t " +
                 "INNER JOIN MODEL m ON (t.id = m.type_id AND t.tag = ?) " +
-                "INNER JOIN POST p ON m.id = p.model_id ORDER BY p.create_date DESC", postRowMapper(), type);
+                "INNER JOIN POST p ON m.id = p.model_id  WHERE is_deleted = false ORDER BY p.create_date DESC", postRowMapper(), type);
     }
 
     public List<Post> searchByModel(String model) {
         return jdbcTemplate.query("SELECT p.id, p.user_id, p.create_date, p.update_date, p.content, p.model_id FROM MODEL m " +
-                "INNER JOIN POST p ON (m.id = p.model_id AND m.tag = ?) ORDER BY p.create_date DESC", postRowMapper(), model);
+                "INNER JOIN POST p ON (m.id = p.model_id AND m.tag = ?) WHERE is_deleted = false ORDER BY p.create_date DESC", postRowMapper(), model);
     }
 
     public List<Post> searchByHashtag(String tagName) {
         return jdbcTemplate.query("SELECT p.id, p.user_id, p.create_date, p.update_date, p.content, p.model_id FROM POST p " +
                 "INNER JOIN POST_HASHTAG ph ON p.id = ph.post_id " +
-                "INNER JOIN HASHTAG h ON ph.tag_id = h.id AND h.tag = ? ORDER BY p.create_date DESC", postRowMapper(), tagName);
+                "INNER JOIN HASHTAG h ON ph.tag_id = h.id AND h.tag = ? WHERE is_deleted = false ORDER BY p.create_date DESC", postRowMapper(), tagName);
     }
 
     public int addPost(Post post){
