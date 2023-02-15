@@ -199,10 +199,12 @@ public class PostService {
     }
 
     @Transactional
-    public Message modifyPost(ModifiedPostForm modifiedPostForm) {
+    public Message modifyPost(ModifiedPostForm modifiedPostForm, User user) {
+        int postId = modifiedPostForm.getPostId();
+        Post oldPost = postRepository.findPostById(postId);
+        invalidPostAccessCheck(oldPost,user);
         Model model = tagRepository.findModelByName(modifiedPostForm.getModel());
         int modelId = model.getId();
-        int postId = modifiedPostForm.getPostId();
         Post post = new Post(
                 postId,
                 new Timestamp(System.currentTimeMillis()),
@@ -245,13 +247,22 @@ public class PostService {
     public Message deletePost(int postId, User user) {
         // 사용자가 작성한 글인지 확인
         Post post = postRepository.findPostById(postId);
+        /*
         boolean isMyPost = (post.getUserId() == user.getId());
         // 본인이 작성한 글이 아닌데 삭제하려는 경우 예외처리
         if(!isMyPost) throw new InvalidPostAccessException();
 
+         */
+        invalidPostAccessCheck(post, user);
         // 게시글 삭제 진행
         postRepository.deletePostById(postId);
 
         return new Message("Post Deleted Successfully");
     }
+
+    private void invalidPostAccessCheck(Post post, User user){
+        if (!(post.getUserId() == user.getId()))
+            throw new InvalidPostAccessException();
+    }
+
 }
