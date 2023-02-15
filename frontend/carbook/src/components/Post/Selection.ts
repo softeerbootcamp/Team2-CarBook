@@ -6,8 +6,8 @@ export default class Selection extends Component {
     const { label, options } = this.props;
 
     return `
-      <label>${label}</label>
-      <select name="type" class="select">
+      <label><span>*</span>${label}</label>
+      <select name="type" class="select" >
           <option>선택하세요</option>
         ${options.map(
           (option: string) =>
