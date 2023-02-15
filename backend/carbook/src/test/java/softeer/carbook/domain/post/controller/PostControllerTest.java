@@ -6,13 +6,18 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import softeer.carbook.domain.post.dto.*;
 import softeer.carbook.domain.post.model.Image;
 import softeer.carbook.domain.post.service.PostService;
+import softeer.carbook.domain.user.controller.UserController;
+import softeer.carbook.domain.user.dto.SignupForm;
 import softeer.carbook.domain.user.exception.NotLoginStatementException;
+import softeer.carbook.domain.user.exception.PasswordNotMatchException;
 import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.service.UserService;
 import softeer.carbook.global.dto.Message;
@@ -242,14 +247,39 @@ class PostControllerTest {
 
         MockMultipartFile image = new MockMultipartFile("image", fileName + "." + contentType, contentType, fileInputStream);
 
-        mockMvc.perform(multipart("/post")
-                        .file(image)
-                        .param("hashtag", new String[]{"hash", "b", "c"})
-                        .param("type", "승용")
-                        .param("model", "쏘나타")
-                        .param("content", "테스트 글 내용입니다"))
+        mockMvc.perform(multipart(HttpMethod.POST, "/post")
+                .file(image)
+                .param("hashtag", new String[]{"hash", "hash2", "hash3"})
+                .param("type", "승용")
+                .param("model", "쏘나타")
+                .param("content", "테스트 글 내용입니다"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Post create success")));
 
     }
+
+    @Test
+    @DisplayName("글 수정 테스트")
+    void modifyPostTest() throws Exception {
+        given(postService.modifyPost(any())).willReturn(new Message("Post modify success"));
+
+        final String fileName = "modifiedTestImage";
+        final String contentType = "jpeg";
+        final String filePath = "src/test/resources/"+fileName+"."+contentType;
+        FileInputStream fileInputStream = new FileInputStream(filePath);
+
+        MockMultipartFile image = new MockMultipartFile("image", fileName + "." + contentType, contentType, fileInputStream);
+
+        mockMvc.perform(multipart(HttpMethod.PATCH, "/post")
+                        .file(image)
+                        .param("postId", "100")
+                        .param("hashtag", new String[]{"hash_mod", "hash_mod2", "hash_mod3"})
+                        .param("type", "승용")
+                        .param("model", "쏘나타")
+                        .param("content", "테스트 글 수정입니다"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Post modify success")));
+
+    }
+
 }
