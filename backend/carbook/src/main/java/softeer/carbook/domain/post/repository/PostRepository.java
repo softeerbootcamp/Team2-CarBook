@@ -84,6 +84,10 @@ public class PostRepository {
                 post.getUpdateDate(), post.getContent(), post.getModelId(), post.getId());
     }
 
+    public void deletePostById(int postId) {
+        jdbcTemplate.update("update POST set is_deleted = true where id = ?", postId);
+    }
+
     private RowMapper<Post> postRowMapper() {
         return (rs, rowNum) -> new Post(
                 rs.getInt("id"),

@@ -248,6 +248,10 @@ public class PostService {
         boolean isMyPost = (post.getUserId() == user.getId());
         // 본인이 작성한 글이 아닌데 삭제하려는 경우 예외처리
         if(!isMyPost) throw new InvalidPostAccessException();
-        return null;
+
+        // 게시글 삭제 진행
+        postRepository.deletePostById(postId);
+
+        return new Message("Post Deleted Successfully");
     }
 }
