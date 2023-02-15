@@ -48,7 +48,7 @@ export default class Followlists extends Component {
       // if (!target.closest)
 
       if (!target.dataset.nickname) return;
-      push("/profile/1");
+      push(`/profile/${target.dataset.nickname}`);
     });
   }
 }
