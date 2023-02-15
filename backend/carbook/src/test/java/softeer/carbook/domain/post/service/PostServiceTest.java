@@ -64,7 +64,7 @@ class PostServiceTest {
     ));
     private final Image image1 = new Image(8, "/eighth/image.jpg");
     private final Image image2 = new Image(6, "/sixth/image.jpg");
-    private final List<Image> expectedResult = new ArrayList<Image>(List.of(
+    private final List<Image> imagesEightAndSix = new ArrayList<Image>(List.of(
             new Image(8, "/eighth/image.jpg"),
             new Image(6, "/sixth/image.jpg")
     ));
@@ -162,7 +162,7 @@ class PostServiceTest {
         // then
         List<Image> result = response.getImages();
         assertThat(result.size()).isEqualTo(2);
-        assertThat(result).usingRecursiveComparison().isEqualTo(expectedResult);
+        assertThat(result).usingRecursiveComparison().isEqualTo(imagesEightAndSix);
         verify(postRepository).searchByType(type);
         verify(postRepository).searchByModel(model);
         verify(postRepository).searchByHashtag(tagNames[0]);
@@ -193,7 +193,7 @@ class PostServiceTest {
         // then
         List<Image> result = response.getImages();
         assertThat(result.size()).isEqualTo(2);
-        assertThat(result).usingRecursiveComparison().isEqualTo(expectedResult);
+        assertThat(result).usingRecursiveComparison().isEqualTo(imagesEightAndSix);
         verify(postRepository).searchByModel(model);
         verify(postRepository).searchByHashtag(tagNames[0]);
         verify(postRepository).searchByHashtag(tagNames[1]);
@@ -223,7 +223,7 @@ class PostServiceTest {
         // then
         List<Image> result = response.getImages();
         assertThat(result.size()).isEqualTo(2);
-        assertThat(result).usingRecursiveComparison().isEqualTo(expectedResult);
+        assertThat(result).usingRecursiveComparison().isEqualTo(imagesEightAndSix);
         verify(postRepository).searchByType(type);
         verify(postRepository).searchByHashtag(tagNames[0]);
         verify(postRepository).searchByHashtag(tagNames[1]);
@@ -252,7 +252,7 @@ class PostServiceTest {
         // then
         List<Image> result = response.getImages();
         assertThat(result.size()).isEqualTo(2);
-        assertThat(result).usingRecursiveComparison().isEqualTo(expectedResult);
+        assertThat(result).usingRecursiveComparison().isEqualTo(imagesEightAndSix);
         verify(postRepository).searchByHashtag(tagNames[0]);
         verify(postRepository).searchByHashtag(tagNames[1]);
         verify(imageRepository).getImageByPostId(8);
