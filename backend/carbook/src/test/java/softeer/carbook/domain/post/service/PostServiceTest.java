@@ -3,13 +3,9 @@ package softeer.carbook.domain.post.service;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 import softeer.carbook.domain.follow.repository.FollowRepository;
 import softeer.carbook.domain.like.repository.LikeRepository;
 import softeer.carbook.domain.post.dto.*;
@@ -18,9 +14,7 @@ import softeer.carbook.domain.post.model.Image;
 import softeer.carbook.domain.post.model.Post;
 import softeer.carbook.domain.post.repository.ImageRepository;
 import softeer.carbook.domain.post.repository.PostRepository;
-import softeer.carbook.domain.tag.dto.TagSearchResult;
 import softeer.carbook.domain.tag.repository.TagRepository;
-import softeer.carbook.domain.user.exception.SignupEmailDuplicateException;
 import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.repository.UserRepository;
 import softeer.carbook.global.dto.Message;
@@ -31,7 +25,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
@@ -39,12 +33,18 @@ import static org.mockito.Mockito.verify;
 class PostServiceTest {
     @InjectMocks
     private PostService postService;
-    @Mock private ImageRepository imageRepository;
-    @Mock private UserRepository userRepository;
-    @Mock private FollowRepository followRepository;
-    @Mock private PostRepository postRepository;
-    @Mock private LikeRepository likeRepository;
-    @Mock private TagRepository tagRepository;
+    @Mock
+    private ImageRepository imageRepository;
+    @Mock
+    private UserRepository userRepository;
+    @Mock
+    private FollowRepository followRepository;
+    @Mock
+    private PostRepository postRepository;
+    @Mock
+    private LikeRepository likeRepository;
+    @Mock
+    private TagRepository tagRepository;
 
     private final int POST_COUNT = 10;
     private final List<Image> images = new ArrayList<>(List.of(
@@ -57,12 +57,18 @@ class PostServiceTest {
             new Image(2, "/second/image.jpg"),
             new Image(1, "/first/image.jpg")
     ));
-    private final List<Image> user15FollowingImages = new ArrayList<>(List.of(
-            new Image(8, "/eighth/image.jpg"),
-            new Image(7, "/seventh/image.jpg"),
-            new Image(6, "/sixth/image.jpg"),
-            new Image(5, "/fifth/image.jpg")
+
+    private final List<Post> posts = new ArrayList<>(List.of(
+            new Post(8, 8, null, null, null, 8),
+            new Post(6, 6, null, null, null, 6)
     ));
+    private final Image image1 = new Image(8, "/eighth/image.jpg");
+    private final Image image2 = new Image(6, "/sixth/image.jpg");
+    private final List<Image> imagesEightAndSix = new ArrayList<Image>(List.of(
+            new Image(8, "/eighth/image.jpg"),
+            new Image(6, "/sixth/image.jpg")
+    ));
+
     @Test
     @DisplayName("비로그인 상태 메인 페이지 테스트")
     void getRecentPostsTest() {
@@ -133,29 +139,153 @@ class PostServiceTest {
         verify(imageRepository).getImagesOfRecentFollowingPosts(POST_COUNT, index, user.getId());
     }
 
-//    @Test
-//    @DisplayName("해시태그를 통한 게시물 검색 기능 테스트")
-//    void searchByTags() {
-//        // given
-//        int index = 0;
-//        String hashtags = "맑음 흐림";
-//        String[] tagNames = hashtags.split(" ");
-//        List<Image> expectedResult = new ArrayList<Image>(List.of(
-//                new Image(8, "/eighth/image.jpg"),
-//                new Image(6, "/sixth/image.jpg"),
-//                new Image(3, "/third/image.jpg"),
-//                new Image(2, "/second/image.jpg")
-//        ));
-//        given(imageRepository.getImagesOfRecentPostsByTags(tagNames, POST_COUNT, index)).willReturn(expectedResult);
-//
-//        // when
-//        PostsSearchResponse response = postService.searchByTags(hashtags, index);
-//
-//        // then
-//        List<Image> result = response.getImages();
-//        assertThat(result).usingRecursiveComparison().isEqualTo(expectedResult);
-//        verify(imageRepository).getImagesOfRecentPostsByTags(tagNames, POST_COUNT, index);
-//    }
+    @Test
+    @DisplayName("해시태그, 타입, 모델 태그로 게시물을 검색한 경우 테스트")
+    void searchByTagsWithHashtagsAndTypeAndModel() {
+        // given
+        int index = 0;
+        String hashtags = "맑음 흐림";
+        String type = "type";
+        String model = "model";
+        String[] tagNames = hashtags.split(" ");
+
+        given(postRepository.searchByType(type)).willReturn(posts);
+        given(postRepository.searchByModel(model)).willReturn(posts);
+        given(postRepository.searchByHashtag(tagNames[0])).willReturn(posts);
+        given(postRepository.searchByHashtag(tagNames[1])).willReturn(posts);
+        given(imageRepository.getImageByPostId(8)).willReturn(image1);
+        given(imageRepository.getImageByPostId(6)).willReturn(image2);
+
+        // when
+        PostsSearchResponse response = postService.searchByTags(hashtags, type, model, index);
+
+        // then
+        List<Image> result = response.getImages();
+        assertThat(result.size()).isEqualTo(2);
+        assertThat(result).usingRecursiveComparison().isEqualTo(imagesEightAndSix);
+        verify(postRepository).searchByType(type);
+        verify(postRepository).searchByModel(model);
+        verify(postRepository).searchByHashtag(tagNames[0]);
+        verify(postRepository).searchByHashtag(tagNames[1]);
+        verify(imageRepository).getImageByPostId(8);
+        verify(imageRepository).getImageByPostId(6);
+    }
+
+    @Test
+    @DisplayName("해시태그, 모델 태그로 게시물을 검색한 경우 테스트")
+    void searchByTagsWithHashtagsAndModel() {
+        // given
+        int index = 0;
+        String hashtags = "맑음 흐림";
+        String type = null;
+        String model = "model";
+        String[] tagNames = hashtags.split(" ");
+
+        given(postRepository.searchByModel(model)).willReturn(posts);
+        given(postRepository.searchByHashtag(tagNames[0])).willReturn(posts);
+        given(postRepository.searchByHashtag(tagNames[1])).willReturn(posts);
+        given(imageRepository.getImageByPostId(8)).willReturn(image1);
+        given(imageRepository.getImageByPostId(6)).willReturn(image2);
+
+        // when
+        PostsSearchResponse response = postService.searchByTags(hashtags, type, model, index);
+
+        // then
+        List<Image> result = response.getImages();
+        assertThat(result.size()).isEqualTo(2);
+        assertThat(result).usingRecursiveComparison().isEqualTo(imagesEightAndSix);
+        verify(postRepository).searchByModel(model);
+        verify(postRepository).searchByHashtag(tagNames[0]);
+        verify(postRepository).searchByHashtag(tagNames[1]);
+        verify(imageRepository).getImageByPostId(8);
+        verify(imageRepository).getImageByPostId(6);
+    }
+
+    @Test
+    @DisplayName("해시태그, 타입 태그로 게시물을 검색한 경우 테스트")
+    void searchByTagsWithHashtagsAndType() {
+        // given
+        int index = 0;
+        String hashtags = "맑음 흐림";
+        String type = "type";
+        String model = null;
+        String[] tagNames = hashtags.split(" ");
+
+        given(postRepository.searchByType(type)).willReturn(posts);
+        given(postRepository.searchByHashtag(tagNames[0])).willReturn(posts);
+        given(postRepository.searchByHashtag(tagNames[1])).willReturn(posts);
+        given(imageRepository.getImageByPostId(8)).willReturn(image1);
+        given(imageRepository.getImageByPostId(6)).willReturn(image2);
+
+        // when
+        PostsSearchResponse response = postService.searchByTags(hashtags, type, model, index);
+
+        // then
+        List<Image> result = response.getImages();
+        assertThat(result.size()).isEqualTo(2);
+        assertThat(result).usingRecursiveComparison().isEqualTo(imagesEightAndSix);
+        verify(postRepository).searchByType(type);
+        verify(postRepository).searchByHashtag(tagNames[0]);
+        verify(postRepository).searchByHashtag(tagNames[1]);
+        verify(imageRepository).getImageByPostId(8);
+        verify(imageRepository).getImageByPostId(6);
+    }
+
+    @Test
+    @DisplayName("해시태그로만 게시물을 검색한 경우 테스트")
+    void searchByTagsWithHashtags() {
+        // given
+        int index = 0;
+        String hashtags = "맑음 흐림";
+        String type = null;
+        String model = null;
+        String[] tagNames = hashtags.split(" ");
+
+        given(postRepository.searchByHashtag(tagNames[0])).willReturn(posts);
+        given(postRepository.searchByHashtag(tagNames[1])).willReturn(posts);
+        given(imageRepository.getImageByPostId(8)).willReturn(image1);
+        given(imageRepository.getImageByPostId(6)).willReturn(image2);
+
+        // when
+        PostsSearchResponse response = postService.searchByTags(hashtags, type, model, index);
+
+        // then
+        List<Image> result = response.getImages();
+        assertThat(result.size()).isEqualTo(2);
+        assertThat(result).usingRecursiveComparison().isEqualTo(imagesEightAndSix);
+        verify(postRepository).searchByHashtag(tagNames[0]);
+        verify(postRepository).searchByHashtag(tagNames[1]);
+        verify(imageRepository).getImageByPostId(8);
+        verify(imageRepository).getImageByPostId(6);
+    }
+
+    @Test
+    @DisplayName("해시태그, 타입, 모델 태그로 게시물을 검색했는데 아무 결과도 얻지 못한 경우 테스트")
+    void searchByTagsWithNoResult() {
+        // given
+        int index = 0;
+        String hashtags = "맑음 흐림";
+        String type = "type";
+        String model = "model";
+        String[] tagNames = hashtags.split(" ");
+
+        given(postRepository.searchByType(type)).willReturn(posts);
+        given(postRepository.searchByModel(model)).willReturn(posts);
+        given(postRepository.searchByHashtag(tagNames[0])).willReturn(posts);
+        given(postRepository.searchByHashtag(tagNames[1])).willReturn(new ArrayList<>());
+
+        // when
+        PostsSearchResponse response = postService.searchByTags(hashtags, type, model, index);
+
+        // then
+        List<Image> result = response.getImages();
+        assertThat(result.size()).isEqualTo(0);
+        assertThat(result).usingRecursiveComparison().isEqualTo(new ArrayList<>());
+        verify(postRepository).searchByType(type);
+        verify(postRepository).searchByModel(model);
+        verify(postRepository).searchByHashtag(tagNames[0]);
+        verify(postRepository).searchByHashtag(tagNames[1]);
+    }
 
     @Test
     @DisplayName("나의 프로필 페이지 테스트")
@@ -164,10 +294,6 @@ class PostServiceTest {
         String email = "user17@email.com";
         String nickname = "사용자17";
         User user = new User(17, email, nickname, "pw17");
-        List<Image> images = new ArrayList<Image>(List.of(
-                new Image(8, "/eighth/image.jpg"),
-                new Image(7, "/seventh/image.jpg")
-        ));
         MyProfileResponse expectedResult = new MyProfileResponse.MyProfileResponseBuilder()
                 .nickname(nickname)
                 .email(email)
@@ -199,10 +325,6 @@ class PostServiceTest {
         User loginUser = new User(15, email, nickname, "pw15");
         User profileUser = new User(17, "user17@gmail.com", "사용자17", "pw17");
         String profileUserNickname = "사용자17";
-        List<Image> images = new ArrayList<Image>(List.of(
-                new Image(8, "/eighth/image.jpg"),
-                new Image(7, "/seventh/image.jpg")
-        ));
         OtherProfileResponse expectedResult = new OtherProfileResponse.OtherProfileResponseBuilder()
                 .nickname(profileUserNickname)
                 .email(profileUser.getEmail())
@@ -230,7 +352,7 @@ class PostServiceTest {
 
     @Test
     @DisplayName("내 글 상세 페이지 게시글 불러오기 테스트")
-    void getMyPostDetails(){
+    void getMyPostDetails() {
         // given
         User user = new User(17, "user17@email.com", "사용자17", "pw17");
         Post post = new Post(1, 17, new Timestamp(12341241), new Timestamp(1231235), "asdf", 1);
@@ -253,7 +375,7 @@ class PostServiceTest {
 
     @Test
     @DisplayName("타인의 글 상세 페이지 게시글 불러오기 테스트")
-    void getOtherPostDetails(){
+    void getOtherPostDetails() {
         // given
         User user = new User(17, "user17@email.com", "사용자17", "pw17");
         Post post = new Post(1, 1, new Timestamp(12341241), new Timestamp(1231235), "asdf", 1);
@@ -276,7 +398,7 @@ class PostServiceTest {
 
     @Test
     @DisplayName("글 삭제 테스트 - 성공")
-    void deletePost(){
+    void deletePost() {
         // given
         User user = new User(17, "user17@email.com", "사용자17", "pw17");
         Post post = new Post(1, 17, new Timestamp(12341241), new Timestamp(1231235), "asdf", 1);
@@ -292,7 +414,7 @@ class PostServiceTest {
 
     @Test
     @DisplayName("글 삭제 테스트 - 실패: 남의 글 삭제")
-    void deleteOtherUserPost(){
+    void deleteOtherUserPost() {
         // given
         User user = new User(17, "user17@email.com", "사용자17", "pw17");
         Post post = new Post(1, 1, new Timestamp(12341241), new Timestamp(1231235), "asdf", 1);
@@ -307,7 +429,6 @@ class PostServiceTest {
         assertThat(exception.getMessage()).isEqualTo("ERROR: Invalid Access");
         verify(postRepository).findPostById(anyInt());
     }
-
 
 
 }
