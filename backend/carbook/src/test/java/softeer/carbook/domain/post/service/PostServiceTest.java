@@ -31,6 +31,7 @@ import softeer.carbook.global.dto.Message;
 
 import java.sql.Timestamp;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -448,7 +449,7 @@ class PostServiceTest {
     @Test
     @DisplayName("게시글 등록 성공 테스트")
     void createPostTest() throws IOException {
-        final String fileName = "modifiedTestImage";
+        final String fileName = "testImage";
         final String contentType = "jpeg";
         final String filePath = "src/test/resources/"+fileName+"."+contentType;
         FileInputStream fileInputStream = new FileInputStream(filePath);
@@ -480,6 +481,46 @@ class PostServiceTest {
 
         // Then
         AssertionsForClassTypes.assertThat(result.getMessage()).isEqualTo("Post create success");
+        verify(tagRepository).findHashtagByName(hashtagNames.get(0));
+        verify(tagRepository).addHashtag(any());
+    }
+
+    @Test
+    @DisplayName("게시글 수정 성공 테스트")
+    void modifyPostTest() throws IOException {
+        final String fileName = "modifiedTestImage";
+        final String contentType = "jpeg";
+        final String filePath = "src/test/resources/"+fileName+"."+contentType;
+        FileInputStream fileInputStream = new FileInputStream(filePath);
+        MockMultipartFile image = new MockMultipartFile("image", fileName + "." + contentType, contentType, fileInputStream);
+
+        List<Hashtag> hashtags = new ArrayList<>(){{
+            add(new Hashtag("맑음"));
+            add(new Hashtag("테스트태그"));
+        }};
+
+        List<String> hashtagNames = new ArrayList<>(){{
+            add("맑음");
+            add("테스트태그");
+        }};
+
+        ModifiedPostForm modifiedPostForm = new ModifiedPostForm(100, image, hashtagNames, "승용", "쏘나타", "테스트 쏘나타 게시글입니다");
+        User user = new User(17, "user17@email.com", "사용자17", "pw17");
+
+        Model model = new Model(15,3, "쏘나타");
+        int postId = 100;
+        String imageURL = "https://team2-carbook.s3.ap-northeast-2.amazonaws.com/images/40472_다운로드 (1).jpeg";
+        given(tagRepository.findModelByName(any())).willReturn(model);
+        given(s3Repository.upload(any(MultipartFile.class),anyString(),anyInt())).willReturn(imageURL);
+        given(tagRepository.findHashtagByName(hashtagNames.get(0))).willReturn(hashtags.get(0));
+        given(tagRepository.findHashtagByName(hashtagNames.get(1))).willThrow(new HashtagNotExistException());
+        given(tagRepository.addHashtag(any())).willReturn(2);
+        given(imageRepository.getImageByPostId(postId)).willReturn(new Image(postId,imageURL));
+
+        Message result = postService.modifyPost(modifiedPostForm);
+
+        // Then
+        AssertionsForClassTypes.assertThat(result.getMessage()).isEqualTo("Post modify success");
         verify(tagRepository).findHashtagByName(hashtagNames.get(0));
         verify(tagRepository).addHashtag(any());
     }
