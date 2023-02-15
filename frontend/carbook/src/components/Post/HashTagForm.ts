@@ -74,7 +74,7 @@ export default class HashTagForm extends Component {
       }
     });
 
-    onChangeInputHandler(input, this.getSearchTags.bind(this), '.dropdown');
+    onChangeInputHandler(input, this.getSearchTags.bind(this));
   }
 
   makeHashtagCards(hashtags: object) {

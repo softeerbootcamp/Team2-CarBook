@@ -6,7 +6,7 @@ import { qs } from '@/utils';
 export default class Category extends Component {
   setup(): void {
     this.state = {
-      option: 'hashtag',
+      option: 'all',
     };
   }
 
