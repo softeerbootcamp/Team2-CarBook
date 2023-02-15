@@ -1,5 +1,7 @@
 package softeer.carbook.domain.tag.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,8 @@ import softeer.carbook.domain.tag.service.TagService;
 
 @RestController
 public class TagController {
+
+    private static final Logger logger = LoggerFactory.getLogger(TagController.class);
     private final TagService tagService;
 
     @Autowired
@@ -24,6 +28,7 @@ public class TagController {
     // 모든 태그 검색
     @GetMapping("/search/")
     public ResponseEntity<TagSearchResopnse> searchAllTags(@RequestParam String keyword) {
+        logger.debug("keyword: //{}//", keyword);
         TagSearchResopnse tagSearchResopnse = tagService.searchAllTags(keyword);
         return new ResponseEntity<>(tagSearchResopnse, HttpStatus.OK);
     }
@@ -31,6 +36,7 @@ public class TagController {
     // 해시태그 검색
     @GetMapping("/search/hashtag/")
     public ResponseEntity<HashtagSearchResponse> searchHashtag(@RequestParam String keyword) {
+        logger.debug("keyword: //{}//", keyword);
         HashtagSearchResponse hashtagSearchResponse = tagService.searchHashTag(keyword);
         return new ResponseEntity<>(hashtagSearchResponse, HttpStatus.OK);
     }

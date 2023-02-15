@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.multipart.MultipartFile;
 import softeer.carbook.domain.post.model.Image;
 
 import javax.sql.DataSource;
@@ -60,6 +59,7 @@ public class ImageRepository {
                 imageRowMapper(), profileUserNickname);
     }
 
+    /* deprecated
     public List<Image> getImagesOfRecentPostsByTags(String[] tagNames, int size, int index) {
         String conditionalStatement = createTagNameConditionalStatement(tagNames);
         String query = "SELECT img.post_id, img.image_url " +
@@ -81,6 +81,7 @@ public class ImageRepository {
 
         return conditionalStatement.substring(0, conditionalStatement.length() - 4);
     }
+     */
 
     public void addImage(Image image) {
         jdbcTemplate.update("insert into IMAGE(post_id, image_url) values(?, ?)",

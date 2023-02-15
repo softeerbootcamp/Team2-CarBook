@@ -55,4 +55,17 @@ public class Post {
     }
 
     public int getModelId() { return modelId; }
+
+    @Override
+    public int hashCode() {
+        return this.id;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Post) {
+            return this.id == ((Post) obj).getId();
+        }
+        return false;
+    }
 }
