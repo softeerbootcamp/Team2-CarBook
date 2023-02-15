@@ -121,7 +121,7 @@ public class PostController {
 
         // todo 작성한 글 불러오기
     @GetMapping("/post")
-    public ResponseEntity<?> getPostDetails(
+    public ResponseEntity<PostDetailResponse> getPostDetails(
             @RequestParam int postId,
             HttpServletRequest httpServletRequest){
         // 로그인한 사용자 인가요?
