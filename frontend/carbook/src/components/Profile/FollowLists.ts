@@ -6,32 +6,33 @@ export default class Followlists extends Component {
   setup(): void {
     this.state.follows = [];
     this.receiveFollowLists();
-    this.$target.addEventListener("click", (e: Event) => {
-      const deleteButton = (e.target as HTMLElement).closest(
-        ".follower-delete-button"
-      );
-      // //팔로워 취소버튼 눌렀을때
-      if (deleteButton) {
-        const nickname = (
-          this.$target.querySelector(".follower-info") as HTMLElement
-        ).dataset.nickname as string;
-        const mode = this.$target.querySelector(
-          ".profile__contents-header"
-        )?.innerHTML;
-        console.log(mode, typeof mode);
+    this.$target.addEventListener("click", this.followListsHandler.bind(this));
+  }
 
-        mode === "팔로워"
-          ? this.deleteFollower(nickname)
-          : this.deleteFollowing(nickname);
-        return;
-      }
+  followListsHandler(e: Event) {
+    const deleteButton = (e.target as HTMLElement).closest(
+      ".follower-delete-button"
+    );
 
-      const target = (e.target as HTMLElement).closest(
-        ".follower-info"
-      ) as HTMLElement;
+    if (deleteButton) {
+      const nickname = (
+        this.$target.querySelector(".follower-info") as HTMLElement
+      ).dataset.nickname as string;
+      const mode = this.$target.querySelector(
+        ".profile__contents-header"
+      )?.innerHTML;
 
-      if (target.dataset.nickname) push(`/profile/${target.dataset.nickname}`);
-    });
+      mode === "팔로워"
+        ? this.deleteFollower(nickname)
+        : this.deleteFollowing(nickname);
+      return;
+    }
+
+    const target = (e.target as HTMLElement).closest(
+      ".follower-info"
+    ) as HTMLElement;
+
+    if (target.dataset.nickname) push(`/profile/${target.dataset.nickname}`);
   }
 
   /**
@@ -77,8 +78,6 @@ export default class Followlists extends Component {
         </ul>
         `;
   }
-
-  setEvent(): void {}
 }
 
 function FollowlistsItem(isMyProfile: boolean, nickname: string) {
