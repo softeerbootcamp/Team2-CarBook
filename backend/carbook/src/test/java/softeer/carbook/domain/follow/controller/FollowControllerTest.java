@@ -33,12 +33,12 @@ class FollowControllerTest {
     @MockBean private FollowService followService;
     @MockBean private UserService userService;
 
+    private final User user = new User("test@gmail.com", "nickname",
+            BCrypt.hashpw("password", BCrypt.gensalt()));
     @Test
     @DisplayName("팔로우 기능 테스트")
     void follow() throws Exception {
         // given
-        User user = new User("test@gmail.com", "nickname",
-                BCrypt.hashpw("password", BCrypt.gensalt()));
         given(userService.findLoginedUser(any())).willReturn(user);
         given(followService.modifyFollowInfo(any(), anyString())).willReturn(new Message("Follow Success"));
 
@@ -54,8 +54,6 @@ class FollowControllerTest {
     @DisplayName("언팔로우 기능 테스트")
     void unFollow() throws Exception {
         // given
-        User user = new User("test@gmail.com", "nickname",
-                BCrypt.hashpw("password", BCrypt.gensalt()));
         given(userService.findLoginedUser(any())).willReturn(user);
         given(followService.modifyFollowInfo(any(), anyString())).willReturn(new Message("Unfollow Success"));
 
@@ -95,8 +93,6 @@ class FollowControllerTest {
     @DisplayName("팔로워 삭제 테스트 - 성")
     void deleteFollowerSuccess() throws Exception {
         // given
-        User user = new User("test@gmail.com", "nickname",
-                BCrypt.hashpw("password", BCrypt.gensalt()));
         given(userService.findLoginedUser(any())).willReturn(user);
         given(followService.deleteFollower(any(), anyString())).willReturn(new Message("Follower delete success"));
 
@@ -110,8 +106,6 @@ class FollowControllerTest {
     @DisplayName("팔로워 삭제 테스트 - 실패")
     void deleteFollowerFail() throws Exception {
         // given
-        User user = new User("test@gmail.com", "nickname",
-                BCrypt.hashpw("password", BCrypt.gensalt()));
         given(userService.findLoginedUser(any())).willReturn(user);
         given(followService.deleteFollower(any(), anyString())).willThrow(new FollowIdNotExistException());
 
