@@ -20,7 +20,7 @@ export default class Form extends Component {
     return `
       <section class="section">
       </section>  
-      <form class="form">
+      <form class="form" enctype="multipart/form-data">
         <div class="form__input">
           <div class="input car">
             <div class="input__text">차 정보</div>
@@ -107,11 +107,11 @@ export default class Form extends Component {
 
   async getCarOptions() {
     try {
-      const model = (await basicAPI.get('/api/model')).data();
-      const type = (await basicAPI.get('/api/type')).data();
+      const { models } = await (await basicAPI.get('/api/model')).data;
+      const { types } = await (await basicAPI.get('/api/type')).data;
 
-      const modelOption = model.types.map(({ tag }: { tag: string }) => tag);
-      const typeOption = type.types.map(({ tag }: { tag: string }) => tag);
+      const modelOption = models.map(({ tag }: { tag: string }) => tag);
+      const typeOption = types.map(({ tag }: { tag: string }) => tag);
 
       return { modelOption, typeOption };
     } catch (error) {
@@ -121,7 +121,7 @@ export default class Form extends Component {
   }
 
   async onSubmitHandler() {
-    const { type, model, image, hashtag, content } = this.state;
+    const { type, model, image, hashtag, content } = this.data;
 
     const formdata = new FormData();
     formdata.append('image', image);
@@ -132,6 +132,7 @@ export default class Form extends Component {
 
     try {
       await formAPI.post('/api/post', formdata);
+      alert('글이 생성되었습니다.');
       push('/');
     } catch (error) {
       console.error(error);
