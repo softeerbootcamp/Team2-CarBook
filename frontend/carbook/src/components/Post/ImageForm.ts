@@ -10,16 +10,16 @@ export default class ImageForm extends Component {
   }
   template(): string {
     return `
-      <input type="file" accept="image/*" style="display: none;">
+      <input type="file" accept="image/*"  style="display: none;">
       <img class="section__image" src="${car}" alt="logo"/>
-      <div class="section__text">차 사진을<br />첨부해 주세요</div>
+      <div class="section__text"><span>*</span>차 사진을<br />첨부해 주세요</div>
     `;
   }
 
   setEvent(): void {
     const input = qs(this.$target, 'input');
 
-    this.$target.addEventListener('touchstart', () => {
+    this.$target.addEventListener('click', () => {
       input.click();
     });
     input.addEventListener('change', this.getImageFiles.bind(this));
@@ -30,6 +30,7 @@ export default class ImageForm extends Component {
 
     if (files?.length === 1) {
       const file = files[0];
+
       const reader = new FileReader();
       reader.onload = (e) => {
         this.setPreviewSrc(e, file);
