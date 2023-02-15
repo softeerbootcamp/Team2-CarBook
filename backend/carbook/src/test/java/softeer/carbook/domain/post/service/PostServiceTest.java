@@ -3,6 +3,7 @@ package softeer.carbook.domain.post.service;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -10,17 +11,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import softeer.carbook.domain.follow.repository.FollowRepository;
+import softeer.carbook.domain.like.repository.LikeRepository;
 import softeer.carbook.domain.post.dto.*;
+import softeer.carbook.domain.post.exception.InvalidPostAccessException;
 import softeer.carbook.domain.post.model.Image;
+import softeer.carbook.domain.post.model.Post;
 import softeer.carbook.domain.post.repository.ImageRepository;
 import softeer.carbook.domain.post.repository.PostRepository;
+import softeer.carbook.domain.tag.dto.TagSearchResult;
+import softeer.carbook.domain.tag.repository.TagRepository;
+import softeer.carbook.domain.user.exception.SignupEmailDuplicateException;
 import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.repository.UserRepository;
+import softeer.carbook.global.dto.Message;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
@@ -31,6 +42,9 @@ class PostServiceTest {
     @Mock private ImageRepository imageRepository;
     @Mock private UserRepository userRepository;
     @Mock private FollowRepository followRepository;
+    @Mock private PostRepository postRepository;
+    @Mock private LikeRepository likeRepository;
+    @Mock private TagRepository tagRepository;
 
     private final int POST_COUNT = 10;
     private final List<Image> images = new ArrayList<>(List.of(
@@ -213,5 +227,87 @@ class PostServiceTest {
         verify(followRepository).getFollowingCount(profileUser.getId());
         verify(imageRepository).findImagesByNickName(profileUserNickname);
     }
+
+    @Test
+    @DisplayName("내 글 상세 페이지 게시글 불러오기 테스트")
+    void getMyPostDetails(){
+        // given
+        User user = new User(17, "user17@email.com", "사용자17", "pw17");
+        Post post = new Post(1, 17, new Timestamp(12341241), new Timestamp(1231235), "asdf", 1);
+        Image image = images.get(0);
+        given(postRepository.findPostById(anyInt())).willReturn(post);
+        given(imageRepository.getImageByPostId(anyInt())).willReturn(image);
+        given(likeRepository.findLikeCountByPostId(anyInt())).willReturn(123);
+        given(tagRepository.searchPostTagsByPostIdAndModelId(anyInt(), anyInt())).willReturn(new ArrayList<>());
+
+        // when
+        PostDetailResponse result = postService.getPostDetails(1, user);
+
+        // then
+        assertThat(result.isMyPost()).isTrue();
+        verify(postRepository).findPostById(anyInt());
+        verify(imageRepository).getImageByPostId(anyInt());
+        verify(likeRepository).findLikeCountByPostId(anyInt());
+        verify(tagRepository).searchPostTagsByPostIdAndModelId(anyInt(), anyInt());
+    }
+
+    @Test
+    @DisplayName("타인의 글 상세 페이지 게시글 불러오기 테스트")
+    void getOtherPostDetails(){
+        // given
+        User user = new User(17, "user17@email.com", "사용자17", "pw17");
+        Post post = new Post(1, 1, new Timestamp(12341241), new Timestamp(1231235), "asdf", 1);
+        Image image = images.get(0);
+        given(postRepository.findPostById(anyInt())).willReturn(post);
+        given(imageRepository.getImageByPostId(anyInt())).willReturn(image);
+        given(likeRepository.findLikeCountByPostId(anyInt())).willReturn(123);
+        given(tagRepository.searchPostTagsByPostIdAndModelId(anyInt(), anyInt())).willReturn(new ArrayList<>());
+
+        // when
+        PostDetailResponse result = postService.getPostDetails(1, user);
+
+        // then
+        assertThat(result.isMyPost()).isFalse();
+        verify(postRepository).findPostById(anyInt());
+        verify(imageRepository).getImageByPostId(anyInt());
+        verify(likeRepository).findLikeCountByPostId(anyInt());
+        verify(tagRepository).searchPostTagsByPostIdAndModelId(anyInt(), anyInt());
+    }
+
+    @Test
+    @DisplayName("글 삭제 테스트 - 성공")
+    void deletePost(){
+        // given
+        User user = new User(17, "user17@email.com", "사용자17", "pw17");
+        Post post = new Post(1, 17, new Timestamp(12341241), new Timestamp(1231235), "asdf", 1);
+        given(postRepository.findPostById(anyInt())).willReturn(post);
+
+        // when
+        Message result = postService.deletePost(1, user);
+
+        // then
+        assertThat(result.getMessage()).isEqualTo("Post Deleted Successfully");
+        verify(postRepository).findPostById(anyInt());
+    }
+
+    @Test
+    @DisplayName("글 삭제 테스트 - 실패: 남의 글 삭제")
+    void deleteOtherUserPost(){
+        // given
+        User user = new User(17, "user17@email.com", "사용자17", "pw17");
+        Post post = new Post(1, 1, new Timestamp(12341241), new Timestamp(1231235), "asdf", 1);
+        given(postRepository.findPostById(anyInt())).willReturn(post);
+
+        // when
+        Throwable exception = assertThrows(InvalidPostAccessException.class, () -> {
+            Message result = postService.deletePost(1, user);
+        });
+
+        // then
+        assertThat(exception.getMessage()).isEqualTo("ERROR: Invalid Access");
+        verify(postRepository).findPostById(anyInt());
+    }
+
+
 
 }
