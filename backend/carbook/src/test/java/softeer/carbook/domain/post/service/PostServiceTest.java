@@ -294,10 +294,6 @@ class PostServiceTest {
         String email = "user17@email.com";
         String nickname = "사용자17";
         User user = new User(17, email, nickname, "pw17");
-        List<Image> images = new ArrayList<Image>(List.of(
-                new Image(8, "/eighth/image.jpg"),
-                new Image(7, "/seventh/image.jpg")
-        ));
         MyProfileResponse expectedResult = new MyProfileResponse.MyProfileResponseBuilder()
                 .nickname(nickname)
                 .email(email)
@@ -329,10 +325,6 @@ class PostServiceTest {
         User loginUser = new User(15, email, nickname, "pw15");
         User profileUser = new User(17, "user17@gmail.com", "사용자17", "pw17");
         String profileUserNickname = "사용자17";
-        List<Image> images = new ArrayList<Image>(List.of(
-                new Image(8, "/eighth/image.jpg"),
-                new Image(7, "/seventh/image.jpg")
-        ));
         OtherProfileResponse expectedResult = new OtherProfileResponse.OtherProfileResponseBuilder()
                 .nickname(profileUserNickname)
                 .email(profileUser.getEmail())
