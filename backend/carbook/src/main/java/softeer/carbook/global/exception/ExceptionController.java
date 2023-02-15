@@ -7,6 +7,7 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import softeer.carbook.domain.post.exception.PostNotExistException;
 import softeer.carbook.global.dto.Message;
 import softeer.carbook.domain.user.exception.*;
 
@@ -63,6 +64,13 @@ public class ExceptionController {
     public ResponseEntity<Message> notLoginStatementException(NotLoginStatementException notLoginE){
         logger.debug(notLoginE.getMessage());
         return Message.make400Response(notLoginE.getMessage());
+    }
+
+    // 해당 게시글이 없을 경우 처리
+    @ExceptionHandler(PostNotExistException.class)
+    public ResponseEntity<Message> postNotExistException(PostNotExistException postNEE){
+        logger.debug(postNEE.getMessage());
+        return Message.make400Response(postNEE.getMessage());
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
