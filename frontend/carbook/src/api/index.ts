@@ -1,6 +1,6 @@
-import axios from "axios";
+import axios from 'axios';
 
-const BASEURL = "";
+const BASEURL = '';
 
 const options = {
   withCredentials: true,
@@ -11,15 +11,14 @@ const options = {
 export const basicAPI = axios.create({
   ...options,
   headers: {
-    "Content-Type": "application/json",
-    Accept: "*/*",
+    'Content-Type': 'application/json',
+    Accept: '*/*',
   },
 });
 
 export const formAPI = axios.create({
   ...options,
   headers: {
-    "Content-Type": "multipart/form-data;charset=UTF-8",
-    Accept: "*/*",
+    Accept: '*/*',
   },
 });
