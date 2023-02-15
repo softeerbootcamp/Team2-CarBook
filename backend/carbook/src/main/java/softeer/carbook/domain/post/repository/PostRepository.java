@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import softeer.carbook.domain.post.exception.PostNotExistException;
 import softeer.carbook.domain.post.model.Post;
 
 import javax.sql.DataSource;
@@ -46,7 +47,9 @@ public class PostRepository {
                 "SELECT id, user_id, create_date, update_date, content, model_id " +
                         "FROM POST " +
                         "WHERE id = ? AND is_deleted = false", postRowMapper(), postId);
-        return post.stream().findAny().orElseThrow();
+        return post.stream().findAny().orElseThrow(
+                PostNotExistException::new
+        );
     }
 
     public List<Post> searchByType(String type) {
@@ -82,6 +85,10 @@ public class PostRepository {
     public void updatePost(Post post) {
         jdbcTemplate.update("update POST set update_date=?, content=?, model_id=? where id=?",
                 post.getUpdateDate(), post.getContent(), post.getModelId(), post.getId());
+    }
+
+    public void deletePostById(int postId) {
+        jdbcTemplate.update("update POST set is_deleted = true where id = ?", postId);
     }
 
     private RowMapper<Post> postRowMapper() {

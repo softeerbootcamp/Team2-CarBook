@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import softeer.carbook.domain.follow.repository.FollowRepository;
 import softeer.carbook.domain.like.repository.LikeRepository;
 import softeer.carbook.domain.post.dto.*;
+import softeer.carbook.domain.post.exception.InvalidPostAccessException;
 import softeer.carbook.domain.post.model.Image;
 import softeer.carbook.domain.post.model.Post;
 import softeer.carbook.domain.post.repository.ImageRepository;
@@ -241,4 +242,16 @@ public class PostService {
         }
     }
 
+    public Message deletePost(int postId, User user) {
+        // 사용자가 작성한 글인지 확인
+        Post post = postRepository.findPostById(postId);
+        boolean isMyPost = (post.getUserId() == user.getId());
+        // 본인이 작성한 글이 아닌데 삭제하려는 경우 예외처리
+        if(!isMyPost) throw new InvalidPostAccessException();
+
+        // 게시글 삭제 진행
+        postRepository.deletePostById(postId);
+
+        return new Message("Post Deleted Successfully");
+    }
 }
