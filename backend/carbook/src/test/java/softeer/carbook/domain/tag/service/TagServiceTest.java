@@ -74,10 +74,9 @@ class TagServiceTest {
 
         // then
         List<Hashtag> result = response.getHashtags();
-        Hashtag hashtag = result.get(0);
         assertThat(result.size()).isEqualTo(1);
-        assertThat(hashtag.getId()).isEqualTo(1);
-        assertThat(hashtag.getTag()).isEqualTo("맑음");
+        assertThat(result.get(0).getId()).isEqualTo(1);
+        assertThat(result.get(0).getTag()).isEqualTo("맑음");
         verify(tagRepository).searchHashtagByPrefix(keyword);
     }
 
