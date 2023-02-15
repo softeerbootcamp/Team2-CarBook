@@ -78,7 +78,7 @@ public class PostService {
         }
         logger.debug("size: {}", posts.size());
 
-        if (model != null) {
+        if (model != null && isNeedToSearch(type, posts.size())) {
             findPostsOfModelTag(model, posts);
         }
         logger.debug("size: {}", posts.size());
@@ -114,6 +114,11 @@ public class PostService {
             logger.debug("tagName: {}", tagNames[idx]);
             posts.retainAll(postRepository.searchByHashtag(tagNames[idx]));
         }
+    }
+
+    // 타입 태그가 있는데 검색 결과가 0인 경우, 해당하는 게시물이 없으니 모델 태그로 검색할 필요가 없다
+    private boolean isNeedToSearch(String type, int size) {
+        return !(type != null && size == 0);
     }
 
     // 타입 태그나 모델 태그가 있는데 검색 결과가 0인 경우, 해당하는 게시물이 없으니 해시태그로 검색할 필요가 없다
