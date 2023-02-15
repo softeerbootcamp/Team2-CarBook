@@ -32,20 +32,15 @@ export default class ProfilePage extends Component {
   async fetchProfilePage(urlnickname: string) {
     const data = await basicAPI
       .get(`/api/profile?nickname=${urlnickname}`)
-      .then((response) => {
-        console.log(response.data);
-        return response.data;
-      })
+      .then((response) => response.data)
       .catch((error) => {
         const errorMessage = error.response.data.message;
-        console.log(errorMessage);
         if (errorMessage.includes("Session")) {
           this.state.notSession = true;
           push("/login");
           return;
         }
         if (errorMessage.includes("Nickname")) {
-          console.log("nickname error");
           this.state.notExistedNickname = true;
           return;
         }
@@ -94,7 +89,6 @@ export default class ProfilePage extends Component {
 
     this.$target.innerHTML = this.template();
 
-    console.log(this.state);
     if (this.state?.notExistedNickname) {
       const wrongNickNamePage = this.$target.querySelector(
         ".not-exist-nickname"
