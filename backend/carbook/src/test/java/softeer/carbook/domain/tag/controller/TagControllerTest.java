@@ -90,7 +90,7 @@ class TagControllerTest {
     void getAllModels() throws Exception {
         //given
         ModelsResponse response = new ModelsResponse(new ArrayList<>(List.of(
-                new Model(1, 1, "아이오닉 6"), new Model(2, 1, "아이오닉 5")
+                new Model(1, 1, "아이오닉 6"), new Model(2, 2, "아이오닉 5")
         )));
         given(tagService.findAllModels()).willReturn(response);
 
@@ -102,7 +102,7 @@ class TagControllerTest {
                 .andExpect(jsonPath("$.models[0].typeId").value(1))
                 .andExpect(jsonPath("$.models[0].tag").value("아이오닉 6"))
                 .andExpect(jsonPath("$.models[1].id").value(2))
-                .andExpect(jsonPath("$.models[0].typeId").value(1))
+                .andExpect(jsonPath("$.models[1].typeId").value(2))
                 .andExpect(jsonPath("$.models[1].tag").value("아이오닉 5"));
     }
 
