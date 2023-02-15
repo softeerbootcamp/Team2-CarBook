@@ -63,7 +63,7 @@ public class PostService {
                 .build();
     }
 
-    public LoginPostsResponse getRecentFollowerPosts(int index, User user){
+    public LoginPostsResponse getRecentFollowerPosts(int index, User user) {
         List<Image> images = imageRepository.getImagesOfRecentFollowingPosts(POST_COUNT, index, user.getId());
         return new LoginPostsResponse.LoginPostsResponseBuilder()
                 .nickname(user.getNickname())
@@ -79,34 +79,56 @@ public class PostService {
         logger.debug("size: {}", posts.size());
 
         if (model != null) {
-            if (posts.size() == 0) {
-                posts.addAll(postRepository.searchByModel(model));
-            }
-            else {
-                posts.retainAll(postRepository.searchByModel(model));
-            }
+            findPostsOfModelTag(model, posts);
         }
         logger.debug("size: {}", posts.size());
 
-        if (hashtags != null && check(type, model, posts.size())){
-            logger.debug("true");
-            String[] tagNames = hashtags.split(" ");
-            if (posts.size() == 0) {
-                posts.addAll(postRepository.searchByHashtag(tagNames[0]));
-            }
-            else {
-                posts.retainAll(postRepository.searchByHashtag(tagNames[0]));
-            }
-
-            for (int idx = 1; idx < tagNames.length; idx++) {
-                logger.debug("tagName: {}", tagNames[idx]);
-                posts.retainAll(postRepository.searchByHashtag(tagNames[idx]));
-            }
+        if (hashtags != null && isNeedToSearch(type, model, posts.size())) {
+            findPostsOfHashTag(hashtags, posts);
         }
         logger.debug("size: {}", posts.size());
 
         List<Image> images = findImagesOfPostsStartsWithIndex(posts, index);
         return new PostsSearchResponse(images);
+    }
+
+    private void findPostsOfModelTag(String model, List<Post> posts) {
+        if (posts.size() == 0) {
+            posts.addAll(postRepository.searchByModel(model));
+            return;
+        }
+        posts.retainAll(postRepository.searchByModel(model));
+    }
+
+    private void findPostsOfHashTag(String hashtags, List<Post> posts) {
+        String[] tagNames = hashtags.split(" ");
+        logger.debug("tagName: {}", tagNames[0]);
+
+        if (posts.size() == 0) {
+            posts.addAll(postRepository.searchByHashtag(tagNames[0]));
+        } else {
+            posts.retainAll(postRepository.searchByHashtag(tagNames[0]));
+        }
+
+        for (int idx = 1; idx < tagNames.length; idx++) {
+            logger.debug("tagName: {}", tagNames[idx]);
+            posts.retainAll(postRepository.searchByHashtag(tagNames[idx]));
+        }
+    }
+
+    // 타입 태그나 모델 태그가 있는데 검색 결과가 0인 경우, 해당하는 게시물이 없으니 해시태그로 검색할 필요가 없다
+    private boolean isNeedToSearch(String type, String model, int size) {
+        return !((type != null || model != null) && size == 0);
+    }
+
+    private List<Image> findImagesOfPostsStartsWithIndex(List<Post> posts, int index) {
+        List<Image> images = new ArrayList<>();
+        for (int cnt = index; cnt < index + POST_COUNT && cnt < posts.size(); cnt++) {
+            Image image = imageRepository.getImageByPostId(posts.get(cnt).getId());
+            images.add(image);
+        }
+
+        return images;
     }
 
     public MyProfileResponse myProfile(User loginUser) {
@@ -141,7 +163,7 @@ public class PostService {
         String imageURL = "";
         try {
             imageURL = s3Repository.upload(newPostForm.getImage(), "images", postId);
-        } catch (IllegalArgumentException iae){
+        } catch (IllegalArgumentException iae) {
             throw iae;
         }
         Image image = new Image(postId, imageURL);
@@ -165,7 +187,7 @@ public class PostService {
                 .build();
     }
 
-    private String dateToString(Timestamp date){
+    private String dateToString(Timestamp date) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return sdf.format(date);
     }
@@ -180,16 +202,16 @@ public class PostService {
                 new Timestamp(System.currentTimeMillis()),
                 modifiedPostForm.getContent(),
                 modelId
-                );
+        );
         postRepository.updatePost(post);
         tagRepository.deletePostHashtags(postId);
-        addPostHashtags(modifiedPostForm.getHashtag(),postId);
+        addPostHashtags(modifiedPostForm.getHashtag(), postId);
         Image oldImage = imageRepository.getImageByPostId(postId);
         s3Repository.deleteS3(getAWSFileName(oldImage));
         String imageURL = "";
         try {
             imageURL = s3Repository.upload(modifiedPostForm.getImage(), "images", postId);
-        } catch (IllegalArgumentException iae){
+        } catch (IllegalArgumentException iae) {
             throw iae;
         }
         Image newImage = new Image(postId, imageURL);
@@ -197,34 +219,21 @@ public class PostService {
         return new Message("Post modify success");
     }
 
-    private String getAWSFileName(Image image){
+    private String getAWSFileName(Image image) {
         String imageURL = image.getImageUrl();
         return imageURL.split("amazonaws\\.com/")[1];
     }
 
-    private void addPostHashtags(List<String> tagNames, int postId){
-        for (String tagName: tagNames){
+    private void addPostHashtags(List<String> tagNames, int postId) {
+        for (String tagName : tagNames) {
             int tagId;
             try {
                 tagId = tagRepository.findHashtagByName(tagName).getId();
-            } catch (HashtagNotExistException hne){
+            } catch (HashtagNotExistException hne) {
                 tagId = tagRepository.addHashtag(new Hashtag(tagName));
             }
-            tagRepository.addPostHashtag(postId,tagId);
+            tagRepository.addPostHashtag(postId, tagId);
         }
-    }
-    private boolean check(String type, String model, int size) {
-        return (type != null || model != null && size != 0) || ((type == null && model == null) && size == 0);
-    }
-
-    private List<Image> findImagesOfPostsStartsWithIndex(List<Post> posts, int index) {
-        List<Image> images = new ArrayList<>();
-        for (int idx = index; idx < index+POST_COUNT && idx < posts.size(); idx++) {
-            Image image = imageRepository.getImageByPostId(posts.get(idx).getId());
-            images.add(image);
-        }
-
-        return images;
     }
 
 }
