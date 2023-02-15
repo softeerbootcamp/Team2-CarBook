@@ -40,6 +40,7 @@ export default class ProfilePage extends Component {
         const errorMessage = error.response.data.message;
         console.log(errorMessage);
         if (errorMessage.includes("Session")) {
+          this.state.notSession = true;
           push("/login");
           return;
         }
@@ -89,7 +90,7 @@ export default class ProfilePage extends Component {
   }
 
   render(): void {
-    if (this.state.isloading) return;
+    if (this.state.isloading || this.state?.notSession) return;
 
     this.$target.innerHTML = this.template();
 
