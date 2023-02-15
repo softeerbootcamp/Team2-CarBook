@@ -1,5 +1,7 @@
 package softeer.carbook.domain.post.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,8 @@ import javax.validation.Valid;
 
 @RestController
 public class PostController {
+
+    private static final Logger logger = LoggerFactory.getLogger(PostController.class);
     private final UserService userService;
     private final PostService postService;
 
@@ -58,8 +62,16 @@ public class PostController {
 
     // todo 해시태그의 게시물 조회
     @GetMapping("/posts/m/search")
-    public ResponseEntity<PostsSearchResponse> searchPostsByTags(@RequestParam int index, @RequestParam String hashtag){
-        return new ResponseEntity<>(postService.searchByTags(hashtag, index), HttpStatus.OK);
+    public ResponseEntity<PostsSearchResponse> searchPostByTags(
+            @RequestParam int index,
+            @RequestParam(required = false) String hashtag,
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) String model){
+        logger.debug("hashtag: //{}//", hashtag);
+        logger.debug("type: {}", type);
+        logger.debug("model: {}", model);
+
+        return new ResponseEntity<>(postService.searchByTags(hashtag, type, model, index), HttpStatus.OK);
     }
 
     // 프로필 페이지
