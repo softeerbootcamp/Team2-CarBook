@@ -132,10 +132,20 @@ public class PostController {
 
         // 좋아요           > like 로
         // 좋아요 취소       > like 로
+    // 글 삭제
+    @DeleteMapping("/post/{postId}")
+    public ResponseEntity<Message> deletePost(
+            @PathVariable("postId") int postId,
+            HttpServletRequest httpServletRequest
+    ){
+        // 로그인한 사용자 인가요?
+        User user = userService.findLoginedUser(httpServletRequest);
+        Message resultMsg = postService.deletePost(postId, user);
+        return Message.make200Response(resultMsg.getMessage());
+    }
+
 
     // 글 작성 페이지
-
-
     @PostMapping("/post")
     public ResponseEntity<Message> createPost(@ModelAttribute @Valid NewPostForm newPostForm, HttpServletRequest httpServletRequest){
         User loginUser = userService.findLoginedUser(httpServletRequest);

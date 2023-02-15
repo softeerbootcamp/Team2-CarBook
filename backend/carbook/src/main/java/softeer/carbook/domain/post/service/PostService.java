@@ -241,4 +241,7 @@ public class PostService {
         }
     }
 
+    public Message deletePost(int postId, User user) {
+        return null;
+    }
 }
