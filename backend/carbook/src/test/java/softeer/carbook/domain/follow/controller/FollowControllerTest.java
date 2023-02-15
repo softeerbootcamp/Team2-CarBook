@@ -90,7 +90,7 @@ class FollowControllerTest {
     }
 
     @Test
-    @DisplayName("팔로워 삭제 테스트 - 성")
+    @DisplayName("팔로워 삭제 테스트 - 성공")
     void deleteFollowerSuccess() throws Exception {
         // given
         given(userService.findLoginedUser(any())).willReturn(user);
