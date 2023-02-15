@@ -127,10 +127,11 @@
 
       .dropdown__category {
         display: flex;
+        align-items: center;
         gap: 7px;
         color: black;
         padding: 10px 10px 5px 10px;
-        font-size: 8px;
+        font-size: 11px;
         position: relative;
 
         .selected {
@@ -143,10 +144,9 @@
         }
 
         .selections {
-          position: absolute;
-          left: 60px;
           font-weight: bold;
           display: flex;
+          visibility: hidden;
           opacity: 0;
           transform: translateX(-10%);
           transition: all 0.3s ease-out;
@@ -158,6 +158,7 @@
         }
 
         .active {
+          visibility: visible;
           opacity: 1;
           transform: translateX(0);
         }
@@ -166,7 +167,7 @@
       .dropdown__msg {
         padding: 15px 20px;
         color: black;
-        font-size: 12px;
+        font-size: 14px;
       }
 
       .dropdown__card {
@@ -176,7 +177,7 @@
         align-items: center;
         gap: 15px;
 
-        font-size: 14px;
+        font-size: 16px;
         cursor: pointer;
         &--icon {
           width: 16px;
@@ -189,7 +190,11 @@
           border-radius: 20px;
           font-size: 10px;
           padding: 2px 5px;
-          font-weight: 100;
+          font-weight: 200;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          white-space: nowrap;
         }
         .hashtag {
           background: $main-pink;

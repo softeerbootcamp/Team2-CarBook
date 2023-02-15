@@ -1,9 +1,8 @@
 import { Component } from '@/core';
 import { IHashTag } from '@/interfaces';
-import { getClosest } from '@/utils';
+import { getClosest, longKeywordHandler } from '@/utils';
 import plus from '@/assets/icons/plus.svg';
 import spinner from '@/assets/images/spinner.png';
-import { WORD_LENGTH } from '@/constants/wordLength';
 
 export default class SearchList extends Component {
   setup(): void {
@@ -25,17 +24,6 @@ export default class SearchList extends Component {
     `;
   }
 
-  longKeywordHandler(keyword: string) {
-    const korean = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
-
-    if (korean.test(keyword) && keyword.length > WORD_LENGTH.KOREAN) {
-      return keyword.substring(0, WORD_LENGTH.KOREAN) + '...';
-    } else if (keyword.length > WORD_LENGTH.ENGLISH)
-      return keyword.substring(0, WORD_LENGTH.ENGLISH) + '...';
-
-    return keyword;
-  }
-
   getMsg() {
     const { isLoading, hashtags, keyword } = this.state;
 
@@ -46,7 +34,7 @@ export default class SearchList extends Component {
       if (keyword.length !== 0) {
         return `<div class="dropdown__msg" data-tag="${keyword}">
           <img src=${plus} alt="plus"/>  
-          새로운 <div class="strong">"${this.longKeywordHandler(
+          새로운 <div class="strong">"${longKeywordHandler(
             keyword
           )}"</div> 추가하기     
         </div>`;
