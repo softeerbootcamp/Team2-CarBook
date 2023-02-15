@@ -261,7 +261,7 @@ class PostControllerTest {
     @Test
     @DisplayName("글 수정 테스트")
     void modifyPostTest() throws Exception {
-        given(postService.modifyPost(any())).willReturn(new Message("Post modify success"));
+        given(postService.modifyPost(any(),any())).willReturn(new Message("Post modify success"));
 
         final String fileName = "modifiedTestImage";
         final String contentType = "jpeg";

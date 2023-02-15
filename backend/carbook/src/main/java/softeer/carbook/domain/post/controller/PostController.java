@@ -154,8 +154,9 @@ public class PostController {
     }
 
     @PatchMapping("/post")
-    public ResponseEntity<Message> modifyPost(@ModelAttribute @Valid ModifiedPostForm modifiedPostForm){
-        Message resultMsg = postService.modifyPost(modifiedPostForm);
+    public ResponseEntity<Message> modifyPost(@ModelAttribute @Valid ModifiedPostForm modifiedPostForm, HttpServletRequest httpServletRequest){
+        User loginUser = userService.findLoginedUser(httpServletRequest);
+        Message resultMsg = postService.modifyPost(modifiedPostForm, loginUser);
         return Message.make200Response(resultMsg.getMessage());
     }
 

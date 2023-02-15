@@ -510,6 +510,7 @@ class PostServiceTest {
         Model model = new Model(15,3, "쏘나타");
         int postId = 100;
         String imageURL = "https://team2-carbook.s3.ap-northeast-2.amazonaws.com/images/40472_다운로드 (1).jpeg";
+        given(postRepository.findPostById(postId)).willReturn(new Post(17,"변경 전 내용",15));
         given(tagRepository.findModelByName(any())).willReturn(model);
         given(s3Repository.upload(any(MultipartFile.class),anyString(),anyInt())).willReturn(imageURL);
         given(tagRepository.findHashtagByName(hashtagNames.get(0))).willReturn(hashtags.get(0));
@@ -517,7 +518,7 @@ class PostServiceTest {
         given(tagRepository.addHashtag(any())).willReturn(2);
         given(imageRepository.getImageByPostId(postId)).willReturn(new Image(postId,imageURL));
 
-        Message result = postService.modifyPost(modifiedPostForm);
+        Message result = postService.modifyPost(modifiedPostForm, user);
 
         // Then
         AssertionsForClassTypes.assertThat(result.getMessage()).isEqualTo("Post modify success");
