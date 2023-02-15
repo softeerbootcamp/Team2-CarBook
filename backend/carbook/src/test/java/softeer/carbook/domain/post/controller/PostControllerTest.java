@@ -232,7 +232,7 @@ class PostControllerTest {
 
 
     @Test
-    @DisplayName("글 작성 테스트")
+    @DisplayName("로그인 상태에서 글 작성 테스트")
     void createPostTest() throws Exception {
         User user = new User("test@gmail.com", "nickname",
                 BCrypt.hashpw("password", BCrypt.gensalt()));
@@ -279,7 +279,6 @@ class PostControllerTest {
                         .param("content", "테스트 글 수정입니다"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Post modify success")));
-
     }
 
 }

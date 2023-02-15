@@ -1,11 +1,17 @@
 package softeer.carbook.domain.post.service;
 
+import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import softeer.carbook.domain.follow.repository.FollowRepository;
 import softeer.carbook.domain.like.repository.LikeRepository;
 import softeer.carbook.domain.post.dto.*;
@@ -14,18 +20,25 @@ import softeer.carbook.domain.post.model.Image;
 import softeer.carbook.domain.post.model.Post;
 import softeer.carbook.domain.post.repository.ImageRepository;
 import softeer.carbook.domain.post.repository.PostRepository;
+import softeer.carbook.domain.post.repository.S3Repository;
+import softeer.carbook.domain.tag.exception.HashtagNotExistException;
+import softeer.carbook.domain.tag.model.Hashtag;
+import softeer.carbook.domain.tag.model.Model;
 import softeer.carbook.domain.tag.repository.TagRepository;
 import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.repository.UserRepository;
 import softeer.carbook.global.dto.Message;
 
 import java.sql.Timestamp;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
@@ -45,6 +58,8 @@ class PostServiceTest {
     private LikeRepository likeRepository;
     @Mock
     private TagRepository tagRepository;
+    @Mock
+    private S3Repository s3Repository;
 
     private final int POST_COUNT = 10;
     private final List<Image> images = new ArrayList<>(List.of(
@@ -430,5 +445,43 @@ class PostServiceTest {
         verify(postRepository).findPostById(anyInt());
     }
 
+    @Test
+    @DisplayName("게시글 등록 성공 테스트")
+    void createPostTest() throws IOException {
+        final String fileName = "modifiedTestImage";
+        final String contentType = "jpeg";
+        final String filePath = "src/test/resources/"+fileName+"."+contentType;
+        FileInputStream fileInputStream = new FileInputStream(filePath);
+        MockMultipartFile image = new MockMultipartFile("image", fileName + "." + contentType, contentType, fileInputStream);
+
+        List<Hashtag> hashtags = new ArrayList<>(){{
+            add(new Hashtag("맑음"));
+            add(new Hashtag("테스트태그"));
+        }};
+
+        List<String> hashtagNames = new ArrayList<>(){{
+            add("맑음");
+            add("테스트태그");
+        }};
+
+        NewPostForm newPostForm = new NewPostForm(image, hashtagNames, "승용", "쏘나타", "테스트 쏘나타 게시글입니다");
+        User user = new User(17, "user17@email.com", "사용자17", "pw17");
+
+        Model model = new Model(15,3, "쏘나타");
+        int postId = 100;
+        String imageURL = "https://team2-carbook.s3.ap-northeast-2.amazonaws.com/images/40472_다운로드 (1).jpeg";
+        given(tagRepository.findModelByName(any())).willReturn(model);
+        given(postRepository.addPost(any())).willReturn(postId);
+        given(s3Repository.upload(any(MultipartFile.class),anyString(),anyInt())).willReturn(imageURL);
+        given(tagRepository.findHashtagByName(hashtagNames.get(0))).willReturn(hashtags.get(0));
+        given(tagRepository.findHashtagByName(hashtagNames.get(1))).willThrow(new HashtagNotExistException());
+        given(tagRepository.addHashtag(any())).willReturn(2);
+        Message result = postService.createPost(newPostForm, user);
+
+        // Then
+        AssertionsForClassTypes.assertThat(result.getMessage()).isEqualTo("Post create success");
+        verify(tagRepository).findHashtagByName(hashtagNames.get(0));
+        verify(tagRepository).addHashtag(any());
+    }
 
 }
