@@ -187,7 +187,7 @@ public class PostService {
         List<Type> types = tagRepository.findTypeById(models.get(0).getTypeId());
         return new PostDetailResponse.PostDetailResponseBuilder()
                 .isMyPost(isMyPost)
-                .nickname(user.getNickname())
+                .nickname(userRepository.findUserById(post.getUserId()).getNickname())
                 .imageUrl(imageRepository.getImageByPostId(postId).getImageUrl())
                 .isLike(likeRepository.checkLike(user.getId(), postId))
                 .likeCount(likeRepository.findLikeCountByPostId(postId))
