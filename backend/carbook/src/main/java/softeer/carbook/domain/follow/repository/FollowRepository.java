@@ -52,7 +52,7 @@ public class FollowRepository {
     public void addFollow(int followerId, int followingId) {
         jdbcTemplate.update(
                 "insert into FOLLOW(follower_id, following_id) values (?, ?) " +
-                        "on DUPLICATE KEY update is_deleted = false",
+                        "ON DUPLICATE KEY update is_deleted = false",
                 followerId, followingId );
     }
 
