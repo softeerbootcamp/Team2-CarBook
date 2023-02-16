@@ -15,7 +15,7 @@ import { IHashTag } from '@/interfaces';
 export default class HashTagForm extends Component {
   searchList: any;
   setup(): void {
-    const { hashtags } = this.props.hashtags;
+    const { hashtags } = this.props;
     this.state = {
       value: '',
       hashtags: hashtags,
@@ -130,7 +130,7 @@ export default class HashTagForm extends Component {
 
     if (searchKeyword.length !== 0) {
       const searchedData = await basicAPI.get(
-        `/api/search/hashtag/?keyword=${keyword.trim()}`
+        `/api/search/hashtag/?keyword=${encodeURI(searchKeyword)}`
       );
 
       this.searchList.setState({

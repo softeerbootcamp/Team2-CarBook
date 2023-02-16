@@ -57,15 +57,15 @@ public class TagRepository {
     }
 
     public List<Type> searchTypeByPrefix(String keyword) {
-        return jdbcTemplate.query("SELECT t.id, t.tag FROM TYPE t WHERE tag LIKE '" + convertWildCharToRealChar(keyword) + "%'", typeRowMapper());
+        return jdbcTemplate.query("SELECT t.id, t.tag FROM TYPE t WHERE tag LIKE '" + convertWildCharToRealChar(keyword), typeRowMapper());
     }
 
     public List<Model> searchModelByPrefix(String keyword) {
-        return jdbcTemplate.query("SELECT m.id, m.type_id, m.tag FROM MODEL m WHERE tag LIKE '" + convertWildCharToRealChar(keyword) + "%'", modelRowMapper());
+        return jdbcTemplate.query("SELECT m.id, m.type_id, m.tag FROM MODEL m WHERE tag LIKE '" + convertWildCharToRealChar(keyword), modelRowMapper());
     }
 
     public List<Hashtag> searchHashtagByPrefix(String keyword) {
-        return jdbcTemplate.query("SELECT h.id, h.tag FROM HASHTAG h WHERE tag LIKE '" + convertWildCharToRealChar(keyword) + "%'", hashtagRowMapper());
+        return jdbcTemplate.query("SELECT h.id, h.tag FROM HASHTAG h WHERE tag LIKE '" + convertWildCharToRealChar(keyword), hashtagRowMapper());
     }
 
     public List<Type> findAllTypes() {
@@ -81,8 +81,9 @@ public class TagRepository {
     }
 
     public String convertWildCharToRealChar(String oldStr) {
-        String newStr = oldStr.replaceAll("%", "[%]");
-        newStr = newStr.replaceAll("_", "[_]");
+        String newStr = oldStr.replaceAll("%", "!%");
+        newStr = newStr.replaceAll("_", "!_");
+        newStr += "%' ESCAPE '!'";
         return newStr;
     }
 

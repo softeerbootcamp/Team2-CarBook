@@ -1,10 +1,12 @@
 import { Component } from '@/core';
 import car from '@/assets/images/car.svg';
-import { qs } from '@/utils';
+import { isEmptyObj, qs } from '@/utils';
+import axios from 'axios';
 
 export default class ImageForm extends Component {
   setup(): void {
     this.state = {
+      isInit: true,
       imageUrl: this.props.imageUrl,
     };
   }
@@ -16,15 +18,20 @@ export default class ImageForm extends Component {
     `;
   }
 
-  setEvent(): void {
-    const { imageUrl } = this.state;
-    const input = qs(this.$target, 'input');
+  async setEvent() {
+    const { isInit } = this.state;
 
-    this.$target.addEventListener('click', () => {
-      input.click();
-    });
-    input.addEventListener('change', this.getImageFiles.bind(this));
-    if (imageUrl) this.setPreviewSrc(imageUrl);
+    if (isInit) {
+      const input = qs(this.$target, 'input');
+
+      this.$target.addEventListener('click', () => {
+        input.click();
+      });
+      input.addEventListener('change', this.getImageFiles.bind(this));
+      this.setPrveImage();
+
+      this.state.isInit = false;
+    }
   }
 
   getImageFiles(e: Event) {
@@ -39,9 +46,20 @@ export default class ImageForm extends Component {
         this.setState({ imageUrl: url });
         this.props.setFormData(file);
 
+        console.log(file);
+
         this.setPreviewSrc(url);
       };
       reader.readAsDataURL(file);
+    }
+  }
+
+  async setPrveImage() {
+    const { imageUrl } = this.state;
+    if (!isEmptyObj(imageUrl)) {
+      this.setPreviewSrc(imageUrl);
+      const file = await this.convertUrltoFile(imageUrl);
+      this.props.setFormData(file);
     }
   }
 
@@ -56,5 +74,17 @@ export default class ImageForm extends Component {
 
     img.classList.add('hide');
     text.classList.add('hide');
+  }
+
+  async convertUrltoFile(url: string) {
+    const response = await axios.get<Blob>(url, {
+      responseType: 'blob',
+    });
+    const newData = response.data;
+    const ext = url.split('.').pop();
+    const filename = url.split('/').pop();
+    const metadata = { type: `image/${ext}` };
+
+    return new File([newData], filename!, metadata);
   }
 }

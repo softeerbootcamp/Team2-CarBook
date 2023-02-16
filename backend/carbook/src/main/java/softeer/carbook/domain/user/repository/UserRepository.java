@@ -23,7 +23,7 @@ public class UserRepository {
     }
 
     public void addUser(User user) {
-        jdbcTemplate.update("insert into USER(email, password, nickname) values(?, ?, ?)",
+        jdbcTemplate.update("insert into `USER`(email, password, nickname) values(?, ?, ?)",
                 user.getEmail(),
                 user.getPassword(),
                 user.getNickname()
@@ -31,45 +31,45 @@ public class UserRepository {
     }
 
     public void modifyNickname(String nickname, String newNickname) {
-        jdbcTemplate.update("update USER set nickname = ? where nickname = ?",
+        jdbcTemplate.update("update `USER` set nickname = ? where nickname = ?",
                 newNickname,
                 nickname
         );
     }
 
     public void modifyPassword(int user_id, String newPassword) {
-        jdbcTemplate.update("update USER set password = ? where id = ?",
+        jdbcTemplate.update("update `USER` set password = ? where id = ?",
                 newPassword,
                 user_id
         );
     }
 
     public boolean isEmailDuplicated(String email) {
-        List<User> result = jdbcTemplate.query("select u.id, u.email, u.nickname, u.password from USER u where email = ?", userRowMapper(), email);
+        List<User> result = jdbcTemplate.query("select u.id, u.email, u.nickname, u.password from `USER` u where email = ?", userRowMapper(), email);
         return !result.isEmpty();
     }
 
     public boolean isNicknameDuplicated(String nickname) {
-        List<User> result = jdbcTemplate.query("select u.id, u.email, u.nickname, u.password from USER u where nickname = ?", userRowMapper(), nickname);
+        List<User> result = jdbcTemplate.query("select u.id, u.email, u.nickname, u.password from `USER` u where nickname = ?", userRowMapper(), nickname);
         return !result.isEmpty();
     }
 
     public User findUserById(int id){
-        List<User> result = jdbcTemplate.query("select u.id, u.email, u.nickname, u.password from USER u where id = ?", userRowMapper(), id);
+        List<User> result = jdbcTemplate.query("select u.id, u.email, u.nickname, u.password from `USER` u where id = ?", userRowMapper(), id);
         return result.stream().findAny().orElseThrow(
                 () -> new IdNotExistException()
         );
     }
 
     public User findUserByEmail(String email){
-        List<User> result = jdbcTemplate.query("select u.id, u.email, u.nickname, u.password from USER u where email = ?", userRowMapper(), email);
+        List<User> result = jdbcTemplate.query("select u.id, u.email, u.nickname, u.password from `USER` u where email = ?", userRowMapper(), email);
         return result.stream().findAny().orElseThrow(
                 () -> new LoginEmailNotExistException()
         );
     }
 
     public User findUserByNickname(String nickname){
-        List<User> result = jdbcTemplate.query("select u.id, u.email, u.nickname, u.password from USER u where nickname = ?", userRowMapper(), nickname);
+        List<User> result = jdbcTemplate.query("select u.id, u.email, u.nickname, u.password from `USER` u where nickname = ?", userRowMapper(), nickname);
         return result.stream().findAny().orElseThrow(
                 () -> new NicknameNotExistException()
         );
@@ -77,15 +77,15 @@ public class UserRepository {
 
     public List<String> getFollowingNicknames(String nickname){
         return jdbcTemplate.queryForList("select u2.nickname from FOLLOW f " +
-                "INNER JOIN USER u1 ON f.follower_id = u1.id " +
-                "INNER JOIN USER u2 ON f.following_id = u2.id " +
+                "INNER JOIN `USER` u1 ON f.follower_id = u1.id " +
+                "INNER JOIN `USER` u2 ON f.following_id = u2.id " +
                 "where u1.nickname = ? and f.is_deleted = false" , String.class, nickname);
     }
 
     public List<String> getFollowerNicknames(String nickname){
         return jdbcTemplate.queryForList("select u2.nickname from FOLLOW f " +
-                "INNER JOIN USER u1 ON f.following_id = u1.id " +
-                "INNER JOIN USER u2 ON f.follower_id = u2.id " +
+                "INNER JOIN `USER` u1 ON f.following_id = u1.id " +
+                "INNER JOIN `USER` u2 ON f.follower_id = u2.id " +
                 "where u1.nickname = ? and f.is_deleted = false" , String.class, nickname);
     }
 
