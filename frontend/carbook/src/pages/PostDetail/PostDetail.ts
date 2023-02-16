@@ -37,17 +37,7 @@ export default class PostDetailPage extends Component {
       });
     this.setState({
       ...this.state,
-      nickname: data?.nickname,
-      content: data?.content,
-      createDate: data?.createDate,
-      hashtags: data?.hashtags,
-      imageUrl: data?.imageUrl,
-      like: data?.like,
-      likeCount: data?.likeCount,
-      model: data?.model,
-      myPost: data?.myPost,
-      type: data?.type,
-      updateDate: data?.updateDate,
+      ...data,
       isloading: false,
     });
   }
