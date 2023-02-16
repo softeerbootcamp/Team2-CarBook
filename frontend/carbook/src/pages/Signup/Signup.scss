@@ -4,9 +4,10 @@
   background: #ffffff;
   margin: 0 auto;
   text-align: center;
-  padding: 15vh 20%;
+  padding: 30% 0;
   width: 100%;
   max-width: 500px;
+  position: relative;
 
   header {
     margin-bottom: 20px;
@@ -44,11 +45,15 @@
   }
 
   .signup-contents {
+    .input-form {
+      padding: 0 10%;
+    }
+
     .signup-id,
     .signup-password,
     .signup-nickname {
       font-family: "Pretendard-Regular";
-      padding-left: 20px;
+      padding-left: 8%;
       text-align: start;
     }
 
@@ -65,17 +70,18 @@
 
   footer {
     display: flex;
-    margin: 8px 5vw;
+    margin: 8px 15%;
     justify-content: flex-end;
 
     h3 {
-      margin-right: 10px;
+      margin: 1%;
     }
 
     h3.footer-login {
       font-family: "LINESeedKR-Bd";
       font-weight: 700;
       cursor: pointer;
+      text-decoration: underline;
     }
 
     h3.footer-message {
@@ -84,9 +90,10 @@
   }
 
   .alert-modal {
-    width: 297px;
-    margin: 0;
-    position: fixed;
+    width: 80%;
+    margin: 0 10%;
+    text-align: center;
+    position: absolute;
     top: -60px;
     padding: 16px;
     border-radius: 4px;
