@@ -1,6 +1,7 @@
 @import "@/styles/color";
 
 $backgroundImg: "@/assets/images/Postdetail2.svg";
+$menu: "@/assets/icons/postdetail_menu.svg";
 
 .postdetail-container {
   width: 100%;
@@ -58,9 +59,15 @@ $backgroundImg: "@/assets/images/Postdetail2.svg";
 
       .info-menu {
         position: relative;
+        width: 20px;
+        height: 20px;
+        background-image: url($menu);
+        background-size: cover;
+        background-position: center;
 
         .info-menu-items {
           position: absolute;
+          top: 120%;
           right: 0;
           width: 93px;
           height: 98px;
@@ -80,6 +87,10 @@ $backgroundImg: "@/assets/images/Postdetail2.svg";
           visibility: visible;
           opacity: 1;
         }
+      }
+
+      .hidden {
+        visibility: hidden;
       }
     }
 
