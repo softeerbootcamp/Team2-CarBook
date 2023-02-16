@@ -3,9 +3,11 @@ import { onChangeInputHandler, qs } from '@/utils';
 
 export default class TextForm extends Component {
   template(): string {
+    const { content } = this.props;
+
     return `
       <div class="input__text">글 내용</div>
-      <textarea class="input__textarea" placeholder="글 내용을 입력해주세요"></textarea>
+      <textarea class="input__textarea" placeholder="글 내용을 입력해주세요">${content}</textarea>
     `;
   }
   setEvent(): void {
