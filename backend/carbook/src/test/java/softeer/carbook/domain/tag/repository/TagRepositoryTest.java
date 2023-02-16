@@ -85,4 +85,32 @@ class TagRepositoryTest {
         assertThat(result.get(0).getId()).isEqualTo(hashtagId);
         assertThat(result.get(0).getTag()).isEqualTo(tagName);
     }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"%", "%%"})
+    @DisplayName("'%'문자를 접두어로 하여 해시태그를 조회")
+    void searchHashtagByPrefixWithWildCharPercentage(String keyword) {
+        String tagName = "%%%길동";
+        Hashtag hashtag = new Hashtag(tagName);
+        int hashtagId = tagRepository.addHashtag(hashtag);
+
+        List<Hashtag> result = tagRepository.searchHashtagByPrefix(keyword);
+        assertThat(result.size()).isEqualTo(1);
+        assertThat(result.get(0).getId()).isEqualTo(hashtagId);
+        assertThat(result.get(0).getTag()).isEqualTo(tagName);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"_", "__"})
+    @DisplayName("'_'를 접두어로 하여 해시태그를 조회")
+    void searchHashtagByPrefixWithWildCharUnderBar(String keyword) {
+        String tagName = "___길동";
+        Hashtag hashtag = new Hashtag(tagName);
+        int hashtagId = tagRepository.addHashtag(hashtag);
+
+        List<Hashtag> result = tagRepository.searchHashtagByPrefix(keyword);
+        assertThat(result.size()).isEqualTo(1);
+        assertThat(result.get(0).getId()).isEqualTo(hashtagId);
+        assertThat(result.get(0).getTag()).isEqualTo(tagName);
+    }
 }
