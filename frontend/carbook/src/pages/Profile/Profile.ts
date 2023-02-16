@@ -22,6 +22,7 @@ import { push, replace } from "@/utils/router/navigate";
 
 export default class ProfilePage extends Component {
   setup(): void {
+    console.log("setup");
     const urlnickname = location.pathname.split("/").slice(-1)[0];
     this.state.nickname = urlnickname;
     this.state.profileMode = "posts";
