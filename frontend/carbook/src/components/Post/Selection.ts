@@ -2,8 +2,11 @@ import { Component } from '@/core';
 import { qs } from '@/utils';
 
 export default class Selection extends Component {
+  setup(): void {
+    this.state = this.props;
+  }
   template(): string {
-    const { label, options, selected } = this.props;
+    const { label, options, selected } = this.state;
 
     return `
       <label><span>*</span>${label}</label>

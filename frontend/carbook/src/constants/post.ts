@@ -1,7 +1,7 @@
 export const POST_INIT = {
   type: '',
   model: '',
-  imageUrl: '',
+  imageUrl: {},
   hashtags: [],
   content: '',
 };
