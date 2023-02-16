@@ -1,11 +1,22 @@
-import { Component } from '@/core';
-import './PostDetail.scss';
-import backButton from '@/assets/icons/backButton.svg';
-import profile from '@/assets/icons/postdetail_profile.svg';
-import menu from '@/assets/icons/postdetail_menu.svg';
-import likeButton from '@/assets/icons/likeButton.svg';
+import { Component } from "@/core";
+import "./PostDetail.scss";
+import backButton from "@/assets/icons/backButton.svg";
+import profile from "@/assets/icons/postdetail_profile.svg";
+import menu from "@/assets/icons/postdetail_menu.svg";
+import likeButton from "@/assets/icons/likeButton.svg";
 
 export default class PostDetailPage extends Component {
+  setup(): void {
+    const postid = location.pathname.split("/").slice(-1)[0];
+    this.$target.addEventListener("click", (e: Event) => {
+      const menu = (e.target as HTMLElement).closest(".info-menu");
+      console.log(e.target);
+      if (!menu) return;
+      const menuItems = menu.querySelector(".info-menu-items") as HTMLElement;
+      menuItems?.classList.toggle("FadeInAndOut");
+    });
+  }
+
   template(): string {
     return /*html*/ `
     <div class ='postdetail-container'>
