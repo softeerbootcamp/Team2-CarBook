@@ -35,25 +35,6 @@ public class TagRepository {
                 .orElseThrow(() -> new HashtagNotExistException());
     }
 
-//    public List<TagSearchResult> searchPostTagsByPostIdAndModelId(int postId, int modelId) {
-//        List<String> hashtags = findHashtagsByPostId(postId);
-//        List<Model> models = findModelByModelId(modelId);
-//        List<Type> types = findTypeById(models.get(0).getTypeId());
-//
-//        // todo refactor
-//        List<TagSearchResult> results = types.stream()
-//                .map(TagSearchResult::of)
-//                .collect(Collectors.toList());
-//        results.addAll(models.stream()
-//                .map(TagSearchResult::of)
-//                .collect(Collectors.toList()));
-//        results.addAll(hashtags.stream()
-//                .map(TagSearchResult::of)
-//                .collect(Collectors.toList()));
-//
-//        return results;
-//    }
-
     public List<Type> findTypeById(int id) {
         return jdbcTemplate.query(
                 "select id, tag from TYPE where id = ?",
