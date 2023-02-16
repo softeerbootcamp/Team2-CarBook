@@ -21,12 +21,10 @@ $menu: "@/assets/icons/postdetail_menu.svg";
         rgba(0, 0, 0, 0.2) 0%,
         rgba(0, 0, 0, 0) 100%
       ),
-      url($backgroundImg) no-repeat center center;
-    .detailImg {
-      width: 100%;
-      height: 100%;
-    }
+      url($backgroundImg), no-repeat;
+
     background-size: cover;
+    background-position: center;
   }
 
   .postdetail-info {

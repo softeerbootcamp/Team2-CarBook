@@ -81,6 +81,7 @@ export default class PostDetailPage extends Component {
   }
 
   mounted(): void {
+    const postImg = this.$target.querySelector(".header") as HTMLElement;
     const infoHeader = this.$target.querySelector(
       ".info-header"
     ) as HTMLElement;
@@ -90,6 +91,8 @@ export default class PostDetailPage extends Component {
     const footer = this.$target.querySelector(
       ".postdetail-footer"
     ) as HTMLElement;
+
+    postImg.style.backgroundImage = `url(${this.state.imageUrl})`;
     new Footer(footer, {
       like: this.state.like,
       likeCount: this.state.likeCount,
