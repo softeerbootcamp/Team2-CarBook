@@ -388,6 +388,7 @@ class PostServiceTest {
         given(imageRepository.getImageByPostId(anyInt())).willReturn(image);
         given(likeRepository.checkLike(anyInt(), anyInt())).willReturn(true);
         given(likeRepository.findLikeCountByPostId(anyInt())).willReturn(123);
+        given(userRepository.findUserById(anyInt())).willReturn(user);
 
         // when
         PostDetailResponse result = postService.getPostDetails(1, user);
@@ -401,6 +402,7 @@ class PostServiceTest {
         verify(imageRepository).getImageByPostId(anyInt());
         verify(likeRepository).checkLike(anyInt(),anyInt());
         verify(likeRepository).findLikeCountByPostId(anyInt());
+        verify(userRepository).findUserById(anyInt());
     }
 
     @Test
@@ -424,6 +426,7 @@ class PostServiceTest {
         given(imageRepository.getImageByPostId(anyInt())).willReturn(image);
         given(likeRepository.checkLike(anyInt(), anyInt())).willReturn(true);
         given(likeRepository.findLikeCountByPostId(anyInt())).willReturn(123);
+        given(userRepository.findUserById(anyInt())).willReturn(user);
 
         // when
         PostDetailResponse result = postService.getPostDetails(1, user);
@@ -437,6 +440,7 @@ class PostServiceTest {
         verify(imageRepository).getImageByPostId(anyInt());
         verify(likeRepository).checkLike(anyInt(),anyInt());
         verify(likeRepository).findLikeCountByPostId(anyInt());
+        verify(userRepository).findUserById(anyInt());
     }
 
     @Test
