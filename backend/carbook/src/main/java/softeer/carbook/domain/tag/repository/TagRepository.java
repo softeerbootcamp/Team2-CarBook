@@ -35,46 +35,46 @@ public class TagRepository {
                 .orElseThrow(() -> new HashtagNotExistException());
     }
 
-    public List<TagSearchResult> searchPostTagsByPostIdAndModelId(int postId, int modelId) {
-        List<Hashtag> hashtags = findHashtagsByPostId(postId);
-        List<Model> models = findModelByModelId(modelId);
-        List<Type> types = findTypeByModel(models.get(0).getTag());
+//    public List<TagSearchResult> searchPostTagsByPostIdAndModelId(int postId, int modelId) {
+//        List<String> hashtags = findHashtagsByPostId(postId);
+//        List<Model> models = findModelByModelId(modelId);
+//        List<Type> types = findTypeById(models.get(0).getTypeId());
+//
+//        // todo refactor
+//        List<TagSearchResult> results = types.stream()
+//                .map(TagSearchResult::of)
+//                .collect(Collectors.toList());
+//        results.addAll(models.stream()
+//                .map(TagSearchResult::of)
+//                .collect(Collectors.toList()));
+//        results.addAll(hashtags.stream()
+//                .map(TagSearchResult::of)
+//                .collect(Collectors.toList()));
+//
+//        return results;
+//    }
 
-        // todo refactor
-        List<TagSearchResult> results = types.stream()
-                .map(TagSearchResult::of)
-                .collect(Collectors.toList());
-        results.addAll(models.stream()
-                .map(TagSearchResult::of)
-                .collect(Collectors.toList()));
-        results.addAll(hashtags.stream()
-                .map(TagSearchResult::of)
-                .collect(Collectors.toList()));
-        
-        return results;
-    }
-
-    private List<Type> findTypeByModel(String model) {
+    public List<Type> findTypeById(int id) {
         return jdbcTemplate.query(
-                "select id, tag from MODEL where tag = ?",
-                typeRowMapper(), model
+                "select id, tag from TYPE where id = ?",
+                typeRowMapper(), id
         );
     }
 
-    private List<Model> findModelByModelId(int modelId) {
+    public List<Model> findModelByModelId(int modelId) {
         return jdbcTemplate.query(
                 "SELECT id, type_id, tag FROM MODEL " +
                         "WHERE id = ?",
                 modelRowMapper(), modelId);
     }
 
-    private List<Hashtag> findHashtagsByPostId(int postId) {
+    public List<String> findHashtagsByPostId(int postId) {
         return jdbcTemplate.query(
-                "SELECT h.id, h.tag FROM HASHTAG h " +
+                "SELECT h.tag FROM HASHTAG h " +
                         "INNER JOIN POST_HASHTAG " +
                         "ON h.id = POST_HASHTAG.tag_id " +
                         "WHERE post_id = ?",
-                hashtagRowMapper(), postId);
+                hashtagStringRowMapper(), postId);
     }
 
     public List<Type> searchTypeByPrefix(String keyword) {
@@ -143,4 +143,9 @@ public class TagRepository {
                 rs.getString("tag")
         );
     }
+
+    private RowMapper<String> hashtagStringRowMapper(){
+        return ((rs, rowNum) -> new String(rs.getString("tag")));
+    }
+
 }

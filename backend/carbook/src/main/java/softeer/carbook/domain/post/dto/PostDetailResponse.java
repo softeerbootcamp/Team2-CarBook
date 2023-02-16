@@ -1,6 +1,6 @@
 package softeer.carbook.domain.post.dto;
 
-import softeer.carbook.domain.tag.dto.TagSearchResult;
+import softeer.carbook.domain.tag.model.Hashtag;
 
 import java.util.List;
 
@@ -11,7 +11,9 @@ public class PostDetailResponse {
     private final int like;
     private final String createDate;
     private final String updateDate;
-    private final List<TagSearchResult> keywords;
+    private final String type;
+    private final String model;
+    private final List<String> hashtag;
     private final String content;
 
     public PostDetailResponse(PostDetailResponseBuilder postDetailResponseBuilder){
@@ -21,7 +23,9 @@ public class PostDetailResponse {
         this.like = postDetailResponseBuilder.like;
         this.createDate = postDetailResponseBuilder.createDate;
         this.updateDate = postDetailResponseBuilder.updateDate;
-        this.keywords = postDetailResponseBuilder.keywords;
+        this.type = postDetailResponseBuilder.type;
+        this.model = postDetailResponseBuilder.model;
+        this.hashtag = postDetailResponseBuilder.hashtags;
         this.content = postDetailResponseBuilder.content;
     }
 
@@ -49,8 +53,16 @@ public class PostDetailResponse {
         return updateDate;
     }
 
-    public List<TagSearchResult> getKeywords() {
-        return keywords;
+    public String getType() {
+        return type;
+    }
+
+    public String getModel() {
+        return model;
+    }
+
+    public List<String> getHashtag() {
+        return hashtag;
     }
 
     public String getContent() {
@@ -64,7 +76,9 @@ public class PostDetailResponse {
         private int like;
         private String createDate;
         private String updateDate;
-        private List<TagSearchResult> keywords;
+        private String type;
+        private String model;
+        private List<String> hashtags;
         private String content;
 
         public PostDetailResponseBuilder(){}
@@ -99,8 +113,18 @@ public class PostDetailResponse {
             return this;
         }
 
-        public PostDetailResponseBuilder keywords(List<TagSearchResult> keywords){
-            this.keywords = keywords;
+        public PostDetailResponseBuilder type(String type){
+            this.type = type;
+            return this;
+        }
+
+        public PostDetailResponseBuilder model(String model){
+            this.model = model;
+            return this;
+        }
+
+        public PostDetailResponseBuilder hashtags(List<String> hashtags){
+            this.hashtags = hashtags;
             return this;
         }
 

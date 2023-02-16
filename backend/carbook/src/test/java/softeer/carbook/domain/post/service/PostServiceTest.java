@@ -24,6 +24,7 @@ import softeer.carbook.domain.post.repository.S3Repository;
 import softeer.carbook.domain.tag.exception.HashtagNotExistException;
 import softeer.carbook.domain.tag.model.Hashtag;
 import softeer.carbook.domain.tag.model.Model;
+import softeer.carbook.domain.tag.model.Type;
 import softeer.carbook.domain.tag.repository.TagRepository;
 import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.repository.UserRepository;
@@ -373,10 +374,19 @@ class PostServiceTest {
         User user = new User(17, "user17@email.com", "사용자17", "pw17");
         Post post = new Post(1, 17, new Timestamp(12341241), new Timestamp(1231235), "asdf", 1);
         Image image = images.get(0);
+        List<Type> types = new ArrayList<>(List.of(
+                new Type(1, "승용"), new Type(2, "SUV")));
+        List<Model> models = new ArrayList<>(List.of(
+                new Model(1, 1, "쏘나타"), new Model(2, 2, "아이오닉")));
+        List<String> hashtags = new ArrayList<>(List.of(
+               "맑음", "흐림"
+        ));
         given(postRepository.findPostById(anyInt())).willReturn(post);
+        given(tagRepository.findHashtagsByPostId(anyInt())).willReturn(hashtags);
+        given(tagRepository.findModelByModelId(anyInt())).willReturn(models);
+        given(tagRepository.findTypeById(anyInt())).willReturn(types);
         given(imageRepository.getImageByPostId(anyInt())).willReturn(image);
         given(likeRepository.findLikeCountByPostId(anyInt())).willReturn(123);
-        given(tagRepository.searchPostTagsByPostIdAndModelId(anyInt(), anyInt())).willReturn(new ArrayList<>());
 
         // when
         PostDetailResponse result = postService.getPostDetails(1, user);
@@ -384,9 +394,11 @@ class PostServiceTest {
         // then
         assertThat(result.isMyPost()).isTrue();
         verify(postRepository).findPostById(anyInt());
+        verify(tagRepository).findHashtagsByPostId(anyInt());
+        verify(tagRepository).findModelByModelId(anyInt());
+        verify(tagRepository).findTypeById(anyInt());
         verify(imageRepository).getImageByPostId(anyInt());
         verify(likeRepository).findLikeCountByPostId(anyInt());
-        verify(tagRepository).searchPostTagsByPostIdAndModelId(anyInt(), anyInt());
     }
 
     @Test
@@ -396,10 +408,19 @@ class PostServiceTest {
         User user = new User(17, "user17@email.com", "사용자17", "pw17");
         Post post = new Post(1, 1, new Timestamp(12341241), new Timestamp(1231235), "asdf", 1);
         Image image = images.get(0);
+        List<Type> types = new ArrayList<>(List.of(
+                new Type(1, "승용"), new Type(2, "SUV")));
+        List<Model> models = new ArrayList<>(List.of(
+                new Model(1, 1, "쏘나타"), new Model(2, 2, "아이오닉")));
+        List<String> hashtags = new ArrayList<>(List.of(
+                "맑음", "흐림"
+        ));
         given(postRepository.findPostById(anyInt())).willReturn(post);
+        given(tagRepository.findHashtagsByPostId(anyInt())).willReturn(hashtags);
+        given(tagRepository.findModelByModelId(anyInt())).willReturn(models);
+        given(tagRepository.findTypeById(anyInt())).willReturn(types);
         given(imageRepository.getImageByPostId(anyInt())).willReturn(image);
         given(likeRepository.findLikeCountByPostId(anyInt())).willReturn(123);
-        given(tagRepository.searchPostTagsByPostIdAndModelId(anyInt(), anyInt())).willReturn(new ArrayList<>());
 
         // when
         PostDetailResponse result = postService.getPostDetails(1, user);
@@ -407,9 +428,11 @@ class PostServiceTest {
         // then
         assertThat(result.isMyPost()).isFalse();
         verify(postRepository).findPostById(anyInt());
+        verify(tagRepository).findHashtagsByPostId(anyInt());
+        verify(tagRepository).findModelByModelId(anyInt());
+        verify(tagRepository).findTypeById(anyInt());
         verify(imageRepository).getImageByPostId(anyInt());
         verify(likeRepository).findLikeCountByPostId(anyInt());
-        verify(tagRepository).searchPostTagsByPostIdAndModelId(anyInt(), anyInt());
     }
 
     @Test
