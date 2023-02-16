@@ -9,11 +9,21 @@ export default class PostDetailPage extends Component {
     this.state.isloading = true;
     const postid = location.pathname.split("/").slice(-1)[0];
     await this.fetchPostDefail(postid);
+    if (this.$target.classList.contains("once")) return;
+    this.$target.classList.add("once");
     this.$target.addEventListener("click", (e: Event) => {
       const target = e.target as HTMLElement;
-      if (!target.classList.contains("info-menu")) return;
-      const menuItems = target.querySelector(".info-menu-items") as HTMLElement;
-      menuItems?.classList.toggle("FadeInAndOut");
+
+      if (!target.classList.contains("info-menu")) {
+        const menuItems = target.querySelector(
+          ".info-menu-items"
+        ) as HTMLElement;
+        menuItems?.classList.toggle("FadeInAndOut");
+      }
+
+      if (target.closest(".back-button")) {
+        history.back();
+      }
     });
   }
 
