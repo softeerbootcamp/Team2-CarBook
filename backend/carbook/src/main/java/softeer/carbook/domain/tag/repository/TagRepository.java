@@ -80,8 +80,10 @@ public class TagRepository {
         return jdbcTemplate.query("SELECT m.id, m.type_id, m.tag FROM MODEL m WHERE m.tag = ?", modelRowMapper(), tag).get(0);
     }
 
-    public String convertWildCharToRealChar(String keyword) {
-        return keyword.replaceAll("%", "[%]").replaceAll("_", "[_]");
+    public String convertWildCharToRealChar(String oldStr) {
+        String newStr = oldStr.replaceAll("%", "[%]");
+        newStr = newStr.replaceAll("_", "[_]");
+        return newStr;
     }
 
     public int addHashtag(Hashtag hashtag){
