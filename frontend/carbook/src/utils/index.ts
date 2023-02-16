@@ -68,3 +68,14 @@ export function longKeywordHandler(keyword: string, plusNum?: number) {
 
   return keyword;
 }
+
+export function getHashTagsObj(hashtags: string[]) {
+  const hashtagObj: {
+    [tag: string]: 'old' | 'new';
+  } = {};
+  hashtags.forEach((hashtag) => {
+    hashtagObj[hashtag] = 'old';
+  });
+
+  return hashtagObj;
+}
