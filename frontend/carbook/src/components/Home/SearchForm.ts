@@ -84,7 +84,7 @@ export default class SearchForm extends Component {
       isLoading: true,
     });
 
-    const trimKeyword = keyword.trim();
+    const trimKeyword = encodeURI(keyword.trim());
     if (trimKeyword.length === 0) {
       this.searchList.setState({
         keywords: [],
