@@ -24,7 +24,7 @@ export type IPostIndex = 'type' | 'model' | 'imageUrl' | 'hashtags' | 'content';
 export interface IPost {
   type: string;
   model: string;
-  imageUrl: string;
+  imageUrl: object;
   hashtags: string[];
   content: string;
 }
