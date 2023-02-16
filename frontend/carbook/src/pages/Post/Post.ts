@@ -3,6 +3,7 @@ import Header from '@/components/common/Header';
 import Form from '@/components/Post/Form';
 import { qs } from '@/utils';
 import './Post.scss';
+import { basicAPI } from '@/api';
 
 export default class PostPage extends Component {
   template(): string {
@@ -19,11 +20,29 @@ export default class PostPage extends Component {
     `;
   }
 
-  mounted(): void {
+  async mounted() {
     const header = qs(this.$target, '.header');
     const form = qs(this.$target, '.form-container');
 
     new Header(header, { text: '새 게시물 등록하기' });
-    new Form(form);
+    new Form(form, {
+      prevPost: await this.getPrevPost(),
+      postId: this.getPostId(),
+    });
+  }
+
+  async getPrevPost() {
+    const postId = this.getPostId();
+
+    if (postId) {
+      const prevData = await basicAPI.get(`/api/post?postId=${postId}`);
+      return prevData.data;
+    }
+
+    return;
+  }
+
+  getPostId() {
+    return parseInt(location.pathname.split('/')[2]);
   }
 }
