@@ -1,17 +1,19 @@
 import { Component } from '@/core';
 import { ImageForm, Selection, HashTagForm, TextForm } from '@/components/Post';
-import { getObjectKeyArray, qs, qsa, getHashTagsObj } from '@/utils';
+import { qs, qsa, getHashTagsObj } from '@/utils';
 import { basicAPI, formAPI } from '@/api';
 import { push } from '@/utils/router/navigate';
 import { POST_INIT } from '@/constants/post';
-import { IPost, IPostIndex } from '@/interfaces';
+import { IPostIndex } from '@/interfaces';
 
 export default class Form extends Component {
-  postDetail: IPost = POST_INIT;
+  postDetail: any;
 
   setup(): void {
     const { prevPost } = this.props;
     this.postDetail = prevPost || POST_INIT;
+
+    this.onClickBtnHandler();
   }
 
   template(): string {
@@ -40,10 +42,6 @@ export default class Form extends Component {
     `;
   }
 
-  setEvent(): void {
-    this.onClickBtnHandler();
-  }
-
   onClickBtnHandler() {
     this.$target.addEventListener('click', (e: Event) => {
       const className = (<HTMLElement>e.target).className;
@@ -66,6 +64,8 @@ export default class Form extends Component {
     } else {
       if (dataType !== 'hashtags' && typeof prevData === 'string') {
         this.postDetail[dataType] = prevData;
+      } else if (dataType === 'imageUrl' && typeof prevData === 'object') {
+        this.postDetail[dataType] = prevData;
       }
     }
   }
@@ -85,16 +85,21 @@ export default class Form extends Component {
       },
     });
 
-    const { modelOption, typeOption } = await this.getCarOptions();
+    const { typeOption, typeId } = await this.getTypeOptions(type);
+    const modelOption = await this.getModelOptions(typeId);
     new Selection(<HTMLElement>inputBoxs[0], {
       label: '차 종류',
       selected: type,
       options: typeOption,
-      setFormData: (newData: any) => {
+      setFormData: async (newData: any) => {
         this.setData(newData, 'type');
+        const { typeId } = await this.getTypeOptions(newData);
+        modelSelection.setState({
+          options: await this.getModelOptions(typeId),
+        });
       },
     });
-    new Selection(<HTMLElement>inputBoxs[1], {
+    const modelSelection = new Selection(<HTMLElement>inputBoxs[1], {
       label: '차 모델',
       selected: model,
       options: modelOption,
@@ -116,24 +121,35 @@ export default class Form extends Component {
     });
   }
 
-  async getCarOptions() {
-    try {
-      const { models } = await (await basicAPI.get('/api/model')).data;
-      const { types } = await (await basicAPI.get('/api/type')).data;
+  async getTypeOptions(typeName: string) {
+    let typeId: number = 0;
+    const { types } = await (await basicAPI.get('/api/type')).data;
+    const typeOption = types.map(({ id, tag }: { id: number; tag: string }) => {
+      if (tag === typeName) typeId = id;
+      return tag;
+    });
+    return { typeOption, typeId };
+  }
 
+  async getModelOptions(id: number) {
+    const { models } = await (await basicAPI.get('/api/model')).data;
+
+    if (id) {
+      const modelOption = models
+        .filter(({ typeId }: { typeId: number }) => typeId === id)
+        .map(({ tag }: { tag: string }) => tag);
+
+      return modelOption || [];
+    } else {
       const modelOption = models.map(({ tag }: { tag: string }) => tag);
-      const typeOption = types.map(({ tag }: { tag: string }) => tag);
 
-      return { modelOption, typeOption };
-    } catch (error) {
-      console.log(error);
-      return { modelOption: [], typeOption: [] };
+      return modelOption || [];
     }
   }
 
   async onSubmitHandler() {
     const { type, model, imageUrl, hashtags, content } = this.postDetail;
-    const stringHashtags = getObjectKeyArray(hashtags).join(', ');
+    const stringHashtags = hashtags.join(', ');
 
     const formdata = new FormData();
     formdata.append('image', imageUrl);
@@ -148,6 +164,7 @@ export default class Form extends Component {
         formdata.append('postId', postId);
         await formAPI.patch('/api/post', formdata);
         alert('글이 수정되었습니다.');
+        push(`/post/${postId}`);
         return;
       }
       await formAPI.post('/api/post', formdata);
