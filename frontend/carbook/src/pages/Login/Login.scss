@@ -3,7 +3,7 @@
 .login__container {
   background: #ffffff;
   text-align: center;
-  padding: 15vh 20%;
+  padding: 30% 0;
   width: 100%;
   max-width: 500px;
   min-width: 400px;
@@ -45,10 +45,14 @@
   }
 
   .login-contents {
+    .input-form {
+      padding: 0 10%;
+    }
+
     .login-id,
     .login-password {
       font-family: "Pretendard-Regular";
-      padding-left: 20px;
+      padding-left: 8%;
       text-align: start;
     }
 
@@ -65,15 +69,16 @@
 
   .login-footer {
     display: flex;
-    margin: 8px 5%;
+    margin: 8px 15%;
     justify-content: flex-end;
 
     h3 {
-      margin-right: 10px;
+      margin-right: 1%;
     }
 
     h3.register {
       font-family: "LINESeedKR-Bd";
+      text-decoration: underline;
     }
 
     h3.footer-message {
@@ -82,8 +87,8 @@
   }
 
   .alert-modal {
-    width: 297px;
-    margin: 0;
+    width: 80%;
+    margin: 0 10%;
     position: fixed;
     top: -60px;
     padding: 16px;
