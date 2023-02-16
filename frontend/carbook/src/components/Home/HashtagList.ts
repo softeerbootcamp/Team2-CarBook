@@ -29,7 +29,7 @@ export default class HashTagList extends Component {
           (hashtag) =>
             `<div class="hashtag" data-id=${hashtag.id}>${getTagIcon(
               `${hashtag.category}`
-            )} ${hashtag.tag}</div>`
+            )} <div>${hashtag.tag}</div></div>`
         )
         .join('')}
     `;

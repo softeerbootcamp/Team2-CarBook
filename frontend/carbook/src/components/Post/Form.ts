@@ -1,19 +1,17 @@
 import { Component } from '@/core';
 import { ImageForm, Selection, HashTagForm, TextForm } from '@/components/Post';
-import { qs, qsa } from '@/utils';
+import { getObjectKeyArray, qs, qsa, getHashTagsObj } from '@/utils';
 import { basicAPI, formAPI } from '@/api';
 import { push } from '@/utils/router/navigate';
+import { POST_INIT } from '@/constants/post';
+import { IPost, IPostIndex } from '@/interfaces';
 
 export default class Form extends Component {
-  data: any;
+  postDetail: IPost = POST_INIT;
+
   setup(): void {
-    this.data = {
-      type: '',
-      model: '',
-      image: '',
-      hashtag: [],
-      content: '',
-    };
+    const { prevPost } = this.props;
+    this.postDetail = prevPost || POST_INIT;
   }
 
   template(): string {
@@ -62,8 +60,14 @@ export default class Form extends Component {
     });
   }
 
-  setData(prevData: object, dataType: string) {
-    this.data[dataType] = prevData;
+  setData(prevData: string | string[], dataType: IPostIndex) {
+    if (dataType === 'hashtags' && typeof prevData === 'object') {
+      this.postDetail[dataType] = prevData;
+    } else {
+      if (dataType !== 'hashtags' && typeof prevData === 'string') {
+        this.postDetail[dataType] = prevData;
+      }
+    }
   }
 
   async mounted() {
@@ -72,15 +76,19 @@ export default class Form extends Component {
     const hastagInput = qs(this.$target, '.tag');
     const textInput = qs(this.$target, '.text');
 
+    const { type, model, imageUrl, hashtags, content } = this.postDetail;
+
     new ImageForm(section, {
+      imageUrl,
       setFormData: (newData: any) => {
-        this.setData(newData, 'image');
+        this.setData(newData, 'imageUrl');
       },
     });
 
     const { modelOption, typeOption } = await this.getCarOptions();
     new Selection(<HTMLElement>inputBoxs[0], {
       label: '차 종류',
+      selected: type,
       options: typeOption,
       setFormData: (newData: any) => {
         this.setData(newData, 'type');
@@ -88,17 +96,20 @@ export default class Form extends Component {
     });
     new Selection(<HTMLElement>inputBoxs[1], {
       label: '차 모델',
+      selected: model,
       options: modelOption,
       setFormData: (newData: any) => {
         this.setData(newData, 'model');
       },
     });
     new HashTagForm(hastagInput, {
+      hashtags: getHashTagsObj(hashtags),
       setFormData: (newData: any) => {
-        this.setData(newData, 'hashtag');
+        this.setData(newData, 'hashtags');
       },
     });
     new TextForm(textInput, {
+      content,
       setFormData: (newData: any) => {
         this.setData(newData, 'content');
       },
@@ -121,16 +132,24 @@ export default class Form extends Component {
   }
 
   async onSubmitHandler() {
-    const { type, model, image, hashtag, content } = this.data;
+    const { type, model, imageUrl, hashtags, content } = this.postDetail;
+    const stringHashtags = getObjectKeyArray(hashtags).join(', ');
 
     const formdata = new FormData();
-    formdata.append('image', image);
-    formdata.append('hashtag', hashtag);
+    formdata.append('image', imageUrl);
+    formdata.append('hashtag', stringHashtags);
     formdata.append('type', type);
     formdata.append('model', model);
     formdata.append('content', content);
 
     try {
+      const { postId } = this.props;
+      if (postId) {
+        formdata.append('postId', postId);
+        await formAPI.patch('/api/post', formdata);
+        alert('글이 수정되었습니다.');
+        return;
+      }
       await formAPI.post('/api/post', formdata);
       alert('글이 생성되었습니다.');
       push('/');
