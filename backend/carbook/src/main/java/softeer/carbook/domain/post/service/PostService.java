@@ -17,6 +17,7 @@ import softeer.carbook.domain.post.repository.S3Repository;
 import softeer.carbook.domain.tag.exception.HashtagNotExistException;
 import softeer.carbook.domain.tag.model.Hashtag;
 import softeer.carbook.domain.tag.model.Model;
+import softeer.carbook.domain.tag.model.Type;
 import softeer.carbook.domain.tag.repository.TagRepository;
 import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.repository.UserRepository;
@@ -181,14 +182,20 @@ public class PostService {
         // 내가 쓴 글인지 남이 쓴 글인지 판단
         Post post = postRepository.findPostById(postId);
         boolean isMyPost = (post.getUserId() == user.getId());
+        List<String> hashtags = tagRepository.findHashtagsByPostId(postId);
+        List<Model> models = tagRepository.findModelByModelId(post.getModelId());
+        List<Type> types = tagRepository.findTypeById(models.get(0).getTypeId());
         return new PostDetailResponse.PostDetailResponseBuilder()
                 .isMyPost(isMyPost)
                 .nickname(user.getNickname())
                 .imageUrl(imageRepository.getImageByPostId(postId).getImageUrl())
-                .like(likeRepository.findLikeCountByPostId(postId))
+                .isLike(likeRepository.checkLike(user.getId(), postId))
+                .likeCount(likeRepository.findLikeCountByPostId(postId))
                 .createDate(dateToString(post.getCreateDate()))
                 .updateDate(dateToString(post.getUpdateDate()))
-                .keywords(tagRepository.searchPostTagsByPostIdAndModelId(postId, post.getModelId()))
+                .hashtags(hashtags)
+                .model(models.get(0).getTag())
+                .type(types.get(0).getTag())
                 .content(post.getContent())
                 .build();
     }

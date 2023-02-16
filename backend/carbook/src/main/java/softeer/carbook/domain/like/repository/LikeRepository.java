@@ -4,8 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import softeer.carbook.domain.user.model.User;
 
 import javax.sql.DataSource;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -21,6 +23,12 @@ public class LikeRepository {
                 "select count(id) from POST_LIKE where post_id = ?",
                 Integer.class,
                 postId));
+    }
+
+    public boolean checkLike(int userId, int postId) {
+        List<Integer> result = jdbcTemplate.query(
+                "select id from POST_LIKE where user_id = ? and post_id = ?", idRowMapper(), userId, postId);
+        return !result.isEmpty();
     }
 
     public Optional<Integer> findLikeByUserIdAndPostId(int userId, int postId) {
@@ -44,6 +52,7 @@ public class LikeRepository {
     private RowMapper<Integer> idRowMapper(){
         return (rs, rowNum) -> rs.getInt("id");
     }
+
 
 
 }
