@@ -24,6 +24,11 @@ export default class PostDetailPage extends Component {
       if (target.closest(".back-button")) {
         history.back();
       }
+
+      if (target.closest(".like-button")) {
+        console.log(postid);
+        this.fetchlike(postid);
+      }
     });
   }
 
@@ -40,6 +45,7 @@ export default class PostDetailPage extends Component {
       ...data,
       isloading: false,
     });
+    console.log(this.state);
   }
 
   template(): string {
@@ -99,5 +105,22 @@ export default class PostDetailPage extends Component {
       nickname: this.state.nickname,
       isMyPost: this.state.myPost,
     });
+  }
+
+  async fetchlike(id: string) {
+    const postId = parseInt(id);
+    console.log("start fetchlike");
+    const data = await basicAPI
+      .post(`/api/post/like`, { postId })
+      .then((response) => {
+        console.log(response.data);
+        return response.data;
+      })
+      .catch((error) => {
+        const errorMessage = error.response.data.message;
+        console.log(error);
+        console.log(errorMessage);
+      });
+    await this.fetchPostDefail(id);
   }
 }
