@@ -7,6 +7,7 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import softeer.carbook.domain.follow.exception.FollowIdNotExistException;
 import softeer.carbook.domain.post.exception.InvalidPostAccessException;
 import softeer.carbook.domain.post.exception.PostNotExistException;
 import softeer.carbook.global.dto.Message;
@@ -79,6 +80,13 @@ public class ExceptionController {
     public ResponseEntity<Message> invalidPostAccessException(InvalidPostAccessException invalidPostAE){
         logger.debug(invalidPostAE.getMessage());
         return Message.make401Response(invalidPostAE.getMessage());
+    }
+
+    // 친삭하려고 했는데 팔로우 id 가 없을 경우
+    @ExceptionHandler(FollowIdNotExistException.class)
+    public ResponseEntity<Message> followIdNotExistException(FollowIdNotExistException followIdNEE){
+        logger.debug(followIdNEE.getMessage());
+        return Message.make400Response(followIdNEE.getMessage());
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
