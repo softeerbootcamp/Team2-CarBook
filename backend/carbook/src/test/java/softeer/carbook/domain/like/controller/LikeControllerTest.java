@@ -44,7 +44,7 @@ class LikeControllerTest {
         // when & then
         mockMvc.perform(post("/post/like")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"followingNickname\":\"15번유저\"}"))
+                        .content("{\"postId\": 10}"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Like Success")));
     }
@@ -61,7 +61,7 @@ class LikeControllerTest {
         // when & then
         mockMvc.perform(post("/post/like")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"followingNickname\":\"15번유저\"}"))
+                        .content("{\"postId\": 10}"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("UnLike Success")));
     }
