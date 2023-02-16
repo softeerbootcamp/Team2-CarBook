@@ -30,7 +30,7 @@ public class TagRepository {
         List<Hashtag> hashtags = jdbcTemplate.query("SELECT h.id, h.tag FROM HASHTAG h WHERE tag = ?", hashtagRowMapper(), tag);
         return hashtags.stream()
                 .findAny()
-                .orElseThrow(() -> new HashtagNotExistException());
+                .orElseThrow(HashtagNotExistException::new);
     }
 
     public List<Type> findTypeById(int id) {
@@ -57,15 +57,15 @@ public class TagRepository {
     }
 
     public List<Type> searchTypeByPrefix(String keyword) {
-        return jdbcTemplate.query("SELECT t.id, t.tag FROM TYPE t WHERE tag LIKE '[" + keyword + "]%'", typeRowMapper());
+        return jdbcTemplate.query("SELECT t.id, t.tag FROM TYPE t WHERE tag LIKE '" + convertWildCharToRealChar(keyword) + "%'", typeRowMapper());
     }
 
     public List<Model> searchModelByPrefix(String keyword) {
-        return jdbcTemplate.query("SELECT m.id, m.type_id, m.tag FROM MODEL m WHERE tag LIKE '[" + keyword + "]%'", modelRowMapper());
+        return jdbcTemplate.query("SELECT m.id, m.type_id, m.tag FROM MODEL m WHERE tag LIKE '" + convertWildCharToRealChar(keyword) + "%'", modelRowMapper());
     }
 
     public List<Hashtag> searchHashtagByPrefix(String keyword) {
-        return jdbcTemplate.query("SELECT h.id, h.tag FROM HASHTAG h WHERE tag LIKE '[" + keyword + "]%'", hashtagRowMapper());
+        return jdbcTemplate.query("SELECT h.id, h.tag FROM HASHTAG h WHERE tag LIKE '" + convertWildCharToRealChar(keyword) + "%'", hashtagRowMapper());
     }
 
     public List<Type> findAllTypes() {
@@ -78,6 +78,10 @@ public class TagRepository {
 
     public Model findModelByName(String tag){
         return jdbcTemplate.query("SELECT m.id, m.type_id, m.tag FROM MODEL m WHERE m.tag = ?", modelRowMapper(), tag).get(0);
+    }
+
+    public String convertWildCharToRealChar(String keyword) {
+        return keyword.replaceAll("%", "[%]").replaceAll("_", "[_]");
     }
 
     public int addHashtag(Hashtag hashtag){
