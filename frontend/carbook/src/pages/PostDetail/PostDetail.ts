@@ -110,7 +110,7 @@ export default class PostDetailPage extends Component {
   async fetchlike(id: string) {
     const postId = parseInt(id);
     console.log("start fetchlike");
-    const data = await basicAPI
+    await basicAPI
       .post(`/api/post/like`, { postId })
       .then((response) => {
         console.log(response.data);
