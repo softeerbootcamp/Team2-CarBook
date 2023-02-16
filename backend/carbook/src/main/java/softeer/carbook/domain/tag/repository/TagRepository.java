@@ -71,9 +71,9 @@ public class TagRepository {
     public List<String> findHashtagsByPostId(int postId) {
         return jdbcTemplate.query(
                 "SELECT h.tag FROM HASHTAG h " +
-                        "INNER JOIN POST_HASHTAG " +
-                        "ON h.id = POST_HASHTAG.tag_id " +
-                        "WHERE post_id = ?",
+                        "INNER JOIN POST_HASHTAG p_h " +
+                        "ON h.id = p_h.tag_id " +
+                        "WHERE p_h.post_id = ?",
                 hashtagStringRowMapper(), postId);
     }
 
