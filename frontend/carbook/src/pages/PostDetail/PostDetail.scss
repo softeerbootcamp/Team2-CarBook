@@ -48,6 +48,7 @@ $menu: "@/assets/icons/postdetail_menu.svg";
       .info-profile {
         display: flex;
         align-items: center;
+        cursor: pointer;
         .user-img {
           margin-right: 16px;
         }
