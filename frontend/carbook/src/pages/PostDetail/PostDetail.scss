@@ -11,29 +11,29 @@ $menu: "@/assets/icons/postdetail_menu.svg";
   margin-right: auto;
   height: 100vh;
   text-align: center;
+  position: relative;
 
   .header {
     background-color: pink;
-    height: 60vh;
+    height: 47%;
     background: linear-gradient(
         180deg,
         rgba(0, 0, 0, 0.2) 0%,
         rgba(0, 0, 0, 0) 100%
       ),
-      url($backgroundImg) no-repeat center center;
-    .detailImg {
-      width: 100%;
-      height: 100%;
-    }
+      no-repeat;
+
     background-size: cover;
+    background-position: center;
   }
 
   .postdetail-info {
-    position: fixed;
+    position: absolute;
     width: 100%;
     max-width: 500px;
     min-width: 400px;
-    top: 40vh;
+    top: 43%;
+    height: 30%;
     padding: 3vh 10%;
     background-color: #ffffff;
     border-radius: 16px 16px 0 0;
@@ -48,6 +48,7 @@ $menu: "@/assets/icons/postdetail_menu.svg";
       .info-profile {
         display: flex;
         align-items: center;
+        cursor: pointer;
         .user-img {
           margin-right: 16px;
         }

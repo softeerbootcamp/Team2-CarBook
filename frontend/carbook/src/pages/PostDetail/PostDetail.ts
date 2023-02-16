@@ -2,34 +2,44 @@ import { Component } from "@/core";
 import "./PostDetail.scss";
 import backButton from "@/assets/icons/backButton.svg";
 import { InfoContents, InfoHeader, Footer } from "@/components/PostDetail";
+import { basicAPI } from "@/api";
 
 export default class PostDetailPage extends Component {
-  setup(): void {
-    // const postid = location.pathname.split("/").slice(-1)[0];
+  async setup() {
+    this.state.isloading = true;
+    const postid = location.pathname.split("/").slice(-1)[0];
+    await this.fetchPostDefail(postid);
+    if (this.$target.classList.contains("once")) return;
+    this.$target.classList.add("once");
     this.$target.addEventListener("click", (e: Event) => {
       const target = e.target as HTMLElement;
-      if (!target.classList.contains("info-menu")) return;
-      const menuItems = target.querySelector(".info-menu-items") as HTMLElement;
-      menuItems?.classList.toggle("FadeInAndOut");
-    });
 
-    this.state = {
-      isMyPost: true,
-      nickname: "유저닉네임",
-      imageUrl: "이미지 url",
-      likeCount: 23, // 좋아요 개수
-      like: false,
-      createDate: "2023.02.01. 11:03", // 작성 일자
-      updateDate: "2023.02.02. 03:24", // 최근 수정 일자
-      type: "차 종류",
-      model: "차 모델",
-      keywords: [
-        { id: "1", category: "hashtag", tag: "이름" },
-        { id: "2", category: "type", tag: "이름" },
-        { id: "3", category: "model", tag: "이름" },
-      ],
-      content: "글 내용",
-    };
+      if (!target.classList.contains("info-menu")) {
+        const menuItems = target.querySelector(
+          ".info-menu-items"
+        ) as HTMLElement;
+        menuItems?.classList.toggle("FadeInAndOut");
+      }
+
+      if (target.closest(".back-button")) {
+        history.back();
+      }
+    });
+  }
+
+  async fetchPostDefail(postId: string) {
+    const data = await basicAPI
+      .get(`/api/post?postId=${postId}`)
+      .then((response) => response.data)
+      .catch((error) => {
+        const errorMessage = error.response.data.message;
+        console.log(errorMessage);
+      });
+    this.setState({
+      ...this.state,
+      ...data,
+      isloading: false,
+    });
   }
 
   template(): string {
@@ -52,7 +62,16 @@ export default class PostDetailPage extends Component {
     </div>
     `;
   }
+
+  render(): void {
+    if (this.state?.isloading) return;
+    this.$target.innerHTML = this.template();
+    this.setEvent();
+    this.mounted();
+  }
+
   mounted(): void {
+    const postImg = this.$target.querySelector(".header") as HTMLElement;
     const infoHeader = this.$target.querySelector(
       ".info-header"
     ) as HTMLElement;
@@ -62,6 +81,8 @@ export default class PostDetailPage extends Component {
     const footer = this.$target.querySelector(
       ".postdetail-footer"
     ) as HTMLElement;
+
+    postImg.style.backgroundImage = `url(${this.state.imageUrl})`;
     new Footer(footer, {
       like: this.state.like,
       likeCount: this.state.likeCount,
@@ -72,10 +93,11 @@ export default class PostDetailPage extends Component {
       type: this.state.type,
       model: this.state.model,
       content: this.state.content,
+      hashtags: this.state.hashtags,
     });
     new InfoHeader(infoHeader, {
       nickname: this.state.nickname,
-      isMyPost: this.state.isMyPost,
+      isMyPost: this.state.myPost,
     });
   }
 }
