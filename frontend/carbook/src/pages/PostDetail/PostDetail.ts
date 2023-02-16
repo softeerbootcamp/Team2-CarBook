@@ -1,19 +1,15 @@
 import { Component } from "@/core";
 import "./PostDetail.scss";
 import backButton from "@/assets/icons/backButton.svg";
-import profile from "@/assets/icons/postdetail_profile.svg";
-import menu from "@/assets/icons/postdetail_menu.svg";
-import likeButton from "@/assets/icons/likeButton.svg";
-import notLikeButton from "@/assets/icons/notLikeButton.svg";
+import { InfoContents, InfoHeader, Footer } from "@/components/PostDetail";
 
 export default class PostDetailPage extends Component {
   setup(): void {
-    const postid = location.pathname.split("/").slice(-1)[0];
+    // const postid = location.pathname.split("/").slice(-1)[0];
     this.$target.addEventListener("click", (e: Event) => {
-      const menu = (e.target as HTMLElement).closest(".info-menu");
-      console.log(e.target);
-      if (!menu) return;
-      const menuItems = menu.querySelector(".info-menu-items") as HTMLElement;
+      const target = e.target as HTMLElement;
+      if (!target.classList.contains("info-menu")) return;
+      const menuItems = target.querySelector(".info-menu-items") as HTMLElement;
       menuItems?.classList.toggle("FadeInAndOut");
     });
 
@@ -81,57 +77,5 @@ export default class PostDetailPage extends Component {
       nickname: this.state.nickname,
       isMyPost: this.state.isMyPost,
     });
-  }
-}
-
-class InfoHeader extends Component {
-  template(): string {
-    const { isMyPost, nickname } = this.props;
-    return /*html*/ `
-    <div class='info-profile'>
-      <img class ='user-img' src = "${profile}"/>
-      <h2 class = 'user-nickname'>${nickname}</h2>
-    </div>
-    <div class ='info-menu ${isMyPost ? "" : "hidden"}'>
-      <ul class = 'info-menu-items'>
-        <li>메뉴</li>
-        <li>수정</li>
-        <li>삭제</li>
-      </ul>
-    </div>
-    `;
-  }
-}
-
-class InfoContents extends Component {
-  template(): string {
-    const { type, model, content } = this.props;
-    return /*html*/ `
-      <div class ='info-tag-cards'>
-      <div class ='info-type-card'>${type}</div>
-      <div class ='info-model-card'>${model}</div>
-    </div>
-    <div class ='info-hashtags'>
-      <div class ='info-hashtag'>#rolem</div>
-      <div class ='info-hashtag'>#rolem</div>
-      <div class ='info-hashtag'>#rolem</div>
-    </div>
-    <p class = 'info-description'>${content}</p>
-      `;
-  }
-}
-
-class Footer extends Component {
-  template(): string {
-    const { like, likeCount, createDate, updateDate } = this.props;
-    return /*html*/ `
-      <div class ='like-info'>
-        <div class ='like-button'><img src="${
-          like ? likeButton : notLikeButton
-        }"/></div>
-        <div class ='like-count'>${likeCount} likes</div>
-      </div>
-      <div class ='posted-time'>${createDate}</div>
-      `;
   }
 }
