@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.multipart.MultipartFile;
 import softeer.carbook.domain.post.model.Image;
 
 import javax.sql.DataSource;
@@ -27,6 +26,7 @@ public class ImageRepository {
     public List<Image> getImagesOfRecentPosts(int size, int index) {
         return jdbcTemplate.query("SELECT img.post_id, img.image_url " +
                         "FROM POST AS p INNER JOIN IMAGE AS img ON p.id = img.post_id " +
+                        "WHERE p.is_deleted = false " +
                         "ORDER BY p.create_date DESC LIMIT ?, ?",
                 imageRowMapper(), index, size);
     }
@@ -35,6 +35,7 @@ public class ImageRepository {
         return jdbcTemplate.query("SELECT img.post_id, img.image_url " +
                 "FROM POST AS p, IMAGE AS img, FOLLOW AS f " +
                         "where f.is_deleted = false " +
+                        "and p.is_deleted = false " +
                         "and f.follower_id = ? " +
                         "and f.following_id = p.user_id " +
                         "and p.id = img.post_id " +
@@ -47,6 +48,7 @@ public class ImageRepository {
                 "select IMAGE.post_id, IMAGE.image_url from POST INNER JOIN IMAGE " +
                         "ON POST.id = IMAGE.post_id " +
                         "WHERE POST.user_id = ? " +
+                        "and POST.is_deleted = false " +
                         "ORDER BY create_date DESC",
                 imageRowMapper(), id);
     }
@@ -55,11 +57,13 @@ public class ImageRepository {
         return jdbcTemplate.query(
                 "select IMAGE.post_id, IMAGE.image_url from USER, POST, IMAGE " +
                         "WHERE USER.id = POST.user_id and POST.id = IMAGE.post_id " +
-                        "and USER.nickname = ?" +
+                        "and USER.nickname = ? " +
+                        "and POST.is_deleted = false " +
                         "ORDER BY create_date DESC",
                 imageRowMapper(), profileUserNickname);
     }
 
+    /* deprecated
     public List<Image> getImagesOfRecentPostsByTags(String[] tagNames, int size, int index) {
         String conditionalStatement = createTagNameConditionalStatement(tagNames);
         String query = "SELECT img.post_id, img.image_url " +
@@ -67,7 +71,9 @@ public class ImageRepository {
                 "INNER JOIN POST_HASHTAG ph ON p.id = ph.post_id " +
                 "INNER JOIN HASHTAG h ON ph.tag_id = h.id "+
                 "INNER JOIN IMAGE img ON p.id = img.post_id " +
-                "WHERE (" + conditionalStatement + ") ORDER BY p.create_date DESC LIMIT ?, ?";
+                "WHERE (" + conditionalStatement + ") " +
+                "and p.is_deleted = false " +
+                "ORDER BY p.create_date DESC LIMIT ?, ?";
 
         return jdbcTemplate.query(query, imageRowMapper(), index, size);
     }
@@ -81,6 +87,7 @@ public class ImageRepository {
 
         return conditionalStatement.substring(0, conditionalStatement.length() - 4);
     }
+     */
 
     public void addImage(Image image) {
         jdbcTemplate.update("insert into IMAGE(post_id, image_url) values(?, ?)",

@@ -1,5 +1,7 @@
 package softeer.carbook.domain.tag.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import softeer.carbook.domain.tag.dto.*;
@@ -14,6 +16,8 @@ import java.util.stream.Collectors;
 @Service
 public class TagService {
 
+    private static final Logger logger = LoggerFactory.getLogger(TagService.class);
+
     private final TagRepository tagRepository;
 
     @Autowired
@@ -22,11 +26,11 @@ public class TagService {
     }
 
     public TagSearchResopnse searchAllTags(String keyword) {
+        logger.debug("keyword: {}",keyword);
         List<Type> types = tagRepository.searchTypeByPrefix(keyword);
         List<Model> models = tagRepository.searchModelByPrefix(keyword);
         List<Hashtag> hashtags = tagRepository.searchHashtagByPrefix(keyword);
 
-        // todo refactor
         List<TagSearchResult> results = types.stream()
                 .map(TagSearchResult::of)
                 .collect(Collectors.toList());
@@ -41,6 +45,7 @@ public class TagService {
     }
 
     public HashtagSearchResponse searchHashTag(String keyword) {
+        logger.debug("keyword: {}",keyword);
         List<Hashtag> hashtags = tagRepository.searchHashtagByPrefix(keyword);
 
         return new HashtagSearchResponse(hashtags);

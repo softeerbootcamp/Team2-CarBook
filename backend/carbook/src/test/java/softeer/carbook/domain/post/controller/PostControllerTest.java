@@ -6,8 +6,10 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import softeer.carbook.domain.post.dto.*;
 import softeer.carbook.domain.post.model.Image;
@@ -22,6 +24,7 @@ import softeer.carbook.global.dto.Message;
 
 import javax.servlet.http.HttpServletRequest;
 
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,8 +35,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(PostController.class)
@@ -98,13 +100,11 @@ class PostControllerTest {
     @DisplayName("태그로 글 검색 테스트")
     void searchPostsByTags() throws Exception {
         // given
-        PostsSearchResponse postsSearchResponse = new PostsSearchResponse.PostsSearchResponseBuilder()
-                .images(images)
-                .build();
-        given(postService.searchByTags(anyString(), anyInt())).willReturn(postsSearchResponse);
+        PostsSearchResponse postsSearchResponse = new PostsSearchResponse(images);
+        given(postService.searchByTags(anyString(), anyString(), anyString(), anyInt())).willReturn(postsSearchResponse);
 
         // when & then
-        mockMvc.perform(get("/posts/m?index=0&hashtag=맑음+흐림+서울&type=suv+세단+수소차&model=소나타+제네시스+아반"))
+        mockMvc.perform(get("/posts/m?index=0&hashtag=맑음+흐림+서울&type=세단&model=소나타"))
                 .andExpect(status().isOk());
     }
 
@@ -116,7 +116,7 @@ class PostControllerTest {
 
         // when & then
         mockMvc.perform(get("/profile?nickname=nickname"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -161,5 +161,124 @@ class PostControllerTest {
                 .andExpect(jsonPath("$.myProfile").value(false));
     }
 
+    @Test
+    @DisplayName("글 상세 페이지 글 불러오기 테스트 - 로그인 확인 실패")
+    void getPostDetailsNotLogin() throws Exception {
+        // given
+        given(userService.findLoginedUser(any(HttpServletRequest.class))).willThrow(new NotLoginStatementException());
+
+        // when & then
+        mockMvc.perform(get("/post?postId=9"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @DisplayName("글 상세 페이지 글 불러오기 테스트 - 나의 글")
+    void getMyPostDetails() throws Exception {
+        // given
+        User user = new User("test@gmail.com", "nickname",
+                BCrypt.hashpw("password", BCrypt.gensalt()));
+        given(userService.findLoginedUser(any())).willReturn(user);
+        given(postService.getPostDetails(anyInt(), eq(user))).willReturn(
+                new PostDetailResponse.PostDetailResponseBuilder().isMyPost(true).build());
+
+        // when & then
+        mockMvc.perform(get("/post?postId=9"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.myPost").value(true));
+    }
+
+    @Test
+    @DisplayName("글 상세 페이지 글 불러오기 테스트 - 타인 글")
+    void getOtherPostDetails() throws Exception {
+        // given
+        User user = new User("test@gmail.com", "nickname",
+                BCrypt.hashpw("password", BCrypt.gensalt()));
+        given(userService.findLoginedUser(any())).willReturn(user);
+        given(postService.getPostDetails(anyInt(), eq(user))).willReturn(
+                new PostDetailResponse.PostDetailResponseBuilder().isMyPost(false).build());
+
+        // when & then
+        mockMvc.perform(get("/post?postId=9"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.myPost").value(false));
+    }
+
+    @Test
+    @DisplayName("글 삭제 테스트 - 로그인 확인 실패")
+    void deletePostNotLogin() throws Exception {
+        // given
+        given(userService.findLoginedUser(any(HttpServletRequest.class))).willThrow(new NotLoginStatementException());
+
+        // when & then
+        mockMvc.perform(delete("/post/1"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @DisplayName("글 삭제 테스트 - 성공")
+    void deletePostSuccess() throws Exception {
+        // given
+        User user = new User("test@gmail.com", "nickname",
+                BCrypt.hashpw("password", BCrypt.gensalt()));
+        given(userService.findLoginedUser(any())).willReturn(user);
+        given(postService.deletePost(anyInt(), eq(user))).willReturn(
+                new Message("Post Deleted Successfully"));
+
+        // when & then
+        mockMvc.perform(delete("/post/1"))
+                .andExpect(status().isOk());
+    }
+
+
+    @Test
+    @DisplayName("로그인 상태에서 글 작성 테스트")
+    void createPostTest() throws Exception {
+        User user = new User("test@gmail.com", "nickname",
+                BCrypt.hashpw("password", BCrypt.gensalt()));
+
+        given(userService.findLoginedUser(any(HttpServletRequest.class))).willReturn(user);
+        given(postService.createPost(any(), any())).willReturn(new Message("Post create success"));
+
+        final String fileName = "testImage";
+        final String contentType = "jpeg";
+        final String filePath = "src/test/resources/"+fileName+"."+contentType;
+        FileInputStream fileInputStream = new FileInputStream(filePath);
+
+        MockMultipartFile image = new MockMultipartFile("image", fileName + "." + contentType, contentType, fileInputStream);
+
+        mockMvc.perform(multipart(HttpMethod.POST, "/post")
+                .file(image)
+                .param("hashtag", new String[]{"hash", "hash2", "hash3"})
+                .param("type", "승용")
+                .param("model", "쏘나타")
+                .param("content", "테스트 글 내용입니다"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Post create success")));
+
+    }
+
+    @Test
+    @DisplayName("글 수정 테스트")
+    void modifyPostTest() throws Exception {
+        given(postService.modifyPost(any(),any())).willReturn(new Message("Post modify success"));
+
+        final String fileName = "modifiedTestImage";
+        final String contentType = "jpeg";
+        final String filePath = "src/test/resources/"+fileName+"."+contentType;
+        FileInputStream fileInputStream = new FileInputStream(filePath);
+
+        MockMultipartFile image = new MockMultipartFile("image", fileName + "." + contentType, contentType, fileInputStream);
+
+        mockMvc.perform(multipart(HttpMethod.PATCH, "/post")
+                        .file(image)
+                        .param("postId", "100")
+                        .param("hashtag", new String[]{"hash_mod", "hash_mod2", "hash_mod3"})
+                        .param("type", "승용")
+                        .param("model", "쏘나타")
+                        .param("content", "테스트 글 수정입니다"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Post modify success")));
+    }
 
 }

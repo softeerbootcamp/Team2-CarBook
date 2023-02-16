@@ -1,5 +1,7 @@
 package softeer.carbook.domain.post.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,8 @@ import javax.validation.Valid;
 
 @RestController
 public class PostController {
+
+    private static final Logger logger = LoggerFactory.getLogger(PostController.class);
     private final UserService userService;
     private final PostService postService;
 
@@ -58,8 +62,16 @@ public class PostController {
 
     // todo 해시태그의 게시물 조회
     @GetMapping("/posts/m/search")
-    public ResponseEntity<PostsSearchResponse> searchPostsByTags(@RequestParam int index, @RequestParam String hashtag){
-        return new ResponseEntity<>(postService.searchByTags(hashtag, index), HttpStatus.OK);
+    public ResponseEntity<PostsSearchResponse> searchPostByTags(
+            @RequestParam int index,
+            @RequestParam(required = false) String hashtag,
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) String model){
+        logger.debug("hashtag: //{}//", hashtag);
+        logger.debug("type: {}", type);
+        logger.debug("model: {}", model);
+
+        return new ResponseEntity<>(postService.searchByTags(hashtag, type, model, index), HttpStatus.OK);
     }
 
     // 프로필 페이지
@@ -109,7 +121,7 @@ public class PostController {
 
         // todo 작성한 글 불러오기
     @GetMapping("/post")
-    public ResponseEntity<?> getPostDetails(
+    public ResponseEntity<PostDetailResponse> getPostDetails(
             @RequestParam int postId,
             HttpServletRequest httpServletRequest){
         // 로그인한 사용자 인가요?
@@ -120,10 +132,20 @@ public class PostController {
 
         // 좋아요           > like 로
         // 좋아요 취소       > like 로
+    // 글 삭제
+    @DeleteMapping("/post/{postId}")
+    public ResponseEntity<Message> deletePost(
+            @PathVariable("postId") int postId,
+            HttpServletRequest httpServletRequest
+    ){
+        // 로그인한 사용자 인가요?
+        User user = userService.findLoginedUser(httpServletRequest);
+        Message resultMsg = postService.deletePost(postId, user);
+        return Message.make200Response(resultMsg.getMessage());
+    }
+
 
     // 글 작성 페이지
-
-
     @PostMapping("/post")
     public ResponseEntity<Message> createPost(@ModelAttribute @Valid NewPostForm newPostForm, HttpServletRequest httpServletRequest){
         User loginUser = userService.findLoginedUser(httpServletRequest);
@@ -132,8 +154,9 @@ public class PostController {
     }
 
     @PatchMapping("/post")
-    public ResponseEntity<Message> modifyPost(@ModelAttribute @Valid ModifiedPostForm modifiedPostForm){
-        Message resultMsg = postService.modifyPost(modifiedPostForm);
+    public ResponseEntity<Message> modifyPost(@ModelAttribute @Valid ModifiedPostForm modifiedPostForm, HttpServletRequest httpServletRequest){
+        User loginUser = userService.findLoginedUser(httpServletRequest);
+        Message resultMsg = postService.modifyPost(modifiedPostForm, loginUser);
         return Message.make200Response(resultMsg.getMessage());
     }
 

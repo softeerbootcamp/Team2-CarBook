@@ -3,16 +3,19 @@ import { qs } from '@/utils';
 
 export default class Selection extends Component {
   template(): string {
-    const { label, options } = this.props;
+    const { label, options, selected } = this.props;
 
     return `
-      <label>${label}</label>
-      <select name="type" class="select">
+      <label><span>*</span>${label}</label>
+      <select name="type" class="select"  >
           <option>선택하세요</option>
         ${options.map(
           (option: string) =>
             `
-          <option value="${option}">${option}</option>`
+          <option value="${option}" ${this.setSelected(
+              selected,
+              option
+            )}>${option}</option>`
         )}
       </select>
     `;
@@ -28,5 +31,9 @@ export default class Selection extends Component {
       const selected = selection.options[selection.selectedIndex].text;
       this.props.setFormData(selected);
     });
+  }
+
+  setSelected(selected: string, option: string) {
+    return selected === option ? 'selected' : '';
   }
 }

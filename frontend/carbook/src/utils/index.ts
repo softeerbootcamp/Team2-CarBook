@@ -1,3 +1,5 @@
+import { WORD_LENGTH } from '@/constants/wordLength';
+
 export function getClosest(target: HTMLElement, name: string) {
   return target.closest(name) as HTMLElement;
 }
@@ -28,8 +30,7 @@ export function getObjectKeyArray(object: object) {
 
 export function onChangeInputHandler(
   input: HTMLInputElement | HTMLTextAreaElement,
-  callback: (value: string) => void,
-  className: string
+  callback: (value: string) => void
 ) {
   let timer: ReturnType<typeof setTimeout>;
   input?.addEventListener('keyup', () => {
@@ -37,7 +38,6 @@ export function onChangeInputHandler(
 
     if (timer) clearTimeout(timer);
     timer = setTimeout(() => {
-      onVisibleHandler(input, className);
       callback && callback(value);
     }, 400);
   });
@@ -50,9 +50,32 @@ export function onVisibleHandler(
   const isActive = document.activeElement;
   const dropdown = document.querySelector(className);
 
-  if (isActive !== input || input.value.length === 0) {
+  if (isActive !== input) {
     dropdown?.classList.remove('active');
   } else {
     dropdown?.classList.add('active');
   }
+}
+
+export function longKeywordHandler(keyword: string, plusNum?: number) {
+  const korean = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
+  if (plusNum === undefined) plusNum = 0;
+
+  if (korean.test(keyword) && keyword.length > WORD_LENGTH.KOREAN + plusNum) {
+    return keyword.substring(0, WORD_LENGTH.KOREAN + plusNum) + '...';
+  } else if (keyword.length > WORD_LENGTH.ENGLISH + plusNum)
+    return keyword.substring(0, WORD_LENGTH.ENGLISH + plusNum) + '...';
+
+  return keyword;
+}
+
+export function getHashTagsObj(hashtags: string[]) {
+  const hashtagObj: {
+    [tag: string]: 'old' | 'new';
+  } = {};
+  hashtags.forEach((hashtag) => {
+    hashtagObj[hashtag] = 'old';
+  });
+
+  return hashtagObj;
 }

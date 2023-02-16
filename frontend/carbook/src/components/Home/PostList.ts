@@ -1,4 +1,5 @@
 import { basicAPI } from '@/api';
+import { POST_LIST_INIT } from '@/constants/post';
 import { Component } from '@/core';
 import { IImage } from '@/interfaces';
 import { tagStore } from '@/store/tagStore';
@@ -15,17 +16,7 @@ export default class PostList extends Component {
 
     tagStore.subscribe(this, this.render.bind(this));
 
-    this.state = {
-      isLogin: false,
-      nickname: '',
-      isInit: true,
-      isLoading: false,
-      idEnd: false,
-      images: [],
-      length: 6,
-      index: 0,
-      tags: {},
-    };
+    this.state = POST_LIST_INIT;
 
     this.observer = new IntersectionObserver(
       (entries) => {

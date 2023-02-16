@@ -3,6 +3,7 @@ package softeer.carbook.domain.follow.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import softeer.carbook.domain.follow.dto.FollowListResponse;
+import softeer.carbook.domain.follow.exception.FollowIdNotExistException;
 import softeer.carbook.domain.follow.repository.FollowRepository;
 import softeer.carbook.global.dto.Message;
 import softeer.carbook.domain.user.model.User;
@@ -58,6 +59,6 @@ public class FollowService {
             followRepository.unFollow(followId.get());
             return new Message("Follower delete success");
         }
-        return new Message("Follower delete failed");
+        throw new FollowIdNotExistException();
     }
 }

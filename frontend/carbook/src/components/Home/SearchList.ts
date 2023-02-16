@@ -2,7 +2,7 @@ import { categoryMap } from '@/constants/category';
 import { Component } from '@/core';
 import { IHashTag } from '@/interfaces';
 import { actionType, tagStore } from '@/store/tagStore';
-import { getClosest } from '@/utils';
+import { getClosest, longKeywordHandler } from '@/utils';
 import { getTagIcon } from './helper';
 import spinner from '@/assets/images/spinner.png';
 
@@ -12,18 +12,26 @@ export default class SearchList extends Component {
   }
 
   template(): string {
+    const PLUS_NUMBER = 3;
     const { keywords, option } = this.state;
 
+    const filteredKeywords = keywords.filter(({ category }: IHashTag) => {
+      if (option === 'all') return true;
+      else return category === option;
+    });
+
     return `
-      ${this.getMsg()}
+      ${this.getMsg(filteredKeywords)}
       <div class="dropdown__cards--scroll">
-      ${keywords
-        .filter(({ category = 'hashtag' }: IHashTag) => category === option)
+      ${filteredKeywords
         .map(
           ({ id, category, tag }: IHashTag) => `
             <div class="dropdown__card" data-id="${id}" data-category="${category}" data-tag="${tag}">
               <div class="dropdown__card--icon">${getTagIcon(category)}</div>
-              <div class="dropdown__card--text">${tag}</div>
+              <div class="dropdown__card--text">${longKeywordHandler(
+                tag,
+                PLUS_NUMBER
+              )}</div>
               <div class="dropdown__card--type ${category}">${
             categoryMap[category]
           }</div>
@@ -35,12 +43,13 @@ export default class SearchList extends Component {
     `;
   }
 
-  getMsg() {
-    const { isLoading, keywords } = this.state;
+  getMsg(filteredKeywords: Array<IHashTag>) {
+    const { isLoading } = this.state;
+
     if (isLoading) {
       return `<div class="spinner__container"><img class="spinner" src="${spinner}" alt="spinner" /> </div>`;
     }
-    if (keywords.length === 0) {
+    if (filteredKeywords.length === 0) {
       return `<div class="dropdown__msg">검색 결과가 없습니다.</div>`;
     }
     return '';

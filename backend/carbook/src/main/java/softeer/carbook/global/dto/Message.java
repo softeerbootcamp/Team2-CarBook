@@ -24,6 +24,13 @@ public class Message {
         );
     }
 
+    public static ResponseEntity<Message> make401Response(String msg){
+        return new ResponseEntity<>(
+                new Message(msg),
+                HttpStatus.UNAUTHORIZED
+        );
+    }
+
     public String getMessage() {
         return message;
     }

@@ -7,6 +7,9 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import softeer.carbook.domain.follow.exception.FollowIdNotExistException;
+import softeer.carbook.domain.post.exception.InvalidPostAccessException;
+import softeer.carbook.domain.post.exception.PostNotExistException;
 import softeer.carbook.global.dto.Message;
 import softeer.carbook.domain.user.exception.*;
 
@@ -62,7 +65,28 @@ public class ExceptionController {
     @ExceptionHandler(NotLoginStatementException.class)
     public ResponseEntity<Message> notLoginStatementException(NotLoginStatementException notLoginE){
         logger.debug(notLoginE.getMessage());
-        return Message.make400Response(notLoginE.getMessage());
+        return Message.make401Response(notLoginE.getMessage());
+    }
+
+    // 해당 게시글이 없을 경우 처리
+    @ExceptionHandler(PostNotExistException.class)
+    public ResponseEntity<Message> postNotExistException(PostNotExistException postNEE){
+        logger.debug(postNEE.getMessage());
+        return Message.make400Response(postNEE.getMessage());
+    }
+
+    // 남이 게시글 삭제하려고 시도하는 경우
+    @ExceptionHandler(InvalidPostAccessException.class)
+    public ResponseEntity<Message> invalidPostAccessException(InvalidPostAccessException invalidPostAE){
+        logger.debug(invalidPostAE.getMessage());
+        return Message.make401Response(invalidPostAE.getMessage());
+    }
+
+    // 친삭하려고 했는데 팔로우 id 가 없을 경우
+    @ExceptionHandler(FollowIdNotExistException.class)
+    public ResponseEntity<Message> followIdNotExistException(FollowIdNotExistException followIdNEE){
+        logger.debug(followIdNEE.getMessage());
+        return Message.make400Response(followIdNEE.getMessage());
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

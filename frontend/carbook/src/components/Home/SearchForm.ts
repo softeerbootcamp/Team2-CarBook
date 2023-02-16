@@ -21,7 +21,7 @@ export default class SearchForm extends Component {
   searchList: any;
   setup(): void {
     this.data = {
-      option: 'hashtag',
+      option: 'all',
       keywords: [],
     };
   }
@@ -61,11 +61,7 @@ export default class SearchForm extends Component {
 
   setEvent(): void {
     const input = qs(this.$target, '.section__input') as HTMLInputElement;
-    onChangeInputHandler(
-      input,
-      this.getSearchedData.bind(this),
-      '.section__dropdown'
-    );
+    onChangeInputHandler(input, this.getSearchedData.bind(this));
 
     const container = qs(document, '.home-container');
     container.addEventListener('click', ({ target }) => {
@@ -88,8 +84,15 @@ export default class SearchForm extends Component {
       isLoading: true,
     });
 
-    const trimKeyword = keyword.trim();
-    if (trimKeyword.length === 0) return;
+    const trimKeyword = encodeURI(keyword.trim());
+    if (trimKeyword.length === 0) {
+      this.searchList.setState({
+        keywords: [],
+        isLoading: false,
+      });
+
+      return;
+    }
 
     const searchedData = await basicAPI.get(
       `/api/search/?keyword=${trimKeyword.trim()}`

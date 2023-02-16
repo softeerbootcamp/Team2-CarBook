@@ -15,9 +15,10 @@ import { IHashTag } from '@/interfaces';
 export default class HashTagForm extends Component {
   searchList: any;
   setup(): void {
+    const { hashtags } = this.props.hashtags;
     this.state = {
       value: '',
-      hashtags: {},
+      hashtags: hashtags,
     };
   }
   template(): string {
@@ -74,7 +75,7 @@ export default class HashTagForm extends Component {
       }
     });
 
-    onChangeInputHandler(input, this.getSearchTags.bind(this), '.dropdown');
+    onChangeInputHandler(input, this.getSearchTags.bind(this));
   }
 
   makeHashtagCards(hashtags: object) {
@@ -101,7 +102,7 @@ export default class HashTagForm extends Component {
       value: input.value,
     });
 
-    const hashTagsName = getObjectKeyArray(hashtags);
+    const hashTagsName = getObjectKeyArray(this.state.hashtags);
     this.props.setFormData(hashTagsName);
   }
 

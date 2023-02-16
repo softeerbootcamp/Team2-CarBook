@@ -64,6 +64,15 @@
       background-repeat: no-repeat;
       background-size: contain;
 
+      span {
+        position: absolute;
+        left: 36%;
+        top: 51%;
+        color: red;
+        font-size: 25px;
+        margin-right: 3px;
+      }
+
       .hide {
         display: none;
       }
@@ -94,9 +103,17 @@
             label {
               width: 40%;
               text-align: center;
+
+              span {
+                color: red;
+                font-size: 25px;
+                margin-right: 3px;
+              }
             }
 
             select {
+              cursor: pointer;
+              position: relative;
               width: 60%;
               border: 1px solid #dbe2ef;
               border-radius: 5px;
