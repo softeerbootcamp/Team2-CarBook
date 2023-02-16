@@ -11,6 +11,7 @@ export function getSearchUrl(index: string) {
   }
 
   const filter = {
+    all: [],
     hashtag: [],
     type: [],
     model: [],
@@ -22,11 +23,18 @@ export function getSearchUrl(index: string) {
   }
 
   const { hashtag, type, model } = filter;
-  const url = `/api/posts/m/search?index=${index}&hastag=${hashtag.join(
-    '+'
-  )}&type=${type.join('+')}&model=${model.join('+')}`;
+
+  const hashtagUrl = getTagUrl(hashtag, 'hashtag');
+  const typeUrl = getTagUrl(type, 'type');
+  const modelUrl = getTagUrl(model, 'model');
+
+  const url = `/api/posts/m/search?index=${index}${hashtagUrl}${typeUrl}${modelUrl}`;
 
   return url;
+}
+
+function getTagUrl(tags: Array<string>, category: string) {
+  return tags.length > 0 ? encodeURI(`&${category}=${tags.join('+')}`) : '';
 }
 
 export function getTagIcon(type: string) {
