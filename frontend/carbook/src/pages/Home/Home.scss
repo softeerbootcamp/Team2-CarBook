@@ -249,6 +249,7 @@
 
       .hashtag {
         display: flex;
+        min-width: fit-content;
         gap: 8px;
         align-items: center;
         background: $main-light-blue;

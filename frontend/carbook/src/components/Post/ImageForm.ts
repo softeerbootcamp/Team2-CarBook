@@ -5,7 +5,7 @@ import { qs } from '@/utils';
 export default class ImageForm extends Component {
   setup(): void {
     this.state = {
-      imageUrl: null,
+      imageUrl: this.props.imageUrl,
     };
   }
   template(): string {
@@ -17,12 +17,14 @@ export default class ImageForm extends Component {
   }
 
   setEvent(): void {
+    const { imageUrl } = this.state;
     const input = qs(this.$target, 'input');
 
     this.$target.addEventListener('click', () => {
       input.click();
     });
     input.addEventListener('change', this.getImageFiles.bind(this));
+    if (imageUrl) this.setPreviewSrc(imageUrl);
   }
 
   getImageFiles(e: Event) {
@@ -33,19 +35,18 @@ export default class ImageForm extends Component {
 
       const reader = new FileReader();
       reader.onload = (e) => {
-        this.setPreviewSrc(e, file);
+        const url = (<FileReader>e.target).result as string;
+        this.setState({ imageUrl: url });
+        this.props.setFormData(file);
+
+        this.setPreviewSrc(url);
       };
       reader.readAsDataURL(file);
     }
   }
 
-  setPreviewSrc(e: Event, file: File) {
-    const url = (<FileReader>e.target).result;
-    this.$target.style.backgroundImage = `url(${url})`;
-    this.$target.setAttribute('data-file', file.name);
-    this.setState({ imageUrl: url });
-    this.props.setFormData(file);
-
+  setPreviewSrc(url: string) {
+    this.$target.style.backgroundImage = `url('${url}')`;
     this.hideInnerContent();
   }
 
