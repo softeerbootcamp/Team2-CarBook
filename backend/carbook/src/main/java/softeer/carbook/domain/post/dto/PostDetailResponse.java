@@ -1,7 +1,5 @@
 package softeer.carbook.domain.post.dto;
 
-import softeer.carbook.domain.tag.model.Hashtag;
-
 import java.util.List;
 
 public class PostDetailResponse {
@@ -13,7 +11,7 @@ public class PostDetailResponse {
     private final String updateDate;
     private final String type;
     private final String model;
-    private final List<String> hashtag;
+    private final List<String> hashtags;
     private final String content;
 
     public PostDetailResponse(PostDetailResponseBuilder postDetailResponseBuilder){
@@ -25,7 +23,7 @@ public class PostDetailResponse {
         this.updateDate = postDetailResponseBuilder.updateDate;
         this.type = postDetailResponseBuilder.type;
         this.model = postDetailResponseBuilder.model;
-        this.hashtag = postDetailResponseBuilder.hashtags;
+        this.hashtags = postDetailResponseBuilder.hashtags;
         this.content = postDetailResponseBuilder.content;
     }
 
@@ -61,8 +59,8 @@ public class PostDetailResponse {
         return model;
     }
 
-    public List<String> getHashtag() {
-        return hashtag;
+    public List<String> getHashtags() {
+        return hashtags;
     }
 
     public String getContent() {
