@@ -46,8 +46,6 @@ export default class ProfilePage extends Component {
         }
       });
 
-    console.log(data);
-
     this.setState({
       ...this.state,
       isMyProfile: data?.myProfile,
