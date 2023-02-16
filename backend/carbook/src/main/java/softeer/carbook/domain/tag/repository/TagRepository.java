@@ -6,7 +6,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import softeer.carbook.domain.tag.dto.TagSearchResult;
 import softeer.carbook.domain.tag.exception.HashtagNotExistException;
 import softeer.carbook.domain.tag.model.Hashtag;
 import softeer.carbook.domain.tag.model.Model;
@@ -16,7 +15,6 @@ import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Repository
 public class TagRepository {
@@ -59,15 +57,15 @@ public class TagRepository {
     }
 
     public List<Type> searchTypeByPrefix(String keyword) {
-        return jdbcTemplate.query("SELECT t.id, t.tag FROM TYPE t WHERE tag LIKE '" + keyword + "%'", typeRowMapper());
+        return jdbcTemplate.query("SELECT t.id, t.tag FROM TYPE t WHERE tag LIKE '[" + keyword + "]%'", typeRowMapper());
     }
 
     public List<Model> searchModelByPrefix(String keyword) {
-        return jdbcTemplate.query("SELECT m.id, m.type_id, m.tag FROM MODEL m WHERE tag LIKE '" + keyword + "%'", modelRowMapper());
+        return jdbcTemplate.query("SELECT m.id, m.type_id, m.tag FROM MODEL m WHERE tag LIKE '[" + keyword + "]%'", modelRowMapper());
     }
 
     public List<Hashtag> searchHashtagByPrefix(String keyword) {
-        return jdbcTemplate.query("SELECT h.id, h.tag FROM HASHTAG h WHERE tag LIKE '" + keyword + "%'", hashtagRowMapper());
+        return jdbcTemplate.query("SELECT h.id, h.tag FROM HASHTAG h WHERE tag LIKE '[" + keyword + "]%'", hashtagRowMapper());
     }
 
     public List<Type> findAllTypes() {
@@ -126,7 +124,7 @@ public class TagRepository {
     }
 
     private RowMapper<String> hashtagStringRowMapper(){
-        return ((rs, rowNum) -> new String(rs.getString("tag")));
+        return ((rs, rowNum) -> rs.getString("tag"));
     }
 
 }

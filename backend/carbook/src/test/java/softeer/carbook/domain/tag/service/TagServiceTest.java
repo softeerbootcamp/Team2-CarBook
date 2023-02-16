@@ -3,8 +3,6 @@ package softeer.carbook.domain.tag.service;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -36,7 +34,7 @@ class TagServiceTest {
     ));
 
     @Test
-    @DisplayName("모든 태그 검색 기능 테스트")
+    @DisplayName("모든 태그 검색 기능 테스트 - 검색 결과가 있는 경우")
     void searchAllTags() {
         // given
         String keyword = "keyword";
@@ -60,11 +58,30 @@ class TagServiceTest {
         verify(tagRepository).searchHashtagByPrefix(keyword);
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"맑", "맑음"})
-    @DisplayName("해시태그 검색 기능 테스트")
-    void searchHashTag(String keyword) {
+    @Test
+    @DisplayName("모든 태그 검색 기능 테스트 - 검색 결과가 없는 경우")
+    void searchAllTagsWithNoResult() {
         // given
+        String keyword = "keyword";
+        given(tagRepository.searchTypeByPrefix(keyword)).willReturn(new ArrayList<>());
+        given(tagRepository.searchModelByPrefix(keyword)).willReturn(new ArrayList<>());
+        given(tagRepository.searchHashtagByPrefix(keyword)).willReturn(new ArrayList<>());
+
+        // when
+        TagSearchResopnse response = tagService.searchAllTags(keyword);
+
+        // then
+        assertThat(response.getKeywords()).usingRecursiveComparison().isEqualTo(new ArrayList<>());
+        verify(tagRepository).searchTypeByPrefix(keyword);
+        verify(tagRepository).searchModelByPrefix(keyword);
+        verify(tagRepository).searchHashtagByPrefix(keyword);
+    }
+
+    @Test
+    @DisplayName("해시태그 검색 기능 테스트 - 검색 결과가 있는 경우")
+    void searchHashTag() {
+        // given
+        String keyword = "keyword";
         given(tagRepository.searchHashtagByPrefix(keyword)).willReturn(new ArrayList<>(List.of(
                 new Hashtag(1, "맑음")
         )));
@@ -77,6 +94,22 @@ class TagServiceTest {
         assertThat(result.size()).isEqualTo(1);
         assertThat(result.get(0).getId()).isEqualTo(1);
         assertThat(result.get(0).getTag()).isEqualTo("맑음");
+        verify(tagRepository).searchHashtagByPrefix(keyword);
+    }
+
+    @Test
+    @DisplayName("해시태그 검색 기능 테스트 - 검색 결과가 없는 경우")
+    void searchHashTagWithNoResult() {
+        // given
+        String keyword = "keyword";
+        given(tagRepository.searchHashtagByPrefix(keyword)).willReturn(new ArrayList<>());
+
+        // when
+        HashtagSearchResponse response = tagService.searchHashTag(keyword);
+
+        // then
+        List<Hashtag> result = response.getHashtags();
+        assertThat(result.size()).isEqualTo(0);
         verify(tagRepository).searchHashtagByPrefix(keyword);
     }
 
