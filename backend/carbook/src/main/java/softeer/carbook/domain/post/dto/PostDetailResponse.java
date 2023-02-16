@@ -6,7 +6,8 @@ public class PostDetailResponse {
     private final boolean isMyPost;
     private final String nickname;
     private final String imageUrl;
-    private final int like;
+    private final boolean isLike;
+    private final int likeCount;
     private final String createDate;
     private final String updateDate;
     private final String type;
@@ -18,13 +19,18 @@ public class PostDetailResponse {
         this.isMyPost = postDetailResponseBuilder.isMyPost;
         this.nickname = postDetailResponseBuilder.nickname;
         this.imageUrl = postDetailResponseBuilder.imageUrl;
-        this.like = postDetailResponseBuilder.like;
+        this.isLike = postDetailResponseBuilder.isLike;
+        this.likeCount = postDetailResponseBuilder.like;
         this.createDate = postDetailResponseBuilder.createDate;
         this.updateDate = postDetailResponseBuilder.updateDate;
         this.type = postDetailResponseBuilder.type;
         this.model = postDetailResponseBuilder.model;
         this.hashtags = postDetailResponseBuilder.hashtags;
         this.content = postDetailResponseBuilder.content;
+    }
+
+    public boolean isLike() {
+        return isLike;
     }
 
     public boolean isMyPost() {
@@ -39,8 +45,8 @@ public class PostDetailResponse {
         return imageUrl;
     }
 
-    public int getLike() {
-        return like;
+    public int getLikeCount() {
+        return likeCount;
     }
 
     public String getCreateDate() {
@@ -71,6 +77,7 @@ public class PostDetailResponse {
         private boolean isMyPost;
         private String nickname;
         private String imageUrl;
+        private boolean isLike;
         private int like;
         private String createDate;
         private String updateDate;
@@ -96,7 +103,12 @@ public class PostDetailResponse {
             return this;
         }
 
-        public PostDetailResponseBuilder like(int like){
+        public PostDetailResponseBuilder isLike(boolean isLike){
+            this.isLike = isLike;
+            return this;
+        }
+
+        public PostDetailResponseBuilder likeCount(int like){
             this.like = like;
             return this;
         }

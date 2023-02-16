@@ -386,6 +386,7 @@ class PostServiceTest {
         given(tagRepository.findModelByModelId(anyInt())).willReturn(models);
         given(tagRepository.findTypeById(anyInt())).willReturn(types);
         given(imageRepository.getImageByPostId(anyInt())).willReturn(image);
+        given(likeRepository.checkLike(anyInt(), anyInt())).willReturn(true);
         given(likeRepository.findLikeCountByPostId(anyInt())).willReturn(123);
 
         // when
@@ -398,6 +399,7 @@ class PostServiceTest {
         verify(tagRepository).findModelByModelId(anyInt());
         verify(tagRepository).findTypeById(anyInt());
         verify(imageRepository).getImageByPostId(anyInt());
+        verify(likeRepository).checkLike(anyInt(),anyInt());
         verify(likeRepository).findLikeCountByPostId(anyInt());
     }
 
@@ -420,6 +422,7 @@ class PostServiceTest {
         given(tagRepository.findModelByModelId(anyInt())).willReturn(models);
         given(tagRepository.findTypeById(anyInt())).willReturn(types);
         given(imageRepository.getImageByPostId(anyInt())).willReturn(image);
+        given(likeRepository.checkLike(anyInt(), anyInt())).willReturn(true);
         given(likeRepository.findLikeCountByPostId(anyInt())).willReturn(123);
 
         // when
@@ -432,6 +435,7 @@ class PostServiceTest {
         verify(tagRepository).findModelByModelId(anyInt());
         verify(tagRepository).findTypeById(anyInt());
         verify(imageRepository).getImageByPostId(anyInt());
+        verify(likeRepository).checkLike(anyInt(),anyInt());
         verify(likeRepository).findLikeCountByPostId(anyInt());
     }
 
