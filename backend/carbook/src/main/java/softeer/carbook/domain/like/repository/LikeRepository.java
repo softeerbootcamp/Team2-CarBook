@@ -20,14 +20,14 @@ public class LikeRepository {
 
     public int findLikeCountByPostId(int postId) {
         return Objects.requireNonNull(jdbcTemplate.queryForObject(
-                "select count(id) from POST_LIKE where post_id = ?",
+                "select count(id) from POST_LIKE where post_id = ? and is_deleted = false",
                 Integer.class,
                 postId));
     }
 
     public boolean checkLike(int userId, int postId) {
         List<Integer> result = jdbcTemplate.query(
-                "select id from POST_LIKE where user_id = ? and post_id = ?", idRowMapper(), userId, postId);
+                "select id from POST_LIKE where user_id = ? and post_id = ? and is_deleted = false", idRowMapper(), userId, postId);
         return !result.isEmpty();
     }
 
