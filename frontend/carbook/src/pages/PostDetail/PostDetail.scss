@@ -78,10 +78,15 @@ $menu: "@/assets/icons/postdetail_menu.svg";
           background-color: white;
           visibility: hidden;
           opacity: 0;
+          transition: all ease-in-out 0.5s;
 
           display: flex;
           flex-direction: column;
           justify-content: space-around;
+          .modify-post,
+          .delete-post {
+            cursor: pointer;
+          }
         }
 
         .FadeInAndOut {
