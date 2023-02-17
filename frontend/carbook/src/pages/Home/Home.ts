@@ -3,11 +3,12 @@ import { Component } from '@/core';
 import Header from '@/components/common/Header';
 import { SearchForm, HashTagList, PostList } from '@/components/Home';
 import { push } from '@/utils/router/navigate';
+import isLogin from '@/utils/isLogin';
 
 export default class HomePage extends Component {
-  setup(): void {
+  async setup() {
     this.state = {
-      isLogin: localStorage.getItem('login'),
+      isLogin: await isLogin(),
       nickname: '',
     };
 
