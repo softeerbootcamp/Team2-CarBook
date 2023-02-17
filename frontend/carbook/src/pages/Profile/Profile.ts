@@ -19,7 +19,6 @@ import {
   NotMatchedPassword,
 } from "@/constants/errorMessage";
 import { push, replace } from "@/utils/router/navigate";
-import { profile } from "@/assets/icons/postdetail_profile.svg";
 
 export default class ProfilePage extends Component {
   setup(): void {
