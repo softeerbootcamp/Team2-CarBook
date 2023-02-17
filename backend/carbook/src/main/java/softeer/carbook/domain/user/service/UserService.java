@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import softeer.carbook.domain.user.dto.IsLoginForm;
 import softeer.carbook.global.dto.Message;
 import softeer.carbook.domain.user.dto.LoginForm;
 import softeer.carbook.domain.user.dto.ModifyPasswordForm;
@@ -118,7 +119,9 @@ public class UserService {
     }
 
     public boolean isLogin(HttpSession session){
-        return session != null;
+        if (session == null) return false;
+        // 다른 쿠키값 넘어왔을 때 체크
+        return session.getAttribute("user") != null;
     }
 
     private boolean checkPassword(User user, String password){
@@ -129,4 +132,7 @@ public class UserService {
         return BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
+    public IsLoginForm getIsLoginState(HttpSession session) {
+        return new IsLoginForm(isLogin(session));
+    }
 }
