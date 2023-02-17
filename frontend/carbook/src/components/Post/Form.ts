@@ -48,6 +48,7 @@ export default class Form extends Component {
 
       switch (className) {
         case 'form__buttons--cancel':
+          e.preventDefault();
           history.back();
           return;
         case 'form__buttons--submit':
@@ -172,6 +173,7 @@ export default class Form extends Component {
       push('/');
     } catch (error) {
       console.error(error);
+      alert('다시 로그인 해주세요');
     }
   }
 }

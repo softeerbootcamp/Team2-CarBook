@@ -1,6 +1,7 @@
 package softeer.carbook.domain.user.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import softeer.carbook.domain.user.dto.*;
@@ -42,6 +43,10 @@ public class UserController {
     }
 
     // 로그인한 사용자인지
+    @GetMapping("/isLogin")
+    public ResponseEntity<IsLoginForm> isLogin(HttpServletRequest httpServletRequest){
+        return new ResponseEntity<>(userService.getIsLoginState(httpServletRequest.getSession()), HttpStatus.OK);
+    }
 
     // 닉네임 변경 ( 자신 프로필 페이지 )
     @PatchMapping("/profile/modify/{nickname}")

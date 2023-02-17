@@ -22,10 +22,30 @@
 <img src="https://img.shields.io/badge/ESLint-4B32C3?style=for-the-badge&logo=ESLint&logoColor=white">
 </div>
 
+### BE
+<div style="display:flex;">
+<img src="https://img.shields.io/badge/Spring Boot-6DB33F?style=for-the-badge&logo=Spring Boot&logoColor=white"/>
+<img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=MySQL&logoColor=white"/>
+<img src="https://img.shields.io/badge/JUnit5-25A162?style=for-the-badge&logo=JUnit5&logoColor=white"/>
+</div>
+
+### CI / CD
+<div style="display:flex;">
+<img src="https://img.shields.io/badge/Amazon AWS-FF9900?style=for-the-badge&logo=Amazon AWS&logoColor=white"/>
+<img src="https://img.shields.io/badge/Amazon EC2-FF9900?style=for-the-badge&logo=Amazon EC2&logoColor=white"/>
+<img src="https://img.shields.io/badge/Amazon S3-569a31?style=for-the-badge&logo=Amazon S3&logoColor=white"/>
+<img src="https://img.shields.io/badge/NGINX-009639?style=for-the-badge&logo=NGINX&logoColor=white"/>
+</div>
+
 <br />
 
 ## 📌 시스템 아키텍쳐
 ![그림2](https://user-images.githubusercontent.com/46276276/218137892-fdc133c6-55ff-4e68-8e94-c6a51cb8e72c.png)
+
+<br />
+
+## 📌 배포 아키텍쳐
+![image](https://user-images.githubusercontent.com/46276276/219533865-a2ba5d19-d791-4822-bc9b-ed795c842c47.png)
 
  <br />
 
