@@ -8,28 +8,8 @@ export default class PostDetailPage extends Component {
   async setup() {
     this.state.isloading = true;
     const postid = location.pathname.split("/").slice(-1)[0];
+    this.state.postid = postid;
     await this.fetchPostDefail(postid);
-    if (this.$target.classList.contains("once")) return;
-    this.$target.classList.add("once");
-    this.$target.addEventListener("click", (e: Event) => {
-      const target = e.target as HTMLElement;
-
-      if (!target.classList.contains("info-menu")) {
-        const menuItems = target.querySelector(
-          ".info-menu-items"
-        ) as HTMLElement;
-        menuItems?.classList.toggle("FadeInAndOut");
-      }
-
-      if (target.closest(".back-button")) {
-        history.back();
-      }
-
-      if (target.closest(".like-button")) {
-        console.log(postid);
-        this.fetchlike(postid);
-      }
-    });
   }
 
   async fetchPostDefail(postId: string) {
@@ -72,6 +52,34 @@ export default class PostDetailPage extends Component {
   render(): void {
     if (this.state?.isloading) return;
     this.$target.innerHTML = this.template();
+
+    const postDefailContainer = this.$target.querySelector(
+      ".postdetail-container"
+    ) as HTMLElement;
+
+    if (postDefailContainer.classList.contains("once")) return;
+    postDefailContainer.classList.add("once");
+    postDefailContainer.addEventListener("click", (e: Event) => {
+      const target = e.target as HTMLElement;
+
+      if (target.classList.contains("info-menu")) {
+        const menuItems = target.querySelector(
+          ".info-menu-items"
+        ) as HTMLElement;
+        menuItems.classList.toggle("FadeInAndOut");
+        return;
+      }
+
+      if (target.closest(".back-button")) {
+        history.back();
+        return;
+      }
+
+      if (target.closest(".like-button")) {
+        this.fetchlike(this.state.postid);
+      }
+    });
+
     this.setEvent();
     this.mounted();
   }
