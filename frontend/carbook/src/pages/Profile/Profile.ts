@@ -19,6 +19,7 @@ import {
   NotMatchedPassword,
 } from "@/constants/errorMessage";
 import { push, replace } from "@/utils/router/navigate";
+import { profile } from "@/assets/icons/postdetail_profile.svg";
 
 export default class ProfilePage extends Component {
   setup(): void {
@@ -26,6 +27,7 @@ export default class ProfilePage extends Component {
     this.state.nickname = urlnickname;
     this.state.profileMode = "posts";
     this.state.isloading = true;
+
     this.fetchProfilePage(urlnickname);
   }
 
@@ -93,10 +95,63 @@ export default class ProfilePage extends Component {
       const wrongNickNamePage = this.$target.querySelector(
         ".not-exist-nickname"
       );
-
       wrongNickNamePage?.classList.add("visible");
       return;
     }
+
+    const profileContainer = this.$target.querySelector(
+      ".profile__container"
+    ) as HTMLElement;
+
+    if (profileContainer.classList.contains("once")) return;
+    profileContainer.classList.add("once");
+
+    profileContainer.addEventListener("click", (e: Event) => {
+      e.preventDefault();
+      const target = e.target as HTMLElement;
+      const postsSection = target.closest("section.profile-posts");
+      const followerSection = target.closest("section.profile-follower");
+      const followingSection = target.closest("section.profile-following");
+      const followButton = target.closest(".follow-button");
+      const modifyInfoButton = target.closest(".modify-button");
+      if (postsSection) {
+        this.setState({ ...this.state, profileMode: "posts" });
+        return;
+      }
+      if (followerSection) {
+        this.setState({ ...this.state, profileMode: "follower" });
+        return;
+      }
+      if (followingSection) {
+        this.setState({ ...this.state, profileMode: "following" });
+        return;
+      }
+      if (followButton) {
+        this.toggleFollow();
+      }
+      if (modifyInfoButton) {
+        e.preventDefault();
+        const modal = this.$target.querySelector(".alert-modal") as HTMLElement;
+        const modifyModal = target.closest(".modify-modal") as HTMLElement;
+        if (modifyModal.classList.contains("nickname")) {
+          this.modifyNickname({
+            alertModal: modal,
+            modal: modifyModal,
+            beforeNickname: this.state.nickname,
+          });
+          return;
+        }
+        if (modifyModal.classList.contains("password")) {
+          this.modifyPassword({
+            alertModal: modal,
+            modal: modifyModal,
+          });
+          return;
+        }
+        modal.classList.add("blue");
+        showErrorModal(modal, "회원정보가 변경되었습니다");
+      }
+    });
 
     this.setEvent();
     this.mounted();
@@ -151,68 +206,7 @@ export default class ProfilePage extends Component {
     ) as HTMLElement;
     new ModifyModal(modifyModal);
   }
-  setEvent(): void {
-    if (this.$target.classList.contains("once")) return;
-    this.$target.classList.add("once");
-
-    this.$target.addEventListener("click", (e: Event) => {
-      e.preventDefault();
-      const target = e.target as HTMLElement;
-
-      const postsSection = target.closest("section.profile-posts");
-      const followerSection = target.closest("section.profile-follower");
-      const followingSection = target.closest("section.profile-following");
-      const followButton = target.closest(".follow-button");
-      const modifyInfoButton = target.closest(".modify-button");
-
-      if (postsSection) {
-        this.setState({ ...this.state, profileMode: "posts" });
-        return;
-      }
-
-      if (followerSection) {
-        this.setState({ ...this.state, profileMode: "follower" });
-        return;
-      }
-
-      if (followingSection) {
-        this.setState({ ...this.state, profileMode: "following" });
-        return;
-      }
-
-      if (followButton) {
-        this.toggleFollow();
-      }
-
-      if (modifyInfoButton) {
-        e.preventDefault();
-        const modal = this.$target.querySelector(".alert-modal") as HTMLElement;
-        const modifyModal = target.closest(".modify-modal") as HTMLElement;
-
-        if (modifyModal.classList.contains("nickname")) {
-          this.modifyNickname({
-            alertModal: modal,
-            modal: modifyModal,
-            beforeNickname: this.state.nickname,
-          });
-
-          return;
-        }
-
-        if (modifyModal.classList.contains("password")) {
-          this.modifyPassword({
-            alertModal: modal,
-            modal: modifyModal,
-          });
-
-          return;
-        }
-
-        modal.classList.add("blue");
-        showErrorModal(modal, "회원정보가 변경되었습니다");
-      }
-    });
-  }
+  setEvent(): void {}
 
   async modifyNickname({
     alertModal,
