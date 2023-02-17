@@ -26,7 +26,6 @@ export default class ProfilePage extends Component {
     this.state.nickname = urlnickname;
     this.state.profileMode = "posts";
     this.state.isloading = true;
-
     this.fetchProfilePage(urlnickname);
   }
 
@@ -206,6 +205,7 @@ export default class ProfilePage extends Component {
     new ModifyModal(modifyModal);
   }
   setEvent(): void {}
+
 
   async modifyNickname({
     alertModal,
