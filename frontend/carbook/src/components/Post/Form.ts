@@ -48,6 +48,7 @@ export default class Form extends Component {
 
       switch (className) {
         case 'form__buttons--cancel':
+          e.preventDefault();
           history.back();
           return;
         case 'form__buttons--submit':
