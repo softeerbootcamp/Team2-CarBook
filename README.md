@@ -27,6 +27,11 @@
 ## 📌 시스템 아키텍쳐
 ![그림2](https://user-images.githubusercontent.com/46276276/218137892-fdc133c6-55ff-4e68-8e94-c6a51cb8e72c.png)
 
+<br />
+
+## 📌 배포 아키텍쳐
+![image](https://user-images.githubusercontent.com/46276276/219533865-a2ba5d19-d791-4822-bc9b-ed795c842c47.png)
+
  <br />
 
 ## 📌 프로토타입
