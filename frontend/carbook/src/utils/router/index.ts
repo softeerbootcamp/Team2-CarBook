@@ -18,14 +18,21 @@ export default class Router {
 
   private route() {
     const TargetPage = this.findMatchedRoute()?.element || NotFoundPage;
-    new TargetPage(this.$target);
+
+    document.body.innerHTML = '';
+    const app = document.createElement('div');
+    app.id = 'app';
+    document.body.appendChild(app);
+
+    new TargetPage(app);
   }
 
   private initRouter() {
     window.addEventListener(ROUTE_CHNAGE_EVENT, (e: Event) => {
       const { nextUrl, isReplace } = (<CustomEvent>e).detail;
 
-      if (isReplace || nextUrl === location.pathname) history.replaceState(null, '', nextUrl);
+      if (isReplace || nextUrl === location.pathname)
+        history.replaceState(null, '', nextUrl);
       else history.pushState(null, '', nextUrl);
 
       this.route();
