@@ -43,7 +43,12 @@ export default class PostList extends Component {
 
     if (!isSameObj(tags, tagStore.getState())) {
       this.$target.innerHTML = '';
-      this.setState({ isInit: true, tags: tagStore.getState() });
+      this.setState({
+        ...POST_LIST_INIT,
+        isLogin: this.state.isLogin,
+        tags: tagStore.getState(),
+      });
+
       return;
     }
 
@@ -73,12 +78,15 @@ export default class PostList extends Component {
     try {
       const res = await basicAPI.get(url);
       const { images, login, nickname } = res.data;
-
-      this.props.setUserInfo(login, nickname);
-
       const end = images.length === 0;
+
+      if (login) {
+        localStorage.setItem('login', login);
+        this.props.setUserInfo(login, nickname);
+      }
+
       this.setState({
-        isLogin: login,
+        isLogin: localStorage.getItem('login'),
         images: this.state.images.concat(images),
         index: index + 8,
         isLoading: false,

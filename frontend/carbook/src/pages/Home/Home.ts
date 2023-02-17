@@ -7,7 +7,8 @@ import { push } from '@/utils/router/navigate';
 export default class HomePage extends Component {
   setup(): void {
     this.state = {
-      nickname: 'nickname',
+      isLogin: localStorage.getItem('login'),
+      nickname: '',
     };
 
     this.onClickHandler();
@@ -62,10 +63,13 @@ export default class HomePage extends Component {
 
       if (profileBtn && isLogin) {
         push(`/profile/${nickname}`);
+        return;
       } else if (plusBtn && isLogin) {
         push(`/post/new`);
+        return;
       } else if (profileBtn || plusBtn) {
         push('/login');
+        return;
       }
     });
   }
