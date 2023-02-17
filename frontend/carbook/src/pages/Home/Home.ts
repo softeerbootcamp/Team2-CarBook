@@ -9,6 +9,8 @@ export default class HomePage extends Component {
     this.state = {
       nickname: 'nickname',
     };
+
+    this.onClickHandler();
   }
 
   template(): string {
@@ -50,7 +52,7 @@ export default class HomePage extends Component {
     });
   }
 
-  setEvent(): void {
+  onClickHandler() {
     this.$target.addEventListener('click', (e: Event) => {
       const target = e.target as HTMLElement;
       const { isLogin, nickname } = this.state;
