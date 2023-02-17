@@ -173,6 +173,7 @@ export default class Form extends Component {
       push('/');
     } catch (error) {
       console.error(error);
+      alert('다시 로그인 해주세요');
     }
   }
 }
