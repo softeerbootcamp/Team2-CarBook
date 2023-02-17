@@ -31,7 +31,7 @@
 
 ### CI / CD
 <div style="display:flex;">
-<img src="https://img.shields.io/badge/Amazon AWS-FF9900?style=for-the-badge&logo=Amazon AWS&logoColor=white"/>
+<img src="https://img.shields.io/badge/Amazon AWS-232F32?style=for-the-badge&logo=Amazon AWS&logoColor=white"/>
 <img src="https://img.shields.io/badge/Amazon EC2-FF9900?style=for-the-badge&logo=Amazon EC2&logoColor=white"/>
 <img src="https://img.shields.io/badge/Amazon S3-569a31?style=for-the-badge&logo=Amazon S3&logoColor=white"/>
 <img src="https://img.shields.io/badge/NGINX-009639?style=for-the-badge&logo=NGINX&logoColor=white"/>
