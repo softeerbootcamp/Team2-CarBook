@@ -7,7 +7,7 @@ export const POST_INIT = {
 };
 
 export const POST_LIST_INIT = {
-  isLogin: false,
+  isLogin: localStorage.getItem('login') || false,
   nickname: '',
   isInit: true,
   isLoading: false,
