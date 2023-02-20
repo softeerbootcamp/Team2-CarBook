@@ -27,21 +27,19 @@ public class ImageRepository {
     public List<Image> getImagesOfRecentPosts(int size, int index) {
         return jdbcTemplate.query("SELECT img.post_id, img.image_url " +
                         "FROM POST AS p INNER JOIN IMAGE AS img ON p.id = img.post_id " +
-                        "WHERE p.is_deleted = false " +
-                        "ORDER BY p.create_date DESC LIMIT ?, ?",
+                        "WHERE p.is_deleted = false and p.id < ? " +
+                        "ORDER BY p.create_date DESC LIMIT ?",
                 imageRowMapper(), index, size);
     }
 
     public List<Image> getImagesOfRecentFollowingPosts(int size, int index, int followerId){
         return jdbcTemplate.query("SELECT img.post_id, img.image_url " +
-                "FROM POST AS p, IMAGE AS img, FOLLOW AS f " +
-                        "where f.is_deleted = false " +
-                        "and p.is_deleted = false " +
-                        "and f.follower_id = ? " +
-                        "and f.following_id = p.user_id " +
+                        "FROM POST AS p, IMAGE AS img, FOLLOW AS f " +
+                        "where f.is_deleted = false and p.is_deleted = false " +
+                        "and p.id < ? and f.follower_id = ? and f.following_id = p.user_id " +
                         "and p.id = img.post_id " +
-                "ORDER BY p.create_date DESC LIMIT ?, ?",
-                imageRowMapper(), followerId, index, size);
+                        "ORDER BY p.create_date DESC LIMIT ?",
+                imageRowMapper(), index, followerId, size);
     }
 
     public List<Image> findImagesByUserId(int id) {
