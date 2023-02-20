@@ -10,6 +10,37 @@ export default class PostDetailPage extends Component {
     const postid = location.pathname.split("/").slice(-1)[0];
     this.state.postid = postid;
     await this.fetchPostDefail(postid);
+
+    const postDetailContainer = this.$target.querySelector(
+      ".postdetail-container"
+    ) as HTMLElement;
+    postDetailContainer.addEventListener("click", (e: Event) => {
+      const imageModal = postDetailContainer.querySelector(
+        ".image-modal"
+      ) as HTMLElement;
+
+      console.log("click", imageModal);
+      if (imageModal.classList.contains("FadeInAndOut")) {
+        imageModal.classList.toggle("FadeInAndOut");
+        return;
+      }
+
+      const target = e.target as HTMLElement;
+      const header = target.closest(".header") as HTMLElement;
+
+      if (!header) return;
+
+      const modalContent = postDetailContainer.querySelector(
+        ".modal-content"
+      ) as HTMLImageElement;
+
+      let url = getComputedStyle(header).getPropertyValue("background-image");
+      url = url.replace("url(/'", "");
+      url = url.replace(")/'", "");
+      console.log(url);
+      modalContent.src = url;
+      imageModal.classList.toggle("FadeInAndOut");
+    });
   }
 
   async fetchPostDefail(postId: string) {
@@ -45,7 +76,11 @@ export default class PostDetailPage extends Component {
 
       <div class = 'back-button'> <img class = 'backbutton' src = "${backButton}"/> </div>
 
-      <div class = 'alert-modal'>오류 : 닉네임이 중복되었습니다.</div>
+      <div class = 'alert-modal'></div>
+      <div class ='image-modal'>
+        <span class ='close'>x</span>
+        <img class ='modal-content'>
+      </div>
     </div>
     `;
   }
