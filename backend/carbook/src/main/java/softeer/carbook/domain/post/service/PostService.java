@@ -76,9 +76,7 @@ public class PostService {
     }
 
     public PostsSearchResponse searchByTags(String hashtags, String type, String model, int postId) {
-        if (postId == 0) {
-            postId = Integer.MAX_VALUE;
-        }
+        postId = initPostId(postId);
 
         List<Post> posts = new ArrayList<>();
         if (type != null) {
