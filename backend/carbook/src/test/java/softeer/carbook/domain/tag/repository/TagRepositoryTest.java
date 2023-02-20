@@ -39,7 +39,7 @@ class TagRepositoryTest {
 
     @ParameterizedTest
     @CsvSource(value = {"1,테스트태그1", "2,테스트태그2", "3,테스트태그3"})
-    @DisplayName("태그 이름으로 해시태그 조회")
+    @DisplayName("태그 이름으로 해시태그 조회 테스트")
     void findHashtagByName(int hashtagId, String tagName) {
         // given & when
         Hashtag result = tagRepository.findHashtagByName(tagName);
@@ -51,7 +51,7 @@ class TagRepositoryTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"맑음", "흐림"})
-    @DisplayName("태그 이름으로 해시태그 조회 - 조회 결과가 없는 경우")
+    @DisplayName("태그 이름으로 해시태그 조회 테스트 - 조회 결과가 없는 경우")
     void findHashtagByNameWithNoHashtag(String tagName) {
         // given & when
         Throwable exception = assertThrows(HashtagNotExistException.class, () -> tagRepository.findHashtagByName(tagName));
@@ -61,7 +61,7 @@ class TagRepositoryTest {
     }
 
     @Test
-    @DisplayName("게시물 id로 해시태그 조회")
+    @DisplayName("게시물 id로 해시태그 조회 테스트")
     void findHashtagsByPostId() {
         // given
         int postId = 1;
@@ -78,7 +78,7 @@ class TagRepositoryTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"맑", "맑음"})
-    @DisplayName("키워드를 접두어로 하여 해시태그를 조회")
+    @DisplayName("키워드를 접두어로 한 해시태그 조회 테스트")
     void searchHashtagByPrefix(String keyword) {
         // given
         String tagName = "맑음";
@@ -96,7 +96,7 @@ class TagRepositoryTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"%", "%%"})
-    @DisplayName("'%'문자를 접두어로 하여 해시태그를 조회")
+    @DisplayName("'%'문자를 접두어로 한 해시태그 조회 테스트")
     void searchHashtagByPrefixWithWildCharPercentage(String keyword) {
         // given
         String tagName = "%%%길동";
@@ -114,7 +114,7 @@ class TagRepositoryTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"_", "__"})
-    @DisplayName("'_'를 접두어로 하여 해시태그를 조회")
+    @DisplayName("'_'를 접두어로 한 해시태그 조회 테스트")
     void searchHashtagByPrefixWithWildCharUnderBar(String keyword) {
         // given
         String tagName = "___길동";
@@ -132,7 +132,7 @@ class TagRepositoryTest {
 
     @ParameterizedTest
     @CsvSource(value = {"1,1,아이오닉 6", "2,1,아이오닉 5", "3,1,넥쏘"})
-    @DisplayName("모델 이름으로 모델 태그 조회")
+    @DisplayName("모델 이름으로 모델 태그 조회 테스트")
     void findModelByName(int modelId, int typeId, String tagName) {
         // given & when
         Model result = tagRepository.findModelByName(tagName);
