@@ -54,27 +54,39 @@ class PostRepositoryTest {
     @Test
     @DisplayName("차량 종류 이름으로 게시글 검색 테스트")
     void searchByType() {
+        // given
         String type = "수소 / 전기차";
+
+        // when
         List<Post> result = postRepository.searchByType(type);
 
+        // then
         assertThat(result.size()).isEqualTo(4);
     }
 
     @Test
     @DisplayName("차량 모델 이름으로 게시글 검색 테스트")
     void searchByModel() {
+        // given
         String model = "아이오닉 6";
+
+        // when
         List<Post> result = postRepository.searchByModel(model);
 
+        // then
         assertThat(result.size()).isEqualTo(1);
     }
 
     @Test
     @DisplayName("해시태그 이름으로 게시글 검색 테스트")
     void searchByHashtag() {
+        // given
         String hashtag = "테스트태그1";
+
+        // when
         List<Post> result = postRepository.searchByHashtag(hashtag);
 
+        // then
         assertThat(result.size()).isEqualTo(2);
     }
 
