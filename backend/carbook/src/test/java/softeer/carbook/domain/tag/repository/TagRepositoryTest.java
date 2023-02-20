@@ -9,7 +9,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.test.context.jdbc.Sql;
-import softeer.carbook.domain.post.repository.PostRepository;
 import softeer.carbook.domain.tag.exception.HashtagNotExistException;
 import softeer.carbook.domain.tag.model.Hashtag;
 import softeer.carbook.domain.tag.model.Model;
@@ -26,7 +25,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class TagRepositoryTest {
 
     private TagRepository tagRepository;
-    private PostRepository postRepository;
 
     @Autowired
     private DataSource dataSource;
@@ -34,7 +32,6 @@ class TagRepositoryTest {
     @BeforeEach
     void setUp() {
         tagRepository = new TagRepository(dataSource);
-        postRepository = new PostRepository(dataSource);
     }
 
     @ParameterizedTest
