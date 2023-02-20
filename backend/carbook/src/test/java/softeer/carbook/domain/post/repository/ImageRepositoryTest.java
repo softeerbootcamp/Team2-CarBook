@@ -115,16 +115,12 @@ class ImageRepositoryTest {
     }
 
     @Test
+    @DisplayName("Image 수정하기 테스트")
     void updateImage() {
-    }
-
-    private void addGuestPosts(int postCount, int userCount){
-        for (int i=0; i<postCount; i++){
-            int userId = rd.nextInt(userCount);
-            int modelId = rd.nextInt(MODEL_COUNT-1)+1;
-            Post post = new Post(userId,userId+"의 랜덤 글",modelId);
-            Image image = new Image(postRepository.addPost(post), "image/"+i+".jpeg");
-            imageRepository.addImage(image);
-        }
+        int postId = 1;
+        Image expectedImage = new Image(postId, "https://team2-carbook.s3.ap-northeast-2.amazonaws.com/images/수정_이미지.jpeg");
+        imageRepository.updateImage(expectedImage);
+        Image resultImage = imageRepository.getImageByPostId(postId);
+        assertThat(resultImage).usingRecursiveComparison().isEqualTo(expectedImage);
     }
 }
