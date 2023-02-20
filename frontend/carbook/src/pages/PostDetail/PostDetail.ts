@@ -1,13 +1,13 @@
-import { Component } from '@/core';
-import './PostDetail.scss';
-import backButton from '@/assets/icons/backButton.svg';
-import { InfoContents, InfoHeader, Footer } from '@/components/PostDetail';
-import { basicAPI } from '@/api';
+import { Component } from "@/core";
+import "./PostDetail.scss";
+import backButton from "@/assets/icons/backButton.svg";
+import { InfoContents, InfoHeader, Footer } from "@/components/PostDetail";
+import { basicAPI } from "@/api";
 
 export default class PostDetailPage extends Component {
   async setup() {
     this.state.isloading = true;
-    const postid = location.pathname.split('/').slice(-1)[0];
+    const postid = location.pathname.split("/").slice(-1)[0];
     this.state.postid = postid;
     await this.fetchPostDefail(postid);
   }
@@ -44,6 +44,8 @@ export default class PostDetailPage extends Component {
       </footer>
 
       <div class = 'back-button'> <img class = 'backbutton' src = "${backButton}"/> </div>
+
+      <div class = 'alert-modal'>오류 : 닉네임이 중복되었습니다.</div>
     </div>
     `;
   }
@@ -53,28 +55,28 @@ export default class PostDetailPage extends Component {
     this.$target.innerHTML = this.template();
 
     const postDefailContainer = this.$target.querySelector(
-      '.postdetail-container'
+      ".postdetail-container"
     ) as HTMLElement;
 
-    if (postDefailContainer.classList.contains('once')) return;
-    postDefailContainer.classList.add('once');
-    postDefailContainer.addEventListener('click', (e: Event) => {
+    if (postDefailContainer.classList.contains("once")) return;
+    postDefailContainer.classList.add("once");
+    postDefailContainer.addEventListener("click", (e: Event) => {
       const target = e.target as HTMLElement;
 
-      if (target.classList.contains('info-menu')) {
+      if (target.classList.contains("info-menu")) {
         const menuItems = target.querySelector(
-          '.info-menu-items'
+          ".info-menu-items"
         ) as HTMLElement;
-        menuItems.classList.toggle('FadeInAndOut');
+        menuItems.classList.toggle("FadeInAndOut");
         return;
       }
 
-      if (target.closest('.back-button')) {
+      if (target.closest(".back-button")) {
         history.back();
         return;
       }
 
-      if (target.closest('.like-button')) {
+      if (target.closest(".like-button")) {
         this.fetchlike(this.state.postid);
       }
     });
@@ -84,15 +86,15 @@ export default class PostDetailPage extends Component {
   }
 
   mounted(): void {
-    const postImg = this.$target.querySelector('.header') as HTMLElement;
+    const postImg = this.$target.querySelector(".header") as HTMLElement;
     const infoHeader = this.$target.querySelector(
-      '.info-header'
+      ".info-header"
     ) as HTMLElement;
     const infoContents = this.$target.querySelector(
-      '.info-contents'
+      ".info-contents"
     ) as HTMLElement;
     const footer = this.$target.querySelector(
-      '.postdetail-footer'
+      ".postdetail-footer"
     ) as HTMLElement;
 
     postImg.style.backgroundImage = `url(${this.state.imageUrl})`;
@@ -116,7 +118,7 @@ export default class PostDetailPage extends Component {
 
   async fetchlike(id: string) {
     const postId = parseInt(id);
-    console.log('start fetchlike');
+    console.log("start fetchlike");
     await basicAPI
       .post(`/api/post/like`, { postId })
       .then((response) => {
