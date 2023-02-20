@@ -115,4 +115,4 @@
 
 
 ## ERD
-![image](https://user-images.githubusercontent.com/46276276/217181456-2a6ddbfe-2afb-4328-9e20-bd3ed5d28a7b.png)
+![카북 (1)](https://user-images.githubusercontent.com/46276276/220059684-7892c317-a0b3-4aab-9b15-d2a6e6811b99.png)
