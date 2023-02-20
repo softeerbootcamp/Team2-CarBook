@@ -1,19 +1,20 @@
 import { Component } from '@/core';
 import { ImageForm, Selection, HashTagForm, TextForm } from '@/components/Post';
-import { qs, qsa, getHashTagsObj } from '@/utils';
+import { qs, qsa, getHashTagsObj, isEmptyObj } from '@/utils';
 import { basicAPI, formAPI } from '@/api';
 import { push } from '@/utils/router/navigate';
 import { POST_INIT } from '@/constants/post';
 import { IPostIndex } from '@/interfaces';
 
 export default class Form extends Component {
+  imageForm: any;
+  typeSelection: any;
+  modelSelection: any;
   postDetail: any;
 
   setup(): void {
     const { prevPost } = this.props;
     this.postDetail = prevPost || POST_INIT;
-
-    this.onClickBtnHandler();
   }
 
   template(): string {
@@ -42,30 +43,36 @@ export default class Form extends Component {
     `;
   }
 
-  onClickBtnHandler() {
+  setEvent(): void {
     this.$target.addEventListener('click', (e: Event) => {
-      const className = (<HTMLElement>e.target).className;
-
-      switch (className) {
-        case 'form__buttons--cancel':
-          e.preventDefault();
-          history.back();
-          return;
-        case 'form__buttons--submit':
-          e.preventDefault();
-          this.onSubmitHandler();
-          return;
-      }
+      this.onClickBtnHandler(e);
     });
   }
 
-  setData(prevData: string | string[], dataType: IPostIndex) {
+  onClickBtnHandler(e: Event) {
+    const className = (<HTMLElement>e.target).className;
+
+    switch (className) {
+      case 'form__buttons--cancel':
+        e.preventDefault();
+        history.back();
+        return;
+      case 'form__buttons--submit':
+        e.preventDefault();
+        this.onSubmitHandler();
+        return;
+    }
+  }
+
+  setData(prevData: string | string[] | null, dataType: IPostIndex) {
     if (dataType === 'hashtags' && typeof prevData === 'object') {
       this.postDetail[dataType] = prevData;
     } else {
       if (dataType !== 'hashtags' && typeof prevData === 'string') {
         this.postDetail[dataType] = prevData;
       } else if (dataType === 'imageUrl' && typeof prevData === 'object') {
+        this.postDetail[dataType] = prevData;
+      } else if (dataType === 'type' || dataType === 'model') {
         this.postDetail[dataType] = prevData;
       }
     }
@@ -79,8 +86,9 @@ export default class Form extends Component {
 
     const { type, model, imageUrl, hashtags, content } = this.postDetail;
 
-    new ImageForm(section, {
+    const imageForm = new ImageForm(section, {
       imageUrl,
+      isInValid: false,
       setFormData: (newData: any) => {
         this.setData(newData, 'imageUrl');
       },
@@ -88,10 +96,11 @@ export default class Form extends Component {
 
     const { typeOption, typeId } = await this.getTypeOptions(type);
     const modelOption = await this.getModelOptions(typeId);
-    new Selection(<HTMLElement>inputBoxs[0], {
+    const typeSelection = new Selection(<HTMLElement>inputBoxs[0], {
       label: '차 종류',
       selected: type,
       options: typeOption,
+      isInValid: false,
       setFormData: async (newData: any) => {
         this.setData(newData, 'type');
         const { typeId } = await this.getTypeOptions(newData);
@@ -104,6 +113,7 @@ export default class Form extends Component {
       label: '차 모델',
       selected: model,
       options: modelOption,
+      isInValid: false,
       setFormData: (newData: any) => {
         this.setData(newData, 'model');
       },
@@ -120,6 +130,10 @@ export default class Form extends Component {
         this.setData(newData, 'content');
       },
     });
+
+    this.imageForm = imageForm;
+    this.modelSelection = modelSelection;
+    this.typeSelection = typeSelection;
   }
 
   async getTypeOptions(typeName: string) {
@@ -150,6 +164,9 @@ export default class Form extends Component {
 
   async onSubmitHandler() {
     const { type, model, imageUrl, hashtags, content } = this.postDetail;
+
+    if (this.onValidHandler()) return;
+
     const stringHashtags = hashtags.join(', ');
 
     const formdata = new FormData();
@@ -175,5 +192,25 @@ export default class Form extends Component {
       console.error(error);
       alert('다시 로그인 해주세요');
     }
+  }
+
+  onValidHandler() {
+    let isInValid = false;
+    const { type, model, imageUrl } = this.postDetail;
+    console.log(type);
+    if (!type) {
+      this.typeSelection.setState({ isInValid: true });
+      isInValid = true;
+    }
+    if (!model) {
+      this.modelSelection.setState({ isInValid: true });
+      isInValid = true;
+    }
+    if (isEmptyObj(imageUrl)) {
+      this.imageForm.setState({ isInValid: true });
+      isInValid = true;
+    }
+
+    return isInValid;
   }
 }
