@@ -115,10 +115,6 @@ class ImageRepositoryTest {
     }
 
     @Test
-    void deleteImageByPostId() {
-    }
-
-    @Test
     void updateImage() {
     }
 

@@ -87,6 +87,10 @@ public class ImageRepository {
 
         return conditionalStatement.substring(0, conditionalStatement.length() - 4);
     }
+
+    public void deleteImageByPostId(int postId) {
+        jdbcTemplate.update("delete from IMAGE where post_id=?",postId);
+    }
      */
 
     public void addImage(Image image) {
@@ -94,10 +98,6 @@ public class ImageRepository {
                 image.getPostId(),
                 decodeURL(image.getImageUrl())
         );
-    }
-
-    public void deleteImageByPostId(int postId) {
-        jdbcTemplate.update("delete from IMAGE where post_id=?",postId);
     }
 
     public void updateImage(Image image){
