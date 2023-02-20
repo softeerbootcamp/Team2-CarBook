@@ -1,6 +1,7 @@
 package softeer.carbook.domain.follow.repository;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
@@ -34,6 +35,7 @@ class FollowRepositoryTest {
     }
 
     @Test
+    @DisplayName("팔로워 id 조회 테스트")
     void getFollowerIds() {
         // when
         List<Integer> followerIds = followRepository.getFollowerIds(3);
@@ -44,6 +46,7 @@ class FollowRepositoryTest {
     }
 
     @Test
+    @DisplayName("팔로잉 id 조회 테스트")
     void getFollowingIds() {
         // when
         List<Integer> followingIds = followRepository.getFollowingIds(1);
@@ -54,6 +57,7 @@ class FollowRepositoryTest {
     }
 
     @Test
+    @DisplayName("팔로워수 조회 테스트")
     void getFollowerCount() {
         // when
         int followerCount = followRepository.getFollowerCount(3);
@@ -63,6 +67,7 @@ class FollowRepositoryTest {
     }
 
     @Test
+    @DisplayName("팔로잉수 조회 테스트")
     void getFollowingCount() {
         // when
         int followingCount = followRepository.getFollowingCount(1);
@@ -72,6 +77,7 @@ class FollowRepositoryTest {
     }
 
     @Test
+    @DisplayName("팔로우 체크 테스트")
     void isFollow() {
         // when
         boolean isFollowTrue = followRepository.isFollow(1, 2);
@@ -83,6 +89,7 @@ class FollowRepositoryTest {
     }
 
     @Test
+    @DisplayName("팔로워 id와 팔로잉 id로 pk id 조회 테스트")
     void findFollowId() {
         // when
         int id1 = followRepository.findFollowId(1 ,2).get();
@@ -94,6 +101,7 @@ class FollowRepositoryTest {
     }
 
     @Test
+    @DisplayName("언팔로우 테스트")
     void unFollow() {
         // when
         followRepository.unFollow(1);
@@ -104,6 +112,7 @@ class FollowRepositoryTest {
     }
 
     @Test
+    @DisplayName("팔로우 추가 테스트")
     void addFollow() {
         // when
         followRepository.addFollow(3, 4);
