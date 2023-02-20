@@ -55,9 +55,9 @@ public class ImageRepository {
 
     public List<Image> findImagesByNickName(String profileUserNickname) {
         return jdbcTemplate.query(
-                "select IMAGE.post_id, IMAGE.image_url from USER, POST, IMAGE " +
-                        "WHERE USER.id = POST.user_id and POST.id = IMAGE.post_id " +
-                        "and USER.nickname = ? " +
+                "select IMAGE.post_id, IMAGE.image_url from `USER`, POST, IMAGE " +
+                        "WHERE `USER`.id = POST.user_id and POST.id = IMAGE.post_id " +
+                        "and `USER`.nickname = ? " +
                         "and POST.is_deleted = false " +
                         "ORDER BY create_date DESC",
                 imageRowMapper(), profileUserNickname);
@@ -87,6 +87,10 @@ public class ImageRepository {
 
         return conditionalStatement.substring(0, conditionalStatement.length() - 4);
     }
+
+    public void deleteImageByPostId(int postId) {
+        jdbcTemplate.update("delete from IMAGE where post_id=?",postId);
+    }
      */
 
     public void addImage(Image image) {
@@ -94,10 +98,6 @@ public class ImageRepository {
                 image.getPostId(),
                 decodeURL(image.getImageUrl())
         );
-    }
-
-    public void deleteImageByPostId(int postId) {
-        jdbcTemplate.update("delete from IMAGE where post_id=?",postId);
     }
 
     public void updateImage(Image image){
