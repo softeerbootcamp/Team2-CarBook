@@ -204,7 +204,6 @@ export default class ProfilePage extends Component {
     ) as HTMLElement;
     new ModifyModal(modifyModal);
   }
-  setEvent(): void {}
 
 
   async modifyNickname({
