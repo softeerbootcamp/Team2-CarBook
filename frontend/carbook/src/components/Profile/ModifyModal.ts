@@ -59,8 +59,10 @@ export default class ModifyModal extends Component {
       if (!cancelButton) return;
       const modifyModal = this.$target.closest(".modify-modal") as HTMLElement;
       modifyModal.classList.toggle("FadeInAndOut");
-      modifyModal.classList.remove("nickname");
-      modifyModal.classList.remove("password");
+      setTimeout(() => {
+        modifyModal.classList.remove("nickname");
+        modifyModal.classList.remove("password");
+      }, 1000);
     });
   }
 }
