@@ -18,7 +18,6 @@ export default class InfoHeader extends Component {
       }
 
       if (target.classList.contains("delete-post")) {
-        console.log("삭제요청");
         const postid = location.pathname.split("/").slice(-1)[0];
         this.deletePost(postid);
         return;
