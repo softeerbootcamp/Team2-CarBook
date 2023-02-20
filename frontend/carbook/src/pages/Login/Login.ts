@@ -54,10 +54,12 @@ export default class LoginPage extends Component {
       sendUserInfo(id, password, modal);
       return false;
     });
-  }
 
-  mounted(): void {
-    this.$target.addEventListener("click", (e: Event) => {
+    const loginContainer = this.$target.querySelector(
+      ".login__container"
+    ) as HTMLElement;
+
+    loginContainer.addEventListener("click", (e: Event) => {
       const target = e.target as HTMLElement;
       const signupLink = target.closest(".register");
       if (!signupLink) return;
@@ -82,24 +84,19 @@ async function sendUserInfo(
       email,
       password,
     })
-    .then((response) => {
-      /**1. password error
-       * 2. success
-       */
+    .then(() => {
       const TRANSITIONDELAY = 2300;
-      const responseMessage = response.data.message;
-      if (responseMessage === "ERROR: Password not match") {
-        showErrorModal(modal, NONEXISTENTPW);
-        return;
-      }
       showErrorModal(modal, LOGINSUCCESS);
       setTimeout(() => {
         push("/");
       }, TRANSITIONDELAY);
     })
-    .catch(() => {
-      /**id error*/
-      showErrorModal(modal, NONEXISTENTID);
+    .catch((error) => {
+      const ErrorMessage = error.response.data.message;
+      console.log(ErrorMessage);
+      if (ErrorMessage.includes("Email")) showErrorModal(modal, NONEXISTENTID);
+      if (ErrorMessage.includes("Password"))
+        showErrorModal(modal, NONEXISTENTPW);
     });
 }
 
