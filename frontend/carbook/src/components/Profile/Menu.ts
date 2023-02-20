@@ -45,6 +45,20 @@ export default class Menu extends Component {
       }
 
       if (li.classList.contains("modify-password")) {
+        const password = modifyModal.querySelector(
+          ".modify-modal-form-password input"
+        ) as HTMLInputElement;
+        const modifyPassword = modifyModal.querySelector(
+          ".modify-modal-form-modify-password input"
+        ) as HTMLInputElement;
+        const modifyPasswordConfirm = modifyModal.querySelector(
+          ".modify-modal-form-password-confirm input"
+        ) as HTMLInputElement;
+
+        password.value =
+          modifyPassword.value =
+          modifyPasswordConfirm.value =
+            "";
         modifyModal.classList.add("password");
       }
 

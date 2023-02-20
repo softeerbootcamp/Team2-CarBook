@@ -364,6 +364,6 @@ function showErrorModal(modal: HTMLElement, errorMessage: string): void {
   modal.classList.toggle("FadeInAndOut");
   setTimeout(() => {
     modal.classList.toggle("FadeInAndOut");
-    modal.classList.add(mode);
+    modal.classList.remove(mode);
   }, 2000);
 }
