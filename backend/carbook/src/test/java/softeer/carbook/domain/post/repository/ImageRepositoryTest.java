@@ -83,10 +83,22 @@ class ImageRepositoryTest {
 
     @Test
     void findImagesByUserId() {
+        int userId = 1;
+        List<Image> resultImages = imageRepository.findImagesByUserId(userId);
+        List<Image> expectedImages = new ArrayList<>();
+        expectedImages.add(new Image(1,"https://team2-carbook.s3.ap-northeast-2.amazonaws.com/images/1_이미지.jpeg"));
+        expectedImages.add(new Image(2,"https://team2-carbook.s3.ap-northeast-2.amazonaws.com/images/2_이미지.jpeg"));
+        assertThat(resultImages).usingRecursiveComparison().isEqualTo(expectedImages);
     }
 
     @Test
-    void findImagesByNickName() {
+    void findImagesByNickNameTest() {
+        String nickname = "testname1";
+        List<Image> resultImages = imageRepository.findImagesByNickName(nickname);
+        List<Image> expectedImages = new ArrayList<>();
+        expectedImages.add(new Image(1,"https://team2-carbook.s3.ap-northeast-2.amazonaws.com/images/1_이미지.jpeg"));
+        expectedImages.add(new Image(2,"https://team2-carbook.s3.ap-northeast-2.amazonaws.com/images/2_이미지.jpeg"));
+        assertThat(resultImages).usingRecursiveComparison().isEqualTo(expectedImages);
     }
 
     @Test
