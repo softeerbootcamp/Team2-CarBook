@@ -58,6 +58,22 @@ class TagRepositoryTest {
     }
 
     @Test
+    @DisplayName("해시태그 추가 테스트")
+    void addHashtag() {
+        // given
+        String tagName = "맑음";
+        Hashtag hashtag = new Hashtag(tagName);
+
+        // when
+        int hashtagId = tagRepository.addHashtag(hashtag);
+
+        // then
+        Hashtag result = tagRepository.findHashtagById(hashtagId);
+        assertThat(result.getId()).isEqualTo(hashtagId);
+        assertThat(result.getTag()).isEqualTo(tagName);
+    }
+
+    @Test
     @DisplayName("게시물 id로 해시태그 조회 테스트")
     void findHashtagsByPostId() {
         // given
@@ -138,5 +154,36 @@ class TagRepositoryTest {
         assertThat(result.getId()).isEqualTo(modelId);
         assertThat(result.getTypeId()).isEqualTo(typeId);
         assertThat(result.getTag()).isEqualTo(tagName);
+    }
+
+    @Test
+    @DisplayName("게시물에 해시태그 추가 테스트")
+    void addPostHashtag() {
+        // given
+        int postId = 2;
+        Hashtag hashtag = tagRepository.findHashtagByName("테스트태그1");
+
+        // when
+        tagRepository.addPostHashtag(postId, hashtag.getId());
+
+        // then
+        List<String> result = tagRepository.findHashtagsByPostId(postId);
+        assertThat(result.size()).isEqualTo(2);
+        assertThat(result.get(0)).isEqualTo("테스트태그2");
+        assertThat(result.get(1)).isEqualTo("테스트태그1");
+    }
+
+    @Test
+    @DisplayName("게시물에 해시태그 삭제 테스트")
+    void deletePostHashtag() {
+        // given
+        int postId = 2;
+
+        // when
+        tagRepository.deletePostHashtags(postId);
+
+        // then
+        List<String> result = tagRepository.findHashtagsByPostId(postId);
+        assertThat(result.size()).isEqualTo(0);
     }
 }
