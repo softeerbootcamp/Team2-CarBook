@@ -189,7 +189,7 @@ $menu: "@/assets/icons/postdetail_menu.svg";
     border-radius: 4px;
     visibility: hidden;
     opacity: 0;
-    color: $main-white;
+    // color: $main-white;
 
     text-align: center;
     transition: all ease-in-out 1s;
@@ -199,7 +199,7 @@ $menu: "@/assets/icons/postdetail_menu.svg";
     background-color: $main-pink;
   }
   .blue {
-    background-color: $main-blue;
+    background-color: $main-light-blue;
   }
 
   .FadeInAndOut {
