@@ -58,17 +58,17 @@ public class PostService {
         this.likeRepository = likeRepository;
     }
 
-    public GuestPostsResponse getRecentPosts(int index) {
-        index = initPostId(index);
-        List<Image> images = imageRepository.getImagesOfRecentPosts(POST_COUNT, index);
+    public GuestPostsResponse getRecentPosts(int postId) {
+        postId = initPostId(postId);
+        List<Image> images = imageRepository.getImagesOfRecentPosts(POST_COUNT, postId);
         return new GuestPostsResponse.GuestPostsResponseBuilder()
                 .images(images)
                 .build();
     }
 
-    public LoginPostsResponse getRecentFollowerPosts(int index, User user) {
-        index = initPostId(index);
-        List<Image> images = imageRepository.getImagesOfRecentFollowingPosts(POST_COUNT, index, user.getId());
+    public LoginPostsResponse getRecentFollowerPosts(int postId, User user) {
+        postId = initPostId(postId);
+        List<Image> images = imageRepository.getImagesOfRecentFollowingPosts(POST_COUNT, postId, user.getId());
         return new LoginPostsResponse.LoginPostsResponseBuilder()
                 .nickname(user.getNickname())
                 .images(images)
