@@ -19,8 +19,9 @@ export default class Router {
   private route() {
     const TargetPage = this.findMatchedRoute()?.element || NotFoundPage;
 
+    const app = this.$target.cloneNode(false) as HTMLElement;
     document.body.innerHTML = '';
-    const app = document.createElement('div');
+
     app.id = 'app';
     document.body.appendChild(app);
 

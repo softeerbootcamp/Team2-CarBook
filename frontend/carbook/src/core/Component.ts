@@ -12,6 +12,7 @@ export default class Component {
     this.props = props;
     this.setup();
     this.render();
+    this.setEvent();
   }
   setup() {}
   template() {
@@ -19,7 +20,6 @@ export default class Component {
   }
   render() {
     this.$target.innerHTML = this.template();
-    this.setEvent();
     this.mounted();
   }
   mounted() {}
