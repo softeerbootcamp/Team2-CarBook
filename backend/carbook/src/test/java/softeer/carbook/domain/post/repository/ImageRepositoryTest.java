@@ -71,35 +71,14 @@ class ImageRepositoryTest {
     @Test
     @DisplayName("[index,index+size) 범위의 팔로우 중인 게시글 가져오기 테스트")
     void getImagesOfRecentFollowingPostsTest() {
-        int size = 8;
-        int index = 2;
-        int followerId = 100;
-
-        //id 10, 20, 30인 유저를 팔로우 중
-        List<Integer> followingIds = new ArrayList<>(){{
-            add(10);
-            add(20);
-            add(30);
-        }};
-
-        //유저 팔로우
-        for (int i: followingIds)
-            followRepository.addFollow(followerId,i);
-
-        addGuestPosts(5,9);
-
-        //팔로잉 유저의 게시글 추가
-        for (int userId: followingIds){
-            for (int i = 1; i< 5; i++){
-                int modelId = rd.nextInt(MODEL_COUNT-1)+1;
-                Post post = new Post(userId,userId+"의 "+i+"번째 글",modelId);
-                Image image = new Image(postRepository.addPost(post), "image/"+userId+"_"+i+".jpeg");
-                imageRepository.addImage(image);
-            }
-        }
-
-        addGuestPosts(5,9);
-
+        int size = 2;
+        int index = 0;
+        int followerId = 1;
+        List<Image> expectedImages = new ArrayList<>();
+        expectedImages.add(new Image(5,"https://team2-carbook.s3.ap-northeast-2.amazonaws.com/images/5_이미지.jpeg"));
+        expectedImages.add(new Image(4,"https://team2-carbook.s3.ap-northeast-2.amazonaws.com/images/4_이미지.jpeg"));
+        List<Image> resultImages = imageRepository.getImagesOfRecentFollowingPosts(size, index, followerId);
+        assertThat(resultImages).usingRecursiveComparison().isEqualTo(expectedImages);
     }
 
     @Test
