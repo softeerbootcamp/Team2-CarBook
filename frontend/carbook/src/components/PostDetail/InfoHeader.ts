@@ -36,14 +36,13 @@ export default class InfoHeader extends Component {
       .delete(`/api/post/${postid}`)
       .then((res) => {
         console.log(res.data.message);
-        alert("게시글 삭제에 성공하셨습니다");
-        // showErrorModal(modal, "게시글 삭제에 성공했습니다");
-        push(`/`);
+        showErrorModal(modal, "게시글 삭제에 성공했습니다");
+        setTimeout(() => {
+          push(`/`);
+        }, 2300);
       })
-      .catch((err) => {
-        console.log(err);
-        alert("게시글 삭제에 실패하셨습니다");
-        // showErrorModal(modal, "게시글 삭제에 실패했습니다");
+      .catch(() => {
+        showErrorModal(modal, "게시글 삭제에 실패했습니다");
       });
   }
 
@@ -67,11 +66,12 @@ export default class InfoHeader extends Component {
 
 function showErrorModal(modal: HTMLElement, errorMessage: string): void {
   if (modal.classList.contains("FadeInAndOut")) return;
+  const mode = errorMessage === "게시글 삭제에 성공했습니다" ? "blue" : "pink";
   modal.innerHTML = errorMessage;
-  modal.classList.add("pink");
+  modal.classList.add(mode);
   modal.classList.toggle("FadeInAndOut");
   setTimeout(() => {
     modal.classList.toggle("FadeInAndOut");
-    modal.classList.add("pink");
+    modal.classList.add(mode);
   }, 2000);
 }

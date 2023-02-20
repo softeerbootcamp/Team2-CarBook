@@ -179,4 +179,35 @@ $menu: "@/assets/icons/postdetail_menu.svg";
     width: 53px;
     height: 42px;
   }
+
+  .alert-modal {
+    width: 80%;
+    margin: 0 10%;
+    position: fixed;
+    top: -60px;
+    padding: 16px 5%;
+    border-radius: 4px;
+    visibility: hidden;
+    opacity: 0;
+    color: $main-white;
+
+    text-align: center;
+    transition: all ease-in-out 1s;
+    z-index: 990;
+  }
+  .pink {
+    background-color: $main-pink;
+  }
+  .blue {
+    background-color: $main-blue;
+  }
+
+  .FadeInAndOut {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .alert-modal.FadeInAndOut {
+    top: 60px;
+  }
 }
