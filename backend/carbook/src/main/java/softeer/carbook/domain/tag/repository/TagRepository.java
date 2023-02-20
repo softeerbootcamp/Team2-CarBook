@@ -26,6 +26,13 @@ public class TagRepository {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
+    public Hashtag findHashtagById(int id) {
+        List<Hashtag> hashtags = jdbcTemplate.query("SELECT h.id, h.tag FROM HASHTAG h WHERE id = ?", hashtagRowMapper(), id);
+        return hashtags.stream()
+                .findAny()
+                .orElseThrow(HashtagNotExistException::new);
+    }
+
     public Hashtag findHashtagByName(String tag) {
         List<Hashtag> hashtags = jdbcTemplate.query("SELECT h.id, h.tag FROM HASHTAG h WHERE tag = ?", hashtagRowMapper(), tag);
         return hashtags.stream()
