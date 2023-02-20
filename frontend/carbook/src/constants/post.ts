@@ -1,3 +1,5 @@
+import { tagStore } from '@/store/tagStore';
+
 export const POST_INIT = {
   type: '',
   model: '',
@@ -7,13 +9,11 @@ export const POST_INIT = {
 };
 
 export const POST_LIST_INIT = {
-  isLogin: localStorage.getItem('login') || false,
-  nickname: '',
   isInit: true,
   isLoading: false,
   idEnd: false,
   images: [],
   length: 6,
   index: 0,
-  tags: {},
+  tags: tagStore.getState(),
 };

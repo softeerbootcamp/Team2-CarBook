@@ -27,9 +27,11 @@ export default class HashTagList extends Component {
       ${hashtagList
         .map(
           (hashtag) =>
-            `<div class="hashtag" data-id=${hashtag.id}>${getTagIcon(
-              `${hashtag.category}`
-            )} <div>${hashtag.tag}</div></div>`
+            `<div class="hashtag" data-id=${hashtag.id} data-tag=${
+              hashtag.tag
+            }>${getTagIcon(`${hashtag.category}`)} <div>${
+              hashtag.tag
+            }</div></div>`
         )
         .join('')}
     `;
