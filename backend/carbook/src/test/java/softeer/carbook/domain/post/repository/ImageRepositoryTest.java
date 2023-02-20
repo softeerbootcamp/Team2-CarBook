@@ -82,6 +82,7 @@ class ImageRepositoryTest {
     }
 
     @Test
+    @DisplayName("User Id로 이미지 조회 테스트")
     void findImagesByUserId() {
         int userId = 1;
         List<Image> resultImages = imageRepository.findImagesByUserId(userId);
@@ -92,6 +93,7 @@ class ImageRepositoryTest {
     }
 
     @Test
+    @DisplayName("닉네임으로 이미지 조회 테스트")
     void findImagesByNickNameTest() {
         String nickname = "testname1";
         List<Image> resultImages = imageRepository.findImagesByNickName(nickname);
