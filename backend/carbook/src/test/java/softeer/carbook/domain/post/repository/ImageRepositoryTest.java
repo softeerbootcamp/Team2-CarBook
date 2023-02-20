@@ -106,10 +106,12 @@ class ImageRepositoryTest {
     @Test
     @DisplayName("Image 저장하기 테스트")
     void addImage() {
-        Image image = new Image(10,"image/test.jpeg");
-        imageRepository.addImage(image);
-        Image savedImage = imageRepository.getImageByPostId(10);
-        assertThat(savedImage).usingRecursiveComparison().isEqualTo(image);
+        int userId = 1;
+        int postId = postRepository.addPost(new Post(userId,userId+"의 새 글",10));
+        Image expectedImage = new Image(postId, "https://team2-carbook.s3.ap-northeast-2.amazonaws.com/images/새로운_이미지.jpeg");
+        imageRepository.addImage(expectedImage);
+        Image resultImage = imageRepository.getImageByPostId(postId);
+        assertThat(resultImage).usingRecursiveComparison().isEqualTo(expectedImage);
     }
 
     @Test
