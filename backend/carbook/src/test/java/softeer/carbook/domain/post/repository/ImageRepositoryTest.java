@@ -32,17 +32,12 @@ import static org.junit.jupiter.api.Assertions.*;
 @Sql("classpath:create_table.sql")
 @Sql("classpath:create_data.sql")
 class ImageRepositoryTest {
-    private static final int MODEL_COUNT = 52;
-    private final Random rd = new Random();
-    private UserRepository userRepository;
     private ImageRepository imageRepository;
     private PostRepository postRepository;
-    private FollowRepository followRepository;
     @Autowired
     private DataSource dataSource;
     @BeforeEach
     void setUp(){
-        userRepository = new UserRepository(dataSource);
         imageRepository = new ImageRepository(dataSource);
         postRepository = new PostRepository(dataSource);
     }
