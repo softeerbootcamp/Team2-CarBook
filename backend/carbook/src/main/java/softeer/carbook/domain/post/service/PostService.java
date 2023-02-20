@@ -59,6 +59,7 @@ public class PostService {
     }
 
     public GuestPostsResponse getRecentPosts(int index) {
+        index = initPostId(index);
         List<Image> images = imageRepository.getImagesOfRecentPosts(POST_COUNT, index);
         return new GuestPostsResponse.GuestPostsResponseBuilder()
                 .images(images)
@@ -66,6 +67,7 @@ public class PostService {
     }
 
     public LoginPostsResponse getRecentFollowerPosts(int index, User user) {
+        index = initPostId(index);
         List<Image> images = imageRepository.getImagesOfRecentFollowingPosts(POST_COUNT, index, user.getId());
         return new LoginPostsResponse.LoginPostsResponseBuilder()
                 .nickname(user.getNickname())
@@ -270,6 +272,10 @@ public class PostService {
     private void invalidPostAccessCheck(Post post, User user){
         if (!(post.getUserId() == user.getId()))
             throw new InvalidPostAccessException();
+    }
+
+    private int initPostId(int postId){
+        return postId==0?Integer.MAX_VALUE:postId;
     }
 
 }
