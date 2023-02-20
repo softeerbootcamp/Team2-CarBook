@@ -278,13 +278,11 @@ export default class ProfilePage extends Component {
         password: beforePassword,
         newPassword: afterPassword,
       })
-      .then((res) => {
-        console.log(res.data.message);
-        if (res.data.message.includes("ERROR")) {
-          showErrorModal(alertModal, "기존 비밀번호가 일치하지 않습니다");
-          return;
-        }
+      .then(() => {
         showErrorModal(alertModal, "비밀번호 변경에 성공하셨습니다");
+      })
+      .catch(() => {
+        showErrorModal(alertModal, "기존 비밀번호가 일치하지 않습니다");
       });
   }
 
@@ -329,7 +327,6 @@ function IsInvalidPassword({
   afterPassword: string;
   afterPasswordConfirm: string;
 }) {
-  // 변경할 비밀번호와 비밀번호 확인이 일치하는지 체크
   if (beforePassword.length === 0) {
     showErrorModal(alertModal, EMPTYPW);
     return true;
@@ -347,6 +344,11 @@ function IsInvalidPassword({
 
   if (afterPassword !== afterPasswordConfirm) {
     showErrorModal(alertModal, NotMatchedPassword);
+    return true;
+  }
+
+  if (beforePassword === afterPasswordConfirm) {
+    showErrorModal(alertModal, "기존 비밀번호와 일치합니다");
     return true;
   }
 
