@@ -50,29 +50,20 @@ class ImageRepositoryTest {
     @Test
     @DisplayName("PostId로 Image 조회하기 테스트")
     void getImageByPostIdTest() {
-        Image image = new Image(1,"image/test.jpeg");
-        userRepository.addUser(new User("test@gmail.com","john","bimil"));
-        postRepository.addPost(new Post(1,"3번유저게시글",5));
-        imageRepository.addImage(image);
-        Image resultImage = imageRepository.getImageByPostId(image.getPostId());
-        assertThat(resultImage).usingRecursiveComparison().isEqualTo(image);
+        Image expectedImage = new Image(1, "https://team2-carbook.s3.ap-northeast-2.amazonaws.com/images/1_이미지.jpeg");
+        Image resultImage = imageRepository.getImageByPostId(1);
+        assertThat(resultImage).usingRecursiveComparison().isEqualTo(expectedImage);
     }
 
     @Test
     @DisplayName("[index,index+size) 범위의 게시글 가져오기 테스트")
     void getImagesOfRecentPostsTest() {
-        int size = 10;
-        int index = 5;
+        int size = 3;
+        int index = 1;
         List<Image> expectedImages = new ArrayList<>();
-        for (int i=0; i<20; i++){
-            int userId = rd.nextInt(100);
-            int modelId = rd.nextInt(MODEL_COUNT-1)+1;
-            Post post = new Post(userId,userId+"의 랜덤 글",modelId);
-            Image image = new Image(postRepository.addPost(post), "image/"+i+".jpeg");
-            imageRepository.addImage(image);
-            if (i>=index && i<size+index)
-                expectedImages.add(image);
-        }
+        expectedImages.add(new Image(7, "https://team2-carbook.s3.ap-northeast-2.amazonaws.com/images/7_이미지.jpeg"));
+        expectedImages.add(new Image(5, "https://team2-carbook.s3.ap-northeast-2.amazonaws.com/images/5_이미지.jpeg"));
+        expectedImages.add(new Image(4, "https://team2-carbook.s3.ap-northeast-2.amazonaws.com/images/4_이미지.jpeg"));
         List<Image> resultImages = imageRepository.getImagesOfRecentPosts(size, index);
         assertThat(resultImages).usingRecursiveComparison().isEqualTo(expectedImages);
     }
