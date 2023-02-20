@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
+import softeer.carbook.domain.user.dto.IsLoginForm;
 import softeer.carbook.domain.user.dto.LoginForm;
 import softeer.carbook.global.dto.Message;
 import softeer.carbook.domain.user.dto.ModifyPasswordForm;
@@ -19,8 +21,7 @@ import javax.servlet.http.HttpSession;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -116,5 +117,16 @@ class UserControllerTest {
                                 "\"newPassword\":\"springtestnewpwd\"}"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Nickname modified successfully")));
+    }
+
+    @Test
+    @DisplayName("로그인한 사용자인지 판단 테스트")
+    void isLogin() throws Exception{
+        // given
+        given(userService.getIsLoginState(any())).willReturn(any());
+
+        // when & then
+        mockMvc.perform(get("/isLogin"))
+                .andExpect(status().isOk());
     }
 }
