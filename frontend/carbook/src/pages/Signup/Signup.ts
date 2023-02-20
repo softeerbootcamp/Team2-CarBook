@@ -57,16 +57,20 @@ export default class SignupPage extends Component {
       if (isEmpty(id, password, nickname, modal)) return;
       sendUserInfo(id, password, nickname, modal);
     });
-  }
 
-  mounted(): void {
-    this.$target.addEventListener("click", (e: Event) => {
+    const signupContainer = this.$target.querySelector(
+      ".signup-container"
+    ) as HTMLElement;
+
+    signupContainer.addEventListener("click", (e: Event) => {
       const target = e.target as HTMLElement;
       const loginLink = target.closest(".footer-login");
       if (!loginLink) return;
       push("/login");
     });
   }
+
+  mounted(): void {}
 }
 
 async function sendUserInfo(
