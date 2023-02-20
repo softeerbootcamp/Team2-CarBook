@@ -357,11 +357,13 @@ function IsInvalidPassword({
 
 function showErrorModal(modal: HTMLElement, errorMessage: string): void {
   if (modal.classList.contains("FadeInAndOut")) return;
+  const mode =
+    errorMessage === "비밀번호 변경에 성공하셨습니다" ? "blue" : "pink";
   modal.innerHTML = errorMessage;
-  modal.classList.add("pink");
+  modal.classList.add(mode);
   modal.classList.toggle("FadeInAndOut");
   setTimeout(() => {
     modal.classList.toggle("FadeInAndOut");
-    modal.classList.add("pink");
+    modal.classList.add(mode);
   }, 2000);
 }
