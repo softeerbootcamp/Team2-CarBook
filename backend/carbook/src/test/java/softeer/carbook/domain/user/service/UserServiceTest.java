@@ -14,6 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.transaction.annotation.Transactional;
+import softeer.carbook.domain.user.dto.IsLoginForm;
 import softeer.carbook.domain.user.dto.LoginForm;
 import softeer.carbook.domain.user.dto.ModifyPasswordForm;
 import softeer.carbook.domain.user.exception.*;
@@ -296,6 +297,35 @@ class UserServiceTest {
         // Then
         assertThat(exception.getMessage()).isEqualTo("ERROR: Password not match");
         verify(userRepository).findUserById(14);
+    }
+
+    @Test
+    @DisplayName("로그인 여부 확인 테스트 - True")
+    void isLoginTrue(){
+        // Given
+        MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("user", 14);
+        httpServletRequest.setSession(session);
+
+        // When
+        IsLoginForm isLoginForm = userService.getIsLoginState(session);
+
+        // Then
+        assertThat(isLoginForm.isLogin()).isTrue();
+    }
+
+    @Test
+    @DisplayName("로그인 여부 확인 테스트 - False")
+    void isLoginFalse(){
+        // Given
+        MockHttpSession session = new MockHttpSession();
+
+        // When
+        IsLoginForm isLoginForm = userService.getIsLoginState(session);
+
+        // Then
+        assertThat(isLoginForm.isLogin()).isFalse();
     }
 
 

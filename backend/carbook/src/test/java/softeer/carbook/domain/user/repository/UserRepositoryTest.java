@@ -9,9 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.jdbc.Sql;
 import softeer.carbook.domain.follow.repository.FollowRepository;
+import softeer.carbook.domain.user.exception.IdNotExistException;
+import softeer.carbook.domain.user.exception.LoginEmailNotExistException;
 import softeer.carbook.domain.user.model.User;
+import softeer.carbook.global.dto.Message;
 
 import javax.sql.DataSource;
 
@@ -118,6 +122,18 @@ class UserRepositoryTest {
         assertThat(foundUser.getEmail()).isEqualTo(user.getEmail());
         assertThat(foundUser.getNickname()).isEqualTo(user.getNickname());
         assertThat(foundUser.getPassword()).isEqualTo(user.getPassword());
+    }
+
+    @Test
+    @DisplayName("id로 유저 찾기 테스트 - 유저가 없을 경우")
+    void findUserByIdNotExist() {
+        // when
+        Throwable exception = assertThrows(IdNotExistException.class, () -> {
+            User foundUser = userRepository.findUserById(100000);
+        });
+
+        // then
+        assertThat(exception.getMessage()).isEqualTo("ERROR: ID not exist");
     }
 
     @Test
