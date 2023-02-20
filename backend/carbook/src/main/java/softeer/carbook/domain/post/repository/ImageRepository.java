@@ -9,6 +9,7 @@ import softeer.carbook.domain.post.model.Image;
 import javax.sql.DataSource;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Repository
@@ -113,11 +114,7 @@ public class ImageRepository {
     }
 
     private String decodeURL(String url){
-        try {
-            return URLDecoder.decode(url,"utf-8");
-        } catch (UnsupportedEncodingException e) {
-            return url;
-        }
+        return URLDecoder.decode(url, StandardCharsets.UTF_8);
     }
 
 }
