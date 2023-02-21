@@ -1,6 +1,6 @@
-import { Component } from "@/core";
-import likeButton from "@/assets/icons/likeButton.svg";
-import notLikeButton from "@/assets/icons/notLikeButton.svg";
+import { Component } from '@/core';
+import likeButton from '@/assets/icons/likeButton.svg';
+import notLikeButton from '@/assets/icons/notLikeButton.svg';
 
 export default class Footer extends Component {
   template(): string {
@@ -10,9 +10,9 @@ export default class Footer extends Component {
           <div class ='like-button'><img src="${
             like ? likeButton : notLikeButton
           }"/></div>
-          <div class ='like-count'>${likeCount} likes</div>
+          <div class ='like-count'>${likeCount ?? ''} likes</div>
         </div>
-        <div class ='posted-time'>${createDate}</div>
+        <div class ='posted-time'>${createDate ?? ''}</div>
         `;
   }
 }
