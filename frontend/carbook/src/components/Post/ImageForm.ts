@@ -5,9 +5,11 @@ import axios from 'axios';
 
 export default class ImageForm extends Component {
   setup(): void {
+    const { imageUrl, isInValid } = this.props;
     this.state = {
       isInit: true,
-      imageUrl: this.props.imageUrl,
+      imageUrl,
+      isInValid,
     };
   }
   template(): string {
@@ -32,6 +34,10 @@ export default class ImageForm extends Component {
 
       this.state.isInit = false;
     }
+  }
+
+  mounted(): void {
+    this.onHandleInValidClassNmae();
   }
 
   getImageFiles(e: Event) {
@@ -65,6 +71,7 @@ export default class ImageForm extends Component {
 
   setPreviewSrc(url: string) {
     this.$target.style.backgroundImage = `url('${url}')`;
+    this.setState({ imageUrl: url, isInValid: false });
     this.hideInnerContent();
   }
 
@@ -86,5 +93,10 @@ export default class ImageForm extends Component {
     const metadata = { type: `image/${ext}` };
 
     return new File([newData], filename!, metadata);
+  }
+
+  onHandleInValidClassNmae() {
+    if (this.state.isInValid) this.$target.classList.add('invalid');
+    else this.$target.classList.remove('invalid');
   }
 }

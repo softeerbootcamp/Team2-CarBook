@@ -78,8 +78,15 @@
       }
     }
 
+    .invalid {
+      border: 1px solid red;
+      animation-name: tilt-shaking;
+      animation-duration: 0.3s;
+    }
+
     .form {
       padding: 270px 40px 40px 40px;
+      min-height: 920px;
 
       &__input {
         display: flex;
@@ -118,11 +125,17 @@
               border: 1px solid #dbe2ef;
               border-radius: 5px;
               padding: 12px;
-              color: $main-light-blue;
+              color: rgb(157, 157, 157);
               font-size: 14px;
               appearance: none;
               background: white url('@/assets/icons/arrow-down.svg') no-repeat
                 right 12px center;
+            }
+
+            .invalid {
+              border: 1px solid red;
+              animation-name: tilt-shaking;
+              animation-duration: 0.3s;
             }
           }
 
@@ -281,5 +294,23 @@
         }
       }
     }
+  }
+}
+
+@keyframes tilt-shaking {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(5deg);
+  }
+  50% {
+    transform: rotate(0eg);
+  }
+  75% {
+    transform: rotate(-5deg);
+  }
+  100% {
+    transform: rotate(0deg);
   }
 }
