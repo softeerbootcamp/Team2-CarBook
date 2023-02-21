@@ -39,8 +39,10 @@ export default class SearchList extends Component {
           )}"</div> 추가하기     
         </div>`;
       }
+
+      return `<div class="dropdown__msg">태그를 검색해주세요</div>`;
     }
-    return `<div class="dropdown__msg">태그를 검색해주세요</div>`;
+    return ``;
   }
 
   addHashTag() {
