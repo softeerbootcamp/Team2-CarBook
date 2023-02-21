@@ -1,13 +1,5 @@
 import { tagStore } from '@/store/tagStore';
 
-export const POST_INIT = {
-  type: '',
-  model: '',
-  imageUrl: {},
-  hashtags: [],
-  content: '',
-};
-
 export const POST_LIST_INIT = {
   isInit: true,
   isLoading: false,

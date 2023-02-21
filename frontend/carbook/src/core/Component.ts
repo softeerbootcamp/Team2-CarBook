@@ -1,3 +1,5 @@
+import { isSameObj } from "@/utils";
+
 interface IObject {
   [property: string]: any;
 }
@@ -16,7 +18,7 @@ export default class Component {
   }
   setup() {}
   template() {
-    return '';
+    return "";
   }
   render() {
     this.$target.innerHTML = this.template();
@@ -25,7 +27,10 @@ export default class Component {
   mounted() {}
   setEvent() {}
   setState(newState: object) {
-    this.state = { ...this.state, ...newState };
+    const prevState = this.state;
+    const nextState = { ...this.state, ...newState };
+    if (isSameObj(prevState, nextState)) return;
+    this.state = nextState;
     this.render();
   }
 }
