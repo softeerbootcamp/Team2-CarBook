@@ -1,6 +1,20 @@
 import { Component } from '@/core';
+import { getClosest } from '@/utils';
+import { push } from '@/utils/router/navigate';
 
 export default class Followlists extends Component {
+  setEvent(): void {
+    const followers = this.$target.querySelector(
+      '.profile__contents-followers'
+    ) as HTMLElement;
+    followers.addEventListener('click', (e: Event) => {
+      const target = e.target as HTMLElement;
+      const follower = getClosest(target, '.follower-info');
+      if (!follower) return;
+      const nickname = follower.dataset.nickname;
+      push(`/profile/${nickname}`);
+    });
+  }
   template(): string {
     const { profileMode, isMyProfile, follows } = this.props;
     return /*html*/ `
