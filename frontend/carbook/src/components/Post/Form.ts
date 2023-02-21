@@ -197,7 +197,6 @@ export default class Form extends Component {
   onValidHandler() {
     let isInValid = false;
     const { type, model, imageUrl } = this.postDetail;
-    console.log(type);
     if (!type) {
       this.typeSelection.setState({ isInValid: true });
       isInValid = true;
