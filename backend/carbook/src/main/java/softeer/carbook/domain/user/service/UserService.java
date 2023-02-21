@@ -59,9 +59,6 @@ public class UserService {
     public Message logout(HttpServletRequest httpServletRequest) {
         HttpSession session = httpServletRequest.getSession(false);
 
-        // 로그인 상태 확인
-        checkLoginException(session);
-
         // 로그아웃 진행
         session.invalidate();
 
@@ -71,17 +68,11 @@ public class UserService {
     public User findLoginedUser(HttpServletRequest httpServletRequest){
         HttpSession session = httpServletRequest.getSession(false);
 
-        // 로그인 상태 확인
-        checkLoginException(session);
-
         // 세션으로부터 userId를 받아서 user 조회
         return userRepository.findUserById(getUserIdBySession(session));
     }
 
     public Message modifyNickname(String nickname, String newNickname, HttpServletRequest httpServletRequest) {
-        // 로그인 체크
-        checkLoginException(httpServletRequest.getSession(false));
-
         // 기존 닉네임이 데이터베이스에 없다??
         if(!userRepository.isNicknameDuplicated(nickname))
             throw new NicknameNotExistException();
@@ -112,10 +103,6 @@ public class UserService {
 
     private int getUserIdBySession(HttpSession session){
         return (int) session.getAttribute("user");
-    }
-
-    public void checkLoginException(HttpSession session){
-        if(!isLogin(session)) throw new NotLoginStatementException();
     }
 
     public boolean isLogin(HttpSession session){
