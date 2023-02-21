@@ -41,6 +41,7 @@ export default class HashTagForm extends Component {
   }
 
   mounted(): void {
+    const input = qs(this.$target, '.input') as HTMLInputElement;
     const dropdown = qs(this.$target, '.dropdown');
     const searchList = new SearchList(dropdown, {
       isLoading: false,
@@ -51,31 +52,35 @@ export default class HashTagForm extends Component {
       },
     });
     this.searchList = searchList;
+    onChangeInputHandler(input, this.getSearchTags.bind(this));
   }
 
   setEvent(): void {
     const form = qs(document, '.form');
-    const input = qs(this.$target, '.input') as HTMLInputElement;
-    const hashtagBox = qs(this.$target, '.hashtag__box');
-
-    form.addEventListener('click', ({ target }) => {
-      const dropdown = (<HTMLElement>target).closest('.dropdown');
-
-      if (dropdown) return;
+    form.addEventListener('click', () => {
+      const input = qs(this.$target, '.input') as HTMLInputElement;
       onVisibleHandler(input, '.dropdown');
-      this.getSearchTags(input.value);
     });
 
-    hashtagBox.addEventListener('click', ({ target }) => {
+    this.$target.addEventListener('click', ({ target }) => {
+      const dropdown = getClosest(<HTMLElement>target, '.dropdown');
+      const form = getClosest(<HTMLElement>target, '.form');
       const hashtag = getClosest(<HTMLElement>target, '.hashtag');
 
+      if (dropdown) return;
+
+      if (form) {
+        const input = qs(this.$target, '.input') as HTMLInputElement;
+        onVisibleHandler(input, '.dropdown');
+        this.getSearchTags(input.value);
+        return;
+      }
       if (hashtag) {
         const hashtagName = hashtag.dataset.tag as string;
         this.removeHashTag(hashtagName);
+        return;
       }
     });
-
-    onChangeInputHandler(input, this.getSearchTags.bind(this));
   }
 
   makeHashtagCards(hashtags: object) {
@@ -95,6 +100,12 @@ export default class HashTagForm extends Component {
 
   addHashTag(hashtag: IHashTag) {
     const { hashtags } = this.state;
+
+    if (Object.keys(hashtags).length >= 3) {
+      alert('해시태그는 3개를 초과할 수 없습니다!');
+      return;
+    }
+
     const input = qs(this.$target, '.input') as HTMLInputElement;
 
     this.setState({
