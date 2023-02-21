@@ -1,12 +1,12 @@
-import { Component } from "@/core";
+import { Component } from '@/core';
 
 export default class InfoContents extends Component {
   template(): string {
     const { type, model, content, hashtags } = this.props;
     return /*html*/ `
       <div class ='info-tag-cards'>
-      <div class ='info-type-card'>${type}</div>
-      <div class ='info-model-card'>${model}</div>
+      <div class ='info-type-card'>${type ?? ''}</div>
+      <div class ='info-model-card'>${model ?? ''}</div>
     </div>
     <div class ='info-hashtags'>
       ${
@@ -14,10 +14,10 @@ export default class InfoContents extends Component {
           ?.map(
             (hashtag: string) => `<div class ='info-hashtag'>#${hashtag}</div>`
           )
-          .join("") ?? ""
+          .join('') ?? ''
       }
     </div>
-    <p class = 'info-description'>${content}</p>
+    <p class = 'info-description'>${content ?? ''}</p>
       `;
   }
 }
