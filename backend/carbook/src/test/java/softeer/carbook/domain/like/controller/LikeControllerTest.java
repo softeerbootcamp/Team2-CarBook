@@ -14,6 +14,7 @@ import softeer.carbook.domain.post.service.PostService;
 import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.service.UserService;
 import softeer.carbook.global.dto.Message;
+import softeer.carbook.global.interceptor.LoginInterceptor;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,6 +32,8 @@ class LikeControllerTest {
     private UserService userService;
     @MockBean
     private LikeService likeService;
+    @MockBean
+    private LoginInterceptor loginInterceptor;
 
     @Test
     @DisplayName("좋아요 테스트")
@@ -40,6 +43,7 @@ class LikeControllerTest {
                 BCrypt.hashpw("password", BCrypt.gensalt()));
         given(userService.findLoginedUser(any())).willReturn(user);
         given(likeService.modifyLikeInfo(anyInt(), anyInt())).willReturn(new Message("Like Success"));
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         // when & then
         mockMvc.perform(post("/post/like")
@@ -57,6 +61,7 @@ class LikeControllerTest {
                 BCrypt.hashpw("password", BCrypt.gensalt()));
         given(userService.findLoginedUser(any())).willReturn(user);
         given(likeService.modifyLikeInfo(anyInt(), anyInt())).willReturn(new Message("UnLike Success"));
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         // when & then
         mockMvc.perform(post("/post/like")

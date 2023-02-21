@@ -22,6 +22,7 @@ import softeer.carbook.global.dto.Message;
 import softeer.carbook.domain.user.dto.SignupForm;
 import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.repository.UserRepository;
+import softeer.carbook.global.interceptor.LoginInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -171,23 +172,6 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("닉네임 변경 테스트 - 로그인 상태 아닐 때")
-    void modifyNicknameNotLogin(){
-        // Given
-        String nickname = "nickname";
-        String newNickname = "newnickname";
-        MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
-
-        // When
-        Throwable exception = assertThrows(NotLoginStatementException.class, () -> {
-            Message resultMsg = userService.modifyNickname(nickname, newNickname, httpServletRequest);
-        });
-
-        // Then
-        assertThat(exception.getMessage()).isEqualTo("ERROR: Session Has Expired");
-    }
-
-    @Test
     @DisplayName("닉네임 변경 테스트 - 기존 닉네임이 데이터베이스에 없을 때")
     void modifyNicknameNotExistNickname(){
         // Given
@@ -255,24 +239,6 @@ class UserServiceTest {
         // Then
         assertThat(resultMsg.getMessage()).isEqualTo("Password modified successfully");
         verify(userRepository).findUserById(14);
-    }
-
-    @Test
-    @DisplayName("비밀번호 변경 테스트 - 로그인 상태 아닐 때")
-    void modifyPasswordNotLogin(){
-        // Given
-        ModifyPasswordForm modifyPasswordForm = new ModifyPasswordForm("password", "newPassword");
-        User user = new User("test@gmail.com", "nickname",
-                BCrypt.hashpw("password", BCrypt.gensalt()));
-        MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
-
-        // When
-        Throwable exception = assertThrows(NotLoginStatementException.class, () -> {
-            Message resultMsg = userService.modifyPassword(modifyPasswordForm, httpServletRequest);
-        });
-
-        // Then
-        assertThat(exception.getMessage()).isEqualTo("ERROR: Session Has Expired");
     }
 
     @Test
