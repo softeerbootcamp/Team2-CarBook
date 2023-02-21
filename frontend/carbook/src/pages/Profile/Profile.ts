@@ -19,6 +19,7 @@ import {
   NotMatchedPassword,
 } from '@/constants/errorMessage';
 import { push, replace } from '@/utils/router/navigate';
+import isLogin from '@/utils/isLogin';
 
 export default class ProfilePage extends Component {
   setup(): void {
@@ -130,8 +131,11 @@ export default class ProfilePage extends Component {
     if (profileContainer.classList.contains('once')) return;
     profileContainer.classList.add('once');
 
-    profileContainer.addEventListener('click', (e: Event) => {
+    profileContainer.addEventListener('click', async (e: Event) => {
       e.preventDefault();
+      const login = await isLogin();
+      if (!login) push('/login');
+
       const target = e.target as HTMLElement;
       const postsSection = target.closest('section.profile-posts');
       const followerSection = target.closest('section.profile-follower');
