@@ -73,6 +73,7 @@ export default class PostList extends Component {
     try {
       const res = await basicAPI.get(url);
       const { images, login, nickname } = res.data;
+      const lastImage = images[images.length - 1];
       const end = images.length === 0;
 
       if (login) {
@@ -81,7 +82,7 @@ export default class PostList extends Component {
       }
       this.setState({
         images: this.state.images.concat(images),
-        index: index + 8,
+        index: lastImage.postId,
         isLoading: false,
         isEnd: end,
       });
