@@ -51,15 +51,15 @@ class ImageRepositoryTest {
     }
 
     @Test
-    @DisplayName("[index,index+size) 범위의 게시글 가져오기 테스트")
+    @DisplayName("[postId,postId+size) 범위의 게시글 가져오기 테스트")
     void getImagesOfRecentPostsTest() {
         int size = 3;
-        int index = 1;
+        int postId = 8;
         List<Image> expectedImages = new ArrayList<>();
         expectedImages.add(new Image(7, "https://team2-carbook.s3.ap-northeast-2.amazonaws.com/images/7_이미지.jpeg"));
         expectedImages.add(new Image(5, "https://team2-carbook.s3.ap-northeast-2.amazonaws.com/images/5_이미지.jpeg"));
         expectedImages.add(new Image(4, "https://team2-carbook.s3.ap-northeast-2.amazonaws.com/images/4_이미지.jpeg"));
-        List<Image> resultImages = imageRepository.getImagesOfRecentPosts(size, index);
+        List<Image> resultImages = imageRepository.getImagesOfRecentPosts(size, postId);
         assertThat(resultImages).usingRecursiveComparison().isEqualTo(expectedImages);
     }
 
