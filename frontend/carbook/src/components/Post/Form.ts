@@ -3,8 +3,8 @@ import { ImageForm, Selection, HashTagForm, TextForm } from '@/components/Post';
 import { qs, qsa, getHashTagsObj, isEmptyObj } from '@/utils';
 import { basicAPI, formAPI } from '@/api';
 import { push } from '@/utils/router/navigate';
-import { POST_INIT } from '@/constants/post';
 import { IPostIndex } from '@/interfaces';
+import { getInitialPost } from './helper/index';
 
 export default class Form extends Component {
   imageForm: any;
@@ -14,7 +14,7 @@ export default class Form extends Component {
 
   setup(): void {
     const { prevPost } = this.props;
-    this.postDetail = prevPost || POST_INIT;
+    this.postDetail = prevPost || getInitialPost();
   }
 
   template(): string {
