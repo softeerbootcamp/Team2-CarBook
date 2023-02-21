@@ -17,7 +17,7 @@ export default class PostList extends Component {
     tagStore.subscribe(this, () => {
       this.$target.innerHTML = '';
       this.setState({ ...POST_LIST_INIT });
-      this.render.bind(this);
+      //this.render.bind(this);
     });
     this.state = POST_LIST_INIT;
 
@@ -46,7 +46,7 @@ export default class PostList extends Component {
 
     const spinner = qs(document, '.spinner');
 
-    if (index > 0) {
+    if (index > 0 || index === null) {
       if (isLoading) {
         this.makeSkeleton();
         spinner.classList.add('active');
@@ -75,7 +75,7 @@ export default class PostList extends Component {
       const res = await basicAPI.get(url);
       const { images, login, nickname } = res.data;
       const lastImage = images[images.length - 1];
-      let index;
+      let index = null;
       if (images.length > 0) {
         index = lastImage.postId;
       }
