@@ -14,6 +14,7 @@ import softeer.carbook.global.dto.Message;
 import softeer.carbook.domain.user.dto.ModifyPasswordForm;
 import softeer.carbook.domain.user.dto.SignupForm;
 import softeer.carbook.domain.user.service.UserService;
+import softeer.carbook.global.interceptor.LoginInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -32,6 +33,8 @@ class UserControllerTest {
 
     @MockBean
     private UserService userService;
+    @MockBean
+    private LoginInterceptor loginInterceptor;
 
     @Test
     @DisplayName("회원가입 테스트")
@@ -75,6 +78,7 @@ class UserControllerTest {
         // given
         given(userService.logout(any(HttpServletRequest.class)))
                 .willReturn(new Message("Logout Success"));
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         // when & then
         mockMvc.perform(post("/profile/logout")
@@ -92,6 +96,7 @@ class UserControllerTest {
                 any(String.class),
                 any(HttpServletRequest.class)))
                 .willReturn(new Message("Nickname modified successfully"));
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         // when & then
         mockMvc.perform(patch("/profile/modify/{nickname}", "springtest")
@@ -109,6 +114,7 @@ class UserControllerTest {
                 any(ModifyPasswordForm.class),
                 any(HttpServletRequest.class)))
                 .willReturn(new Message("Nickname modified successfully"));
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         // when & then
         mockMvc.perform(patch("/profile/modify/password")
