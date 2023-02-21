@@ -67,7 +67,7 @@ class ImageRepositoryTest {
     @DisplayName("[index,index+size) 범위의 팔로우 중인 게시글 가져오기 테스트")
     void getImagesOfRecentFollowingPostsTest() {
         int size = 2;
-        int index = 0;
+        int index = 6;
         int followerId = 1;
         List<Image> expectedImages = new ArrayList<>();
         expectedImages.add(new Image(5,"https://team2-carbook.s3.ap-northeast-2.amazonaws.com/images/5_이미지.jpeg"));
