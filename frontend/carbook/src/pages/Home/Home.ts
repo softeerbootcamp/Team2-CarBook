@@ -3,15 +3,14 @@ import { Component } from '@/core';
 import Header from '@/components/common/Header';
 import { SearchForm, HashTagList, PostList } from '@/components/Home';
 import { push } from '@/utils/router/navigate';
+import isLogin from '@/utils/isLogin';
 
 export default class HomePage extends Component {
-  setup(): void {
+  async setup() {
     this.state = {
-      isLogin: localStorage.getItem('login'),
-      nickname: '',
+      isLogin: await isLogin(),
+      nickname: localStorage.getItem('nickname'),
     };
-
-    this.onClickHandler();
   }
 
   template(): string {
@@ -53,25 +52,33 @@ export default class HomePage extends Component {
     });
   }
 
-  onClickHandler() {
+  setEvent(): void {
     this.$target.addEventListener('click', (e: Event) => {
-      const target = e.target as HTMLElement;
-      const { isLogin, nickname } = this.state;
+      this.onClickHandler(e);
+    });
+  }
 
-      const profileBtn = target.closest('.header__right-box');
-      const plusBtn = target.closest('.main__button');
+  onClickHandler(e: Event) {
+    const target = e.target as HTMLElement;
+    const { isLogin, nickname } = this.state;
 
-      if (profileBtn && isLogin) {
+    const profileBtn = target.closest('.header__right-box');
+    const plusBtn = target.closest('.main__button');
+
+    if (isLogin) {
+      if (profileBtn && nickname) {
         push(`/profile/${nickname}`);
         return;
-      } else if (plusBtn && isLogin) {
+      } else if (plusBtn) {
         push(`/post/new`);
         return;
-      } else if (profileBtn || plusBtn) {
+      }
+    } else {
+      if (profileBtn || plusBtn) {
         push('/login');
         return;
       }
-    });
+    }
   }
 
   setUserInfo(isLogin: boolean, nickname: string) {

@@ -24,17 +24,21 @@
 
 ### BE
 <div style="display:flex;">
+<img src="https://img.shields.io/badge/Java 11-007396?style=for-the-badge&logoColor=white" />
 <img src="https://img.shields.io/badge/Spring Boot-6DB33F?style=for-the-badge&logo=Spring Boot&logoColor=white"/>
+<img src="https://img.shields.io/badge/Spring Data JDBC-6DB33F?style=for-the-badge&logo=Spring&logoColor=white"/>
 <img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=MySQL&logoColor=white"/>
+<img src="https://img.shields.io/badge/Gradle-02303A?style=for-the-badge&logo=Gradle&logoColor=white"/>
 <img src="https://img.shields.io/badge/JUnit5-25A162?style=for-the-badge&logo=JUnit5&logoColor=white"/>
 </div>
 
 ### CI / CD
 <div style="display:flex;">
-<img src="https://img.shields.io/badge/Amazon AWS-FF9900?style=for-the-badge&logo=Amazon AWS&logoColor=white"/>
+<img src="https://img.shields.io/badge/Amazon AWS-232F32?style=for-the-badge&logo=Amazon AWS&logoColor=white"/>
 <img src="https://img.shields.io/badge/Amazon EC2-FF9900?style=for-the-badge&logo=Amazon EC2&logoColor=white"/>
 <img src="https://img.shields.io/badge/Amazon S3-569a31?style=for-the-badge&logo=Amazon S3&logoColor=white"/>
 <img src="https://img.shields.io/badge/NGINX-009639?style=for-the-badge&logo=NGINX&logoColor=white"/>
+<img src="https://img.shields.io/badge/GitHub Actions-2088FF?style=for-the-badge&logo=GitHub Actions&logoColor=white"/>
 </div>
 
 <br />
@@ -58,6 +62,7 @@
 ## 📌 API 명세서
 [API 명세서 POSTMAN](https://documenter.getpostman.com/view/25607734/2s935kPm4y)
 
+![image](https://user-images.githubusercontent.com/46276276/220031559-e9d1dbba-c467-4cf4-9062-8fadda7ab0bf.png)
  <br />
 
 
@@ -110,4 +115,4 @@
 
 
 ## ERD
-![image](https://user-images.githubusercontent.com/46276276/217181456-2a6ddbfe-2afb-4328-9e20-bd3ed5d28a7b.png)
+![카북 (1)](https://user-images.githubusercontent.com/46276276/220059684-7892c317-a0b3-4aab-9b15-d2a6e6811b99.png)

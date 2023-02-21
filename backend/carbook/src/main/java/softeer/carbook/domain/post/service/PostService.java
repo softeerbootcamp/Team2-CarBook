@@ -58,22 +58,26 @@ public class PostService {
         this.likeRepository = likeRepository;
     }
 
-    public GuestPostsResponse getRecentPosts(int index) {
-        List<Image> images = imageRepository.getImagesOfRecentPosts(POST_COUNT, index);
+    public GuestPostsResponse getRecentPosts(int postId) {
+        postId = initPostId(postId);
+        List<Image> images = imageRepository.getImagesOfRecentPosts(POST_COUNT, postId);
         return new GuestPostsResponse.GuestPostsResponseBuilder()
                 .images(images)
                 .build();
     }
 
-    public LoginPostsResponse getRecentFollowerPosts(int index, User user) {
-        List<Image> images = imageRepository.getImagesOfRecentFollowingPosts(POST_COUNT, index, user.getId());
+    public LoginPostsResponse getRecentFollowerPosts(int postId, User user) {
+        postId = initPostId(postId);
+        List<Image> images = imageRepository.getImagesOfRecentFollowingPosts(POST_COUNT, postId, user.getId());
         return new LoginPostsResponse.LoginPostsResponseBuilder()
                 .nickname(user.getNickname())
                 .images(images)
                 .build();
     }
 
-    public PostsSearchResponse searchByTags(String hashtags, String type, String model, int index) {
+    public PostsSearchResponse searchByTags(String hashtags, String type, String model, int postId) {
+        postId = initPostId(postId);
+
         List<Post> posts = new ArrayList<>();
         if (type != null) {
             posts.addAll(postRepository.searchByType(type));
@@ -90,7 +94,7 @@ public class PostService {
         }
         logger.debug("size: {}", posts.size());
 
-        List<Image> images = findImagesOfPostsStartsWithIndex(posts, index);
+        List<Image> images = findImagesOfPostsFromPostId(posts, postId);
         return new PostsSearchResponse(images);
     }
 
@@ -128,10 +132,18 @@ public class PostService {
         return !((type != null || model != null) && size == 0);
     }
 
-    private List<Image> findImagesOfPostsStartsWithIndex(List<Post> posts, int index) {
+    private List<Image> findImagesOfPostsFromPostId(List<Post> posts, int postId) {
+        int idx = 0;
+        for (; idx < posts.size(); idx++) {
+            if (posts.get(idx).getId() < postId) {
+                break;
+            }
+        }
+        
         List<Image> images = new ArrayList<>();
-        for (int cnt = index; cnt < index + POST_COUNT && cnt < posts.size(); cnt++) {
-            Image image = imageRepository.getImageByPostId(posts.get(cnt).getId());
+        int curIdx = idx;
+        for (; idx < curIdx + POST_COUNT && idx < posts.size(); idx++) {
+            Image image = imageRepository.getImageByPostId(posts.get(idx).getId());
             images.add(image);
         }
 
@@ -270,6 +282,10 @@ public class PostService {
     private void invalidPostAccessCheck(Post post, User user){
         if (!(post.getUserId() == user.getId()))
             throw new InvalidPostAccessException();
+    }
+
+    private int initPostId(int postId){
+        return postId==0?Integer.MAX_VALUE:postId;
     }
 
 }

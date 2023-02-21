@@ -292,6 +292,8 @@
           border-radius: 10px;
           background-color: rgb(215, 215, 215);
           cursor: pointer;
+          animation-name: fadeInTop;
+          animation-duration: 0.5s;
         }
 
         &--skelton {
@@ -337,6 +339,16 @@
       color: white;
       cursor: pointer;
     }
+  }
+}
+@keyframes fadeInTop {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 

@@ -40,7 +40,7 @@ export default class SearchList extends Component {
         </div>`;
       }
     }
-    return ``;
+    return `<div class="dropdown__msg">태그를 검색해주세요</div>`;
   }
 
   addHashTag() {

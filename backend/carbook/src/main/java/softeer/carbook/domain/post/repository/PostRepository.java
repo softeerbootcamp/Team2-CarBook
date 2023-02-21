@@ -79,7 +79,7 @@ public class PostRepository {
             ps.setInt(3, post.getModelId());
             return ps;
         }, keyHolder);
-        return keyHolder.getKey().intValue();
+        return (int)keyHolder.getKeys().get("id");
     }
 
     public void updatePost(Post post) {

@@ -89,6 +89,7 @@
           transition: all ease-in-out 0.2s;
           font-size: 12px;
           cursor: none;
+          z-index: 1;
 
           h3 {
             cursor: auto;
@@ -228,7 +229,7 @@
     width: 100vw;
     min-width: 300px;
     height: 100%;
-    z-index: 500;
+    z-index: 50;
     border-radius: 30px 30px 0px 0px;
     padding: 10% 10%;
     font-family: "LINESeedKR-Rg";
@@ -339,7 +340,7 @@
 
     text-align: center;
     transition: all ease-in-out 1s;
-    z-index: 990;
+    z-index: 100;
   }
 
   .FadeInAndOut {

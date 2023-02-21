@@ -7,8 +7,8 @@ import org.springframework.stereotype.Repository;
 import softeer.carbook.domain.post.model.Image;
 
 import javax.sql.DataSource;
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Repository
@@ -23,24 +23,22 @@ public class ImageRepository {
                 imageRowMapper(), postId);
     }
 
-    public List<Image> getImagesOfRecentPosts(int size, int index) {
+    public List<Image> getImagesOfRecentPosts(int size, int postId) {
         return jdbcTemplate.query("SELECT img.post_id, img.image_url " +
                         "FROM POST AS p INNER JOIN IMAGE AS img ON p.id = img.post_id " +
-                        "WHERE p.is_deleted = false " +
-                        "ORDER BY p.create_date DESC LIMIT ?, ?",
-                imageRowMapper(), index, size);
+                        "WHERE p.is_deleted = false and p.id < ? " +
+                        "ORDER BY p.create_date DESC LIMIT ?",
+                imageRowMapper(), postId, size);
     }
 
-    public List<Image> getImagesOfRecentFollowingPosts(int size, int index, int followerId){
+    public List<Image> getImagesOfRecentFollowingPosts(int size, int postId, int followerId){
         return jdbcTemplate.query("SELECT img.post_id, img.image_url " +
-                "FROM POST AS p, IMAGE AS img, FOLLOW AS f " +
-                        "where f.is_deleted = false " +
-                        "and p.is_deleted = false " +
-                        "and f.follower_id = ? " +
-                        "and f.following_id = p.user_id " +
+                        "FROM POST AS p, IMAGE AS img, FOLLOW AS f " +
+                        "where f.is_deleted = false and p.is_deleted = false " +
+                        "and p.id < ? and f.follower_id = ? and f.following_id = p.user_id " +
                         "and p.id = img.post_id " +
-                "ORDER BY p.create_date DESC LIMIT ?, ?",
-                imageRowMapper(), followerId, index, size);
+                        "ORDER BY p.create_date DESC LIMIT ?",
+                imageRowMapper(), postId, followerId, size);
     }
 
     public List<Image> findImagesByUserId(int id) {
@@ -55,9 +53,9 @@ public class ImageRepository {
 
     public List<Image> findImagesByNickName(String profileUserNickname) {
         return jdbcTemplate.query(
-                "select IMAGE.post_id, IMAGE.image_url from USER, POST, IMAGE " +
-                        "WHERE USER.id = POST.user_id and POST.id = IMAGE.post_id " +
-                        "and USER.nickname = ? " +
+                "select IMAGE.post_id, IMAGE.image_url from `USER`, POST, IMAGE " +
+                        "WHERE `USER`.id = POST.user_id and POST.id = IMAGE.post_id " +
+                        "and `USER`.nickname = ? " +
                         "and POST.is_deleted = false " +
                         "ORDER BY create_date DESC",
                 imageRowMapper(), profileUserNickname);
@@ -87,6 +85,10 @@ public class ImageRepository {
 
         return conditionalStatement.substring(0, conditionalStatement.length() - 4);
     }
+
+    public void deleteImageByPostId(int postId) {
+        jdbcTemplate.update("delete from IMAGE where post_id=?",postId);
+    }
      */
 
     public void addImage(Image image) {
@@ -94,10 +96,6 @@ public class ImageRepository {
                 image.getPostId(),
                 decodeURL(image.getImageUrl())
         );
-    }
-
-    public void deleteImageByPostId(int postId) {
-        jdbcTemplate.update("delete from IMAGE where post_id=?",postId);
     }
 
     public void updateImage(Image image){
@@ -113,11 +111,7 @@ public class ImageRepository {
     }
 
     private String decodeURL(String url){
-        try {
-            return URLDecoder.decode(url,"utf-8");
-        } catch (UnsupportedEncodingException e) {
-            return url;
-        }
+        return URLDecoder.decode(url, StandardCharsets.UTF_8);
     }
 
 }

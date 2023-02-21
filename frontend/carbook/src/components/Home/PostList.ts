@@ -3,7 +3,8 @@ import { POST_LIST_INIT } from '@/constants/post';
 import { Component } from '@/core';
 import { IImage } from '@/interfaces';
 import { tagStore } from '@/store/tagStore';
-import { getClosest, isSameObj, qs } from '@/utils';
+import { getClosest, qs } from '@/utils';
+import isLogin from '@/utils/isLogin';
 import { push } from '@/utils/router/navigate';
 import { getSearchUrl } from './helper';
 
@@ -13,19 +14,18 @@ export default class PostList extends Component {
 
   setup(): void {
     this.lastImg = null;
-
-    tagStore.subscribe(this, this.render.bind(this));
-
+    tagStore.subscribe(this, () => {
+      this.$target.innerHTML = '';
+      this.setState({ ...POST_LIST_INIT });
+      this.render.bind(this);
+    });
     this.state = POST_LIST_INIT;
 
     this.observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (
-            entry.isIntersecting &&
-            !this.state.isLoading &&
-            !this.state.isEnd
-          ) {
+          const { isLoading, isEnd } = this.state;
+          if (entry.isIntersecting && !isLoading && !isEnd) {
             this.fetchImages();
           }
         });
@@ -34,23 +34,10 @@ export default class PostList extends Component {
         threshold: 0.5,
       }
     );
-
-    this.onClickImageHandeler();
   }
 
   render(): void {
-    const { images, isLoading, isInit, tags } = this.state;
-
-    if (!isSameObj(tags, tagStore.getState())) {
-      this.$target.innerHTML = '';
-      this.setState({
-        ...POST_LIST_INIT,
-        isLogin: this.state.isLogin,
-        tags: tagStore.getState(),
-      });
-
-      return;
-    }
+    const { images, isLoading, isInit, index } = this.state;
 
     if (isInit) {
       this.fetchImages();
@@ -58,14 +45,22 @@ export default class PostList extends Component {
     }
 
     const spinner = qs(document, '.spinner');
-    if (isLoading) {
-      this.makeSkeleton();
-      spinner.classList.add('active');
-    } else {
-      this.removeSkeleton();
-      spinner.classList.remove('active');
+    if (index > 0) {
+      if (isLoading) {
+        this.makeSkeleton();
+        spinner.classList.add('active');
+      } else {
+        this.removeSkeleton();
+        spinner.classList.remove('active');
 
-      this.appendImages(images);
+        this.appendImages(images);
+      }
+    } else {
+      if (isLoading) {
+        spinner.classList.add('active');
+      } else {
+        spinner.classList.remove('active');
+      }
     }
   }
 
@@ -78,17 +73,16 @@ export default class PostList extends Component {
     try {
       const res = await basicAPI.get(url);
       const { images, login, nickname } = res.data;
+      const lastImage = images[images.length - 1];
       const end = images.length === 0;
 
       if (login) {
-        localStorage.setItem('login', login);
         this.props.setUserInfo(login, nickname);
+        localStorage.setItem('nickname', nickname);
       }
-
       this.setState({
-        isLogin: localStorage.getItem('login'),
         images: this.state.images.concat(images),
-        index: index + 8,
+        index: lastImage.postId,
         isLoading: false,
         isEnd: end,
       });
@@ -136,17 +130,21 @@ export default class PostList extends Component {
     }
   }
 
-  onClickImageHandeler() {
+  setEvent(): void {
     this.$target.addEventListener('click', ({ target }) => {
-      const image = getClosest(<HTMLElement>target, '.gallery--image');
-      if (image) {
-        if (this.state.isLogin) {
-          const postId = image.dataset.id;
-          push(`/post/${postId}`);
-        } else {
-          push('/login');
-        }
-      }
+      this.onClickImageHandeler(<HTMLElement>target);
     });
+  }
+
+  async onClickImageHandeler(target: HTMLElement) {
+    const login = await isLogin();
+    const image = getClosest(target, '.gallery--image');
+
+    if (login && image) {
+      const postId = image.dataset.id;
+      push(`/post/${postId}`);
+    } else if (image) {
+      push('/login');
+    }
   }
 }

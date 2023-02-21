@@ -84,6 +84,31 @@ export default class ProfilePage extends Component {
     `;
   }
 
+  async deleteFollower(nickname: string) {
+    await basicAPI.delete(`/api/profile/follower?follower=${nickname}`);
+    this.receiveFollowLists(this.state.profileMode);
+    this.fetchProfilePage(this.state.nickname);
+  }
+
+  async deleteFollowing(nickname: string) {
+    await basicAPI.post("/api/profile/follow", { followingNickname: nickname });
+    this.receiveFollowLists(this.state.profileMode);
+    this.fetchProfilePage(this.state.nickname);
+  }
+
+  async receiveFollowLists(profileMode: string) {
+    const mode = profileMode === "follower" ? "followers" : "followings";
+    const data = await basicAPI
+      .get(`/api/profile/${mode}?nickname=${this.state.nickname}`)
+      .then((response) => response.data)
+      .catch((error) => error);
+
+    this.setState({
+      ...this.state,
+      follows: data.nicknames,
+    });
+  }
+
   render(): void {
     if (this.state.isloading || this.state?.notSession) return;
 
@@ -112,15 +137,35 @@ export default class ProfilePage extends Component {
       const followingSection = target.closest("section.profile-following");
       const followButton = target.closest(".follow-button");
       const modifyInfoButton = target.closest(".modify-button");
+      const deleteButton = target.closest(".follower-delete-button");
+
+      if (deleteButton) {
+        const nickname = (
+          this.$target.querySelector(".follower-info") as HTMLElement
+        ).dataset.nickname as string;
+        const mode = this.$target.querySelector(
+          ".profile__contents-header"
+        )?.innerHTML;
+
+        mode === "팔로워"
+          ? this.deleteFollower(nickname)
+          : this.deleteFollowing(nickname);
+        return;
+      }
+
       if (postsSection) {
         this.setState({ ...this.state, profileMode: "posts" });
         return;
       }
       if (followerSection) {
+        const profileMode = "follower";
+        this.receiveFollowLists(profileMode);
         this.setState({ ...this.state, profileMode: "follower" });
         return;
       }
       if (followingSection) {
+        const profileMode = "following";
+        this.receiveFollowLists(profileMode);
         this.setState({ ...this.state, profileMode: "following" });
         return;
       }
@@ -150,8 +195,6 @@ export default class ProfilePage extends Component {
         showErrorModal(modal, "회원정보가 변경되었습니다");
       }
     });
-
-    this.setEvent();
     this.mounted();
   }
 
@@ -187,7 +230,7 @@ export default class ProfilePage extends Component {
       new Followlists(profile_contents, {
         profileMode: this.state.profileMode,
         isMyProfile: this.state.isMyProfile,
-        follows: this.state.followers,
+        follows: this.state.follows,
         nickname: this.state.nickname,
       });
 
@@ -195,7 +238,7 @@ export default class ProfilePage extends Component {
       new Followlists(profile_contents, {
         profileMode: this.state.profileMode,
         isMyProfile: this.state.isMyProfile,
-        follows: this.state.followings,
+        follows: this.state.follows,
         nickname: this.state.nickname,
       });
 
@@ -204,7 +247,6 @@ export default class ProfilePage extends Component {
     ) as HTMLElement;
     new ModifyModal(modifyModal);
   }
-  setEvent(): void {}
 
 
   async modifyNickname({
@@ -279,13 +321,11 @@ export default class ProfilePage extends Component {
         password: beforePassword,
         newPassword: afterPassword,
       })
-      .then((res) => {
-        console.log(res.data.message);
-        if (res.data.message.includes("ERROR")) {
-          showErrorModal(alertModal, "기존 비밀번호가 일치하지 않습니다");
-          return;
-        }
+      .then(() => {
         showErrorModal(alertModal, "비밀번호 변경에 성공하셨습니다");
+      })
+      .catch(() => {
+        showErrorModal(alertModal, "기존 비밀번호가 일치하지 않습니다");
       });
   }
 
@@ -330,7 +370,6 @@ function IsInvalidPassword({
   afterPassword: string;
   afterPasswordConfirm: string;
 }) {
-  // 변경할 비밀번호와 비밀번호 확인이 일치하는지 체크
   if (beforePassword.length === 0) {
     showErrorModal(alertModal, EMPTYPW);
     return true;
@@ -351,16 +390,23 @@ function IsInvalidPassword({
     return true;
   }
 
+  if (beforePassword === afterPasswordConfirm) {
+    showErrorModal(alertModal, "기존 비밀번호와 일치합니다");
+    return true;
+  }
+
   return false;
 }
 
 function showErrorModal(modal: HTMLElement, errorMessage: string): void {
   if (modal.classList.contains("FadeInAndOut")) return;
+  const mode =
+    errorMessage === "비밀번호 변경에 성공하셨습니다" ? "blue" : "pink";
   modal.innerHTML = errorMessage;
-  modal.classList.add("pink");
+  modal.classList.add(mode);
   modal.classList.toggle("FadeInAndOut");
   setTimeout(() => {
     modal.classList.toggle("FadeInAndOut");
-    modal.classList.add("pink");
+    modal.classList.remove(mode);
   }, 2000);
 }
