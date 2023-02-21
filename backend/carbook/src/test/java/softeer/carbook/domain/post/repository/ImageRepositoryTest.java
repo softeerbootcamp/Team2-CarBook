@@ -51,7 +51,7 @@ class ImageRepositoryTest {
     }
 
     @Test
-    @DisplayName("[postId,postId+size) 범위의 게시글 가져오기 테스트")
+    @DisplayName("postId 이하에서 size 만큼 게시글 가져오기 테스트")
     void getImagesOfRecentPostsTest() {
         int size = 3;
         int postId = 8;
