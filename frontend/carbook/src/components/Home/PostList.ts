@@ -17,7 +17,6 @@ export default class PostList extends Component {
     tagStore.subscribe(this, () => {
       this.$target.innerHTML = '';
       this.setState({ ...POST_LIST_INIT });
-      //this.render.bind(this);
     });
     this.state = POST_LIST_INIT;
 
