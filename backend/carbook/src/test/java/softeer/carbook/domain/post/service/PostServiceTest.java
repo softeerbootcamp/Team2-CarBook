@@ -90,70 +90,70 @@ class PostServiceTest {
     @DisplayName("비로그인 상태 메인 페이지 테스트")
     void getRecentPostsTest() {
         //given
-        int index = 0;
-        given(imageRepository.getImagesOfRecentPosts(POST_COUNT, index)).willReturn(images);
+        int postId = 9;
+        given(imageRepository.getImagesOfRecentPosts(POST_COUNT, postId)).willReturn(images);
 
         //when
-        GuestPostsResponse guestPostsResponse = postService.getRecentPosts(index);
+        GuestPostsResponse guestPostsResponse = postService.getRecentPosts(postId);
 
         //then
         assertThat(guestPostsResponse.isLogin()).isFalse();
         assertThat(guestPostsResponse.getImages()).isEqualTo(images);
 
-        verify(imageRepository).getImagesOfRecentPosts(POST_COUNT, index);
+        verify(imageRepository).getImagesOfRecentPosts(POST_COUNT, postId);
     }
 
     @Test
     @DisplayName("더 이상 불러올 게시글이 없을 때 테스트")
     void getNoPostsTest() {
         //given
-        int index = 10000;
-        given(imageRepository.getImagesOfRecentPosts(POST_COUNT, index)).willReturn(new ArrayList<Image>());
+        int postId = 1;
+        given(imageRepository.getImagesOfRecentPosts(POST_COUNT, postId)).willReturn(new ArrayList<Image>());
 
         //when
-        GuestPostsResponse guestPostsResponse = postService.getRecentPosts(index);
+        GuestPostsResponse guestPostsResponse = postService.getRecentPosts(postId);
 
         //then
         assertThat(guestPostsResponse.isLogin()).isFalse();
         assertThat(guestPostsResponse.getImages()).isEqualTo(new ArrayList<Image>());
 
-        verify(imageRepository).getImagesOfRecentPosts(POST_COUNT, index);
+        verify(imageRepository).getImagesOfRecentPosts(POST_COUNT, postId);
     }
 
     @Test
     @DisplayName("로그인 상태 메인 페이지 테스트")
     void getRecentFollowerPostsTest() {
         //given
-        int index = 0;
+        int postId = 9;
         User user = new User(15, "user15@exam.com", "15번유저", "pw15");
-        given(imageRepository.getImagesOfRecentFollowingPosts(POST_COUNT, index, user.getId())).willReturn(images);
+        given(imageRepository.getImagesOfRecentFollowingPosts(POST_COUNT, postId, user.getId())).willReturn(images);
 
         //when
-        LoginPostsResponse loginPostsResponse = postService.getRecentFollowerPosts(index, user);
+        LoginPostsResponse loginPostsResponse = postService.getRecentFollowerPosts(postId, user);
 
         //then
         assertThat(loginPostsResponse.isLogin()).isTrue();
         assertThat(loginPostsResponse.getImages()).isEqualTo(images);
 
-        verify(imageRepository).getImagesOfRecentFollowingPosts(POST_COUNT, index, user.getId());
+        verify(imageRepository).getImagesOfRecentFollowingPosts(POST_COUNT, postId, user.getId());
     }
 
     @Test
     @DisplayName("팔로잉중인 게시글이 없는 경우 테스트")
     void getNoFollowingPostsTest() {
         //given
-        int index = 0;
+        int postId = 9;
         User user = new User(17, "user17@email.com", "사용자17", "pw17");
-        given(imageRepository.getImagesOfRecentFollowingPosts(POST_COUNT, index, user.getId())).willReturn(new ArrayList<Image>());
+        given(imageRepository.getImagesOfRecentFollowingPosts(POST_COUNT, postId, user.getId())).willReturn(new ArrayList<Image>());
 
         //when
-        LoginPostsResponse loginPostsResponse = postService.getRecentFollowerPosts(index, user);
+        LoginPostsResponse loginPostsResponse = postService.getRecentFollowerPosts(postId, user);
 
         //then
         assertThat(loginPostsResponse.isLogin()).isTrue();
         assertThat(loginPostsResponse.getImages()).isEqualTo(new ArrayList<Image>());
 
-        verify(imageRepository).getImagesOfRecentFollowingPosts(POST_COUNT, index, user.getId());
+        verify(imageRepository).getImagesOfRecentFollowingPosts(POST_COUNT, postId, user.getId());
     }
 
     @Test
