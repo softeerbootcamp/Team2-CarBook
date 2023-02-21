@@ -3,6 +3,7 @@ import "./PostDetail.scss";
 import backButton from "@/assets/icons/backButton.svg";
 import { InfoContents, InfoHeader, Footer } from "@/components/PostDetail";
 import { basicAPI } from "@/api";
+import likeButton from "@/assets/icons/likeButton.svg";
 
 export default class PostDetailPage extends Component {
   async setup() {
@@ -10,6 +11,43 @@ export default class PostDetailPage extends Component {
     const postid = location.pathname.split("/").slice(-1)[0];
     this.state.postid = postid;
     await this.fetchPostDefail(postid);
+
+    const postDetailContainer = this.$target.querySelector(
+      ".postdetail-container"
+    ) as HTMLElement;
+
+    postDetailContainer.addEventListener("click", (e: Event) => {
+      const target = e.target as HTMLElement;
+      const closeButton = target.closest(".close") as HTMLElement;
+      const imageModal = postDetailContainer.querySelector(
+        ".image-modal"
+      ) as HTMLElement;
+
+      if (closeButton) {
+        imageModal.classList.toggle("FadeInAndOut");
+        return;
+      }
+
+      const header = target.closest(".header") as HTMLElement;
+
+      if (!header) return;
+
+      const modalContent = postDetailContainer.querySelector(
+        ".modal-content"
+      ) as HTMLImageElement;
+
+      const backgroundURI =
+        getComputedStyle(header).getPropertyValue("background-image");
+      modalContent.src = this.parseimgUrI(backgroundURI);
+      imageModal.classList.toggle("FadeInAndOut");
+    });
+  }
+
+  parseimgUrI(backgroundURI: string) {
+    return backgroundURI
+      .replace("url(", "")
+      .replace(")", "")
+      .replaceAll('"', "");
   }
 
   async fetchPostDefail(postId: string) {
@@ -30,8 +68,7 @@ export default class PostDetailPage extends Component {
   template(): string {
     return /*html*/ `
     <div class ='postdetail-container'>
-      <div class = 'header'>
-      </div>
+      <div class = 'header'></div>
 
       <div class ='postdetail-info'>
         <div class ='info-header'>
@@ -45,7 +82,11 @@ export default class PostDetailPage extends Component {
 
       <div class = 'back-button'> <img class = 'backbutton' src = "${backButton}"/> </div>
 
-      <div class = 'alert-modal'>오류 : 닉네임이 중복되었습니다.</div>
+      <div class = 'alert-modal'></div>
+      <div class ='image-modal'>
+        <span class ='close'>x</span>
+        <img class ='modal-content'>
+      </div>
     </div>
     `;
   }
