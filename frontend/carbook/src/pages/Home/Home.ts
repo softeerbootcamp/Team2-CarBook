@@ -4,6 +4,9 @@ import Header from '@/components/common/Header';
 import { SearchForm, HashTagList, PostList } from '@/components/Home';
 import { push } from '@/utils/router/navigate';
 import isLogin from '@/utils/isLogin';
+import plus from '@/assets/icons/plus-white.svg';
+import up from '@/assets/icons/up.svg';
+import { qs } from '@/utils';
 
 export default class HomePage extends Component {
   async setup() {
@@ -28,7 +31,10 @@ export default class HomePage extends Component {
           <div class="gallery"></div>
           <div class="spinner"></div>
         </div>
-        <div class="main__button">+</div>
+        <div class="main__buttons">
+          <div class="main__button up"><img src="${up}" /></div>
+          <div class="main__button plus"><img src="${plus}"/></div>
+        </div>
       </main>
     </div>
     `;
@@ -63,7 +69,8 @@ export default class HomePage extends Component {
     const { isLogin, nickname } = this.state;
 
     const profileBtn = target.closest('.header__right-box');
-    const plusBtn = target.closest('.main__button');
+    const plusBtn = target.closest('.plus');
+    const upBtn = target.closest('.up');
 
     if (isLogin) {
       if (profileBtn && nickname) {
@@ -78,6 +85,11 @@ export default class HomePage extends Component {
         push('/login');
         return;
       }
+    }
+
+    if (upBtn) {
+      const gallery = qs(this.$target, '.gallery');
+      gallery.scrollIntoView({ behavior: 'smooth' });
     }
   }
 
