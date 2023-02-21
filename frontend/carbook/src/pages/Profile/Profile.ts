@@ -248,7 +248,6 @@ export default class ProfilePage extends Component {
     new ModifyModal(modifyModal);
   }
 
-
   async modifyNickname({
     alertModal,
     modal,

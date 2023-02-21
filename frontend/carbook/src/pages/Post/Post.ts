@@ -1,9 +1,10 @@
 import { Component } from '@/core';
 import Header from '@/components/common/Header';
 import Form from '@/components/Post/Form';
-import { qs } from '@/utils';
+import { getClosest, qs } from '@/utils';
 import './Post.scss';
 import { basicAPI } from '@/api';
+import { push } from '@/utils/router/navigate';
 
 export default class PostPage extends Component {
   template(): string {
@@ -41,6 +42,14 @@ export default class PostPage extends Component {
 
     return;
   }
+
+  setEvent(): void {
+    this.$target.addEventListener('click', ({ target }) => {
+      const logo = getClosest(<HTMLElement>target, '.header__left-box');
+      if (logo) push('/');
+    });
+  }
+
 
   getPostId() {
     return parseInt(location.pathname.split('/')[2]);
