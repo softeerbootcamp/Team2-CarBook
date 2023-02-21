@@ -3,7 +3,6 @@ import "./PostDetail.scss";
 import backButton from "@/assets/icons/backButton.svg";
 import { InfoContents, InfoHeader, Footer } from "@/components/PostDetail";
 import { basicAPI } from "@/api";
-import likeButton from "@/assets/icons/likeButton.svg";
 
 export default class PostDetailPage extends Component {
   async setup() {
@@ -11,7 +10,6 @@ export default class PostDetailPage extends Component {
     const postid = location.pathname.split("/").slice(-1)[0];
     this.state.postid = postid;
     await this.fetchPostDefail(postid);
-
     const postDetailContainer = this.$target.querySelector(
       ".postdetail-container"
     ) as HTMLElement;
