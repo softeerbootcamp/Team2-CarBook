@@ -21,6 +21,7 @@ import softeer.carbook.domain.user.exception.PasswordNotMatchException;
 import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.service.UserService;
 import softeer.carbook.global.dto.Message;
+import softeer.carbook.global.interceptor.LoginInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -47,6 +48,8 @@ class PostControllerTest {
     private UserService userService;
     @MockBean
     private PostService postService;
+    @MockBean
+    private LoginInterceptor loginInterceptor;
 
     private final List<Image> images = new ArrayList<>(List.of(
             new Image(8, "/eighth/image.jpg"),
@@ -112,7 +115,7 @@ class PostControllerTest {
     @DisplayName("해당 사용자의 프로필 페이지 조회 - 로그인 확인 실패")
     void profileIsNotLogin() throws Exception {
         // given
-        given(userService.findLoginedUser(any(HttpServletRequest.class))).willThrow(new NotLoginStatementException());
+        given(loginInterceptor.preHandle(any(), any(), any())).willThrow(new NotLoginStatementException());
 
         // when & then
         mockMvc.perform(get("/profile?nickname=nickname"))
@@ -132,6 +135,7 @@ class PostControllerTest {
         given(userService.findLoginedUser(any(HttpServletRequest.class))).willReturn(user);
         given(postService.myProfile(any())).willReturn(myProfileResponse);
         given(postService.otherProfile(any(), anyString())).willReturn(otherProfileResponse);
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
 
         // when & then
@@ -153,7 +157,7 @@ class PostControllerTest {
         given(userService.findLoginedUser(any(HttpServletRequest.class))).willReturn(user);
         given(postService.myProfile(any())).willReturn(myProfileResponse);
         given(postService.otherProfile(any(), anyString())).willReturn(otherProfileResponse);
-
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         // when & then
         mockMvc.perform(get("/profile?nickname=nickname12"))
@@ -165,8 +169,7 @@ class PostControllerTest {
     @DisplayName("글 상세 페이지 글 불러오기 테스트 - 로그인 확인 실패")
     void getPostDetailsNotLogin() throws Exception {
         // given
-        given(userService.findLoginedUser(any(HttpServletRequest.class))).willThrow(new NotLoginStatementException());
-
+        given(loginInterceptor.preHandle(any(), any(), any())).willThrow(new NotLoginStatementException());
         // when & then
         mockMvc.perform(get("/post?postId=9"))
                 .andExpect(status().isUnauthorized());
@@ -181,6 +184,7 @@ class PostControllerTest {
         given(userService.findLoginedUser(any())).willReturn(user);
         given(postService.getPostDetails(anyInt(), eq(user))).willReturn(
                 new PostDetailResponse.PostDetailResponseBuilder().isMyPost(true).build());
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         // when & then
         mockMvc.perform(get("/post?postId=9"))
@@ -197,6 +201,7 @@ class PostControllerTest {
         given(userService.findLoginedUser(any())).willReturn(user);
         given(postService.getPostDetails(anyInt(), eq(user))).willReturn(
                 new PostDetailResponse.PostDetailResponseBuilder().isMyPost(false).build());
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         // when & then
         mockMvc.perform(get("/post?postId=9"))
@@ -208,7 +213,7 @@ class PostControllerTest {
     @DisplayName("글 삭제 테스트 - 로그인 확인 실패")
     void deletePostNotLogin() throws Exception {
         // given
-        given(userService.findLoginedUser(any(HttpServletRequest.class))).willThrow(new NotLoginStatementException());
+        given(loginInterceptor.preHandle(any(), any(), any())).willThrow(new NotLoginStatementException());
 
         // when & then
         mockMvc.perform(delete("/post/1"))
@@ -224,6 +229,7 @@ class PostControllerTest {
         given(userService.findLoginedUser(any())).willReturn(user);
         given(postService.deletePost(anyInt(), eq(user))).willReturn(
                 new Message("Post Deleted Successfully"));
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         // when & then
         mockMvc.perform(delete("/post/1"))
@@ -239,6 +245,7 @@ class PostControllerTest {
 
         given(userService.findLoginedUser(any(HttpServletRequest.class))).willReturn(user);
         given(postService.createPost(any(), any())).willReturn(new Message("Post create success"));
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         final String fileName = "testImage";
         final String contentType = "jpeg";
@@ -262,6 +269,7 @@ class PostControllerTest {
     @DisplayName("글 수정 테스트")
     void modifyPostTest() throws Exception {
         given(postService.modifyPost(any(),any())).willReturn(new Message("Post modify success"));
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         final String fileName = "modifiedTestImage";
         final String contentType = "jpeg";
