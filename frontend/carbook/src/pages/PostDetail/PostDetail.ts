@@ -3,6 +3,7 @@ import "./PostDetail.scss";
 import backButton from "@/assets/icons/backButton.svg";
 import { InfoContents, InfoHeader, Footer } from "@/components/PostDetail";
 import { basicAPI } from "@/api";
+import likeButton from "@/assets/icons/likeButton.svg";
 
 export default class PostDetailPage extends Component {
   async setup() {
@@ -14,18 +15,19 @@ export default class PostDetailPage extends Component {
     const postDetailContainer = this.$target.querySelector(
       ".postdetail-container"
     ) as HTMLElement;
+
     postDetailContainer.addEventListener("click", (e: Event) => {
+      const target = e.target as HTMLElement;
+      const closeButton = target.closest(".close") as HTMLElement;
       const imageModal = postDetailContainer.querySelector(
         ".image-modal"
       ) as HTMLElement;
 
-      console.log("click", imageModal);
-      if (imageModal.classList.contains("FadeInAndOut")) {
+      if (closeButton) {
         imageModal.classList.toggle("FadeInAndOut");
         return;
       }
 
-      const target = e.target as HTMLElement;
       const header = target.closest(".header") as HTMLElement;
 
       if (!header) return;
@@ -34,13 +36,18 @@ export default class PostDetailPage extends Component {
         ".modal-content"
       ) as HTMLImageElement;
 
-      let url = getComputedStyle(header).getPropertyValue("background-image");
-      url = url.replace("url(/'", "");
-      url = url.replace(")/'", "");
-      console.log(url);
-      modalContent.src = url;
+      const backgroundURI =
+        getComputedStyle(header).getPropertyValue("background-image");
+      modalContent.src = this.parseimgUrI(backgroundURI);
       imageModal.classList.toggle("FadeInAndOut");
     });
+  }
+
+  parseimgUrI(backgroundURI: string) {
+    return backgroundURI
+      .replace("url(", "")
+      .replace(")", "")
+      .replaceAll('"', "");
   }
 
   async fetchPostDefail(postId: string) {
@@ -61,8 +68,7 @@ export default class PostDetailPage extends Component {
   template(): string {
     return /*html*/ `
     <div class ='postdetail-container'>
-      <div class = 'header'>
-      </div>
+      <div class = 'header'></div>
 
       <div class ='postdetail-info'>
         <div class ='info-header'>

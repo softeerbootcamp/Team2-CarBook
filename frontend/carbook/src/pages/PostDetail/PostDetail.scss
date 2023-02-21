@@ -13,6 +13,18 @@ $menu: "@/assets/icons/postdetail_menu.svg";
   text-align: center;
   position: relative;
 
+  @keyframes like {
+    0% {
+      scale: 0;
+    }
+    50% {
+      scale: 1.1;
+    }
+    to {
+      scale: 1;
+    }
+  }
+
   .header {
     background-color: pink;
     height: 47%;
@@ -25,6 +37,15 @@ $menu: "@/assets/icons/postdetail_menu.svg";
 
     background-size: cover;
     background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .heart {
+      width: 10%;
+      height: 10%;
+      fill: white;
+    }
   }
 
   .postdetail-info {
@@ -33,10 +54,11 @@ $menu: "@/assets/icons/postdetail_menu.svg";
     max-width: 500px;
     min-width: 400px;
     top: 43%;
-    height: 30%;
+    height: 57%;
     padding: 3vh 10%;
     background-color: #ffffff;
     border-radius: 16px 16px 0 0;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
 
     .info-header {
       display: flex;
@@ -148,6 +170,7 @@ $menu: "@/assets/icons/postdetail_menu.svg";
     width: 100%;
     max-width: 500px;
     min-width: 400px;
+    height: 10%;
     bottom: 0;
     padding: 2vh 10%;
     justify-content: space-between;
@@ -162,6 +185,9 @@ $menu: "@/assets/icons/postdetail_menu.svg";
 
       .like-button {
         margin-right: 8px;
+        width: 36px;
+        height: 36px;
+        animation: like 0.3s;
       }
       .like-count {
         font-size: 16px;
@@ -208,7 +234,7 @@ $menu: "@/assets/icons/postdetail_menu.svg";
 
   .image-modal {
     position: fixed;
-    top: 0;
+    top: 20%;
     left: 0;
     z-index: 50;
     width: 100%;
@@ -217,6 +243,8 @@ $menu: "@/assets/icons/postdetail_menu.svg";
     padding-top: 10%;
     background-color: rgba(0, 0, 0, 0.8);
     visibility: hidden;
+    display: flex;
+    transition: all ease-in 0.02s;
 
     .close {
       position: absolute;
@@ -224,7 +252,6 @@ $menu: "@/assets/icons/postdetail_menu.svg";
       right: 30px;
       color: $main-white;
       font-size: 30px;
-      transition: 0.3s;
       font-family: "netmarbleB";
       font-weight: 300;
     }
@@ -232,24 +259,13 @@ $menu: "@/assets/icons/postdetail_menu.svg";
     .modal-content {
       margin: auto;
       display: block;
-      width: 80%;
+      width: 90%;
       height: auto;
-      max-width: 300px;
-      animation-name: zoom;
-      animation-duration: 0.8s;
-    }
-  }
-
-  @keyframes zoom {
-    from {
-      transform: scale(0);
-    }
-    to {
-      transform: scale(1);
     }
   }
 
   .FadeInAndOut {
+    top: 0;
     visibility: visible;
     opacity: 1;
   }
