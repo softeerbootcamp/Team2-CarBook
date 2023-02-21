@@ -1,5 +1,6 @@
 package softeer.carbook.domain.follow.controller;
 
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
@@ -15,6 +16,7 @@ import softeer.carbook.domain.like.controller.LikeController;
 import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.service.UserService;
 import softeer.carbook.global.dto.Message;
+import softeer.carbook.global.interceptor.LoginInterceptor;
 
 import java.util.ArrayList;
 
@@ -32,6 +34,7 @@ class FollowControllerTest {
     MockMvc mockMvc;
     @MockBean private FollowService followService;
     @MockBean private UserService userService;
+    @MockBean private LoginInterceptor loginInterceptor;
 
     private final User user = new User("test@gmail.com", "nickname",
             BCrypt.hashpw("password", BCrypt.gensalt()));
@@ -41,6 +44,7 @@ class FollowControllerTest {
         // given
         given(userService.findLoginedUser(any())).willReturn(user);
         given(followService.modifyFollowInfo(any(), anyString())).willReturn(new Message("Follow Success"));
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         // when & then
         mockMvc.perform(post("/profile/follow")
@@ -56,6 +60,7 @@ class FollowControllerTest {
         // given
         given(userService.findLoginedUser(any())).willReturn(user);
         given(followService.modifyFollowInfo(any(), anyString())).willReturn(new Message("Unfollow Success"));
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         // when & then
         mockMvc.perform(post("/profile/follow")
@@ -108,6 +113,7 @@ class FollowControllerTest {
         // given
         given(userService.findLoginedUser(any())).willReturn(user);
         given(followService.deleteFollower(any(), anyString())).willThrow(new FollowIdNotExistException());
+        given(loginInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         // when & then
         mockMvc.perform(delete("/profile/follower?follower=nickname"))

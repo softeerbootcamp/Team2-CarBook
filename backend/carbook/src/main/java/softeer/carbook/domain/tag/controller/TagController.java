@@ -26,7 +26,7 @@ public class TagController {
     }
 
     // 모든 태그 검색
-    @GetMapping("/search/")
+    @GetMapping("/search")
     public ResponseEntity<TagSearchResopnse> searchAllTags(@RequestParam String keyword) {
         logger.debug("keyword: //{}//", keyword);
         TagSearchResopnse tagSearchResopnse = tagService.searchAllTags(keyword);
@@ -34,7 +34,7 @@ public class TagController {
     }
 
     // 해시태그 검색
-    @GetMapping("/search/hashtag/")
+    @GetMapping("/search/hashtag")
     public ResponseEntity<HashtagSearchResponse> searchHashtag(@RequestParam String keyword) {
         logger.debug("keyword: //{}//", keyword);
         HashtagSearchResponse hashtagSearchResponse = tagService.searchHashTag(keyword);
