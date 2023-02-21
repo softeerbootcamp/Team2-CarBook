@@ -10,6 +10,7 @@ import softeer.carbook.domain.post.exception.PostNotExistException;
 import softeer.carbook.domain.post.model.Post;
 
 import javax.sql.DataSource;
+import java.math.BigInteger;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
@@ -79,7 +80,7 @@ public class PostRepository {
             ps.setInt(3, post.getModelId());
             return ps;
         }, keyHolder);
-        return (int)keyHolder.getKeys().get("id");
+        return Integer.parseInt(String.valueOf(keyHolder.getKeys().values().stream().findFirst().get()));
     }
 
     public void updatePost(Post post) {
