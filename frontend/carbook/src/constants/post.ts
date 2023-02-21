@@ -8,4 +8,5 @@ export const POST_LIST_INIT = {
   length: 6,
   index: 0,
   tags: tagStore.getState(),
+  imagesIdx: [1],
 };

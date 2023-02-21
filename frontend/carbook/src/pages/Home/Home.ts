@@ -30,6 +30,7 @@ export default class HomePage extends Component {
         <div class="main__gallery">
           <div class="gallery"></div>
           <div class="spinner"></div>
+          <button class="load">dddd</button>
         </div>
         <div class="main__buttons">
           <div class="main__button up"><img src="${up}" /></div>

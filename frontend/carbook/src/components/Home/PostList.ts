@@ -53,6 +53,8 @@ export default class PostList extends Component {
         this.removeSkeleton();
         spinner.classList.remove('active');
 
+        this.optimizeDomHandler();
+
         this.appendImages(images);
       }
     } else {
@@ -74,10 +76,27 @@ export default class PostList extends Component {
       const res = await basicAPI.get(url);
       const { images, login, nickname } = res.data;
       const lastImage = images[images.length - 1];
+
       let index = null;
       if (images.length > 0) {
         index = lastImage.postId;
       }
+
+      const localData = JSON.parse(localStorage.getItem('images') || '[]');
+      let newIdx;
+      if (localData.length > 100) {
+        newIdx = Date.now();
+        this.state.imagesIdx.push(newIdx);
+      } else {
+        console.log(this.state);
+
+        const idx = this.state.imagesIdx[this.state.imagesIdx.length - 1];
+        newIdx = idx;
+      }
+      const newLocalData = JSON.stringify(localData.concat(images));
+
+      localStorage.setItem(newIdx, newLocalData);
+
       const end = images.length === 0;
 
       if (login) {
@@ -114,7 +133,6 @@ export default class PostList extends Component {
   }
 
   appendImages(images: []) {
-    // src 수정 예정
     images.forEach(({ postId, imageUrl }: IImage) => {
       if (this.$target.querySelector(`img[data-id="${postId}"]`) === null) {
         this.$target.insertAdjacentHTML(
@@ -150,5 +168,32 @@ export default class PostList extends Component {
     } else if (image) {
       push('/login');
     }
+  }
+
+  optimizeDomHandler() {
+    const domCount = this.$target.getElementsByTagName('*').length;
+    console.log(this.$target.getElementsByTagName('*').length);
+
+    if (domCount > 100) {
+      const loadBtn = qs(document, '.load');
+      loadBtn.style.display = 'block';
+      return;
+    } else {
+      this.appendImages(this.state.images);
+    }
+  }
+
+  onLoadMorePost() {
+    this.$target.innerHTML = '';
+
+    this.setState({ images: [] });
+    this.fetchImages();
+  }
+
+  onDeletePrevPost() {
+    this.$target.innerHTML = '';
+    const images = JSON.parse(localStorage.getItem('images'));
+
+    this.setState({ images });
   }
 }
