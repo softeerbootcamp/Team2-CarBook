@@ -45,6 +45,7 @@ export default class PostList extends Component {
     }
 
     const spinner = qs(document, '.spinner');
+
     if (index > 0) {
       if (isLoading) {
         this.makeSkeleton();
@@ -74,6 +75,10 @@ export default class PostList extends Component {
       const res = await basicAPI.get(url);
       const { images, login, nickname } = res.data;
       const lastImage = images[images.length - 1];
+      let index;
+      if (images.length > 0) {
+        index = lastImage.postId;
+      }
       const end = images.length === 0;
 
       if (login) {
@@ -82,7 +87,7 @@ export default class PostList extends Component {
       }
       this.setState({
         images: this.state.images.concat(images),
-        index: lastImage.postId,
+        index,
         isLoading: false,
         isEnd: end,
       });
