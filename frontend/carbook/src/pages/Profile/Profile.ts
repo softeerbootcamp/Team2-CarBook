@@ -1,5 +1,5 @@
-import { Component } from "@/core";
-import "./Profile.scss";
+import { Component } from '@/core';
+import './Profile.scss';
 
 import {
   HeaderInfo,
@@ -7,9 +7,9 @@ import {
   PostLists,
   Followlists,
   ModifyModal,
-} from "@/components/Profile";
+} from '@/components/Profile';
 
-import { basicAPI } from "@/api";
+import { basicAPI } from '@/api';
 import {
   DUPPLICATEDNICKNAME,
   EMPTYMODIFYCONFIRMPW,
@@ -17,14 +17,15 @@ import {
   EMPTYNICKNAME,
   EMPTYPW,
   NotMatchedPassword,
-} from "@/constants/errorMessage";
-import { push, replace } from "@/utils/router/navigate";
+} from '@/constants/errorMessage';
+import { push, replace } from '@/utils/router/navigate';
+import isLogin from '@/utils/isLogin';
 
 export default class ProfilePage extends Component {
   setup(): void {
-    const urlnickname = location.pathname.split("/").slice(-1)[0];
+    const urlnickname = location.pathname.split('/').slice(-1)[0];
     this.state.nickname = urlnickname;
-    this.state.profileMode = "posts";
+    this.state.profileMode = 'posts';
     this.state.isloading = true;
 
     this.fetchProfilePage(urlnickname);
@@ -36,12 +37,12 @@ export default class ProfilePage extends Component {
       .then((response) => response.data)
       .catch((error) => {
         const errorMessage = error.response.data.message;
-        if (errorMessage.includes("Session")) {
+        if (errorMessage.includes('Session')) {
           this.state.notSession = true;
-          push("/login");
+          push('/login');
           return;
         }
-        if (errorMessage.includes("Nickname")) {
+        if (errorMessage.includes('Nickname')) {
           this.state.notExistedNickname = true;
           return;
         }
@@ -92,13 +93,13 @@ export default class ProfilePage extends Component {
   }
 
   async deleteFollowing(nickname: string) {
-    await basicAPI.post("/api/profile/follow", { followingNickname: nickname });
+    await basicAPI.post('/api/profile/follow', { followingNickname: nickname });
     this.receiveFollowLists(this.state.profileMode);
     this.fetchProfilePage(this.state.nickname);
   }
 
   async receiveFollowLists(profileMode: string) {
-    const mode = profileMode === "follower" ? "followers" : "followings";
+    const mode = profileMode === 'follower' ? 'followers' : 'followings';
     const data = await basicAPI
       .get(`/api/profile/${mode}?nickname=${this.state.nickname}`)
       .then((response) => response.data)
@@ -117,57 +118,62 @@ export default class ProfilePage extends Component {
 
     if (this.state?.notExistedNickname) {
       const wrongNickNamePage = this.$target.querySelector(
-        ".not-exist-nickname"
+        '.not-exist-nickname'
       );
-      wrongNickNamePage?.classList.add("visible");
+      wrongNickNamePage?.classList.add('visible');
       return;
     }
 
     const profileContainer = this.$target.querySelector(
-      ".profile__container"
+      '.profile__container'
     ) as HTMLElement;
 
-    if (profileContainer.classList.contains("once")) return;
-    profileContainer.classList.add("once");
+    if (profileContainer.classList.contains('once')) return;
+    profileContainer.classList.add('once');
 
-    profileContainer.addEventListener("click", (e: Event) => {
+    profileContainer.addEventListener('click', async (e: Event) => {
       e.preventDefault();
+      const login = await isLogin();
+      if (!login) push('/login');
+
       const target = e.target as HTMLElement;
-      const postsSection = target.closest("section.profile-posts");
-      const followerSection = target.closest("section.profile-follower");
-      const followingSection = target.closest("section.profile-following");
-      const followButton = target.closest(".follow-button");
-      const modifyInfoButton = target.closest(".modify-button");
-      const deleteButton = target.closest(".follower-delete-button");
+      const postsSection = target.closest('section.profile-posts');
+      const followerSection = target.closest('section.profile-follower');
+      const followingSection = target.closest('section.profile-following');
+      const followButton = target.closest('.follow-button');
+      const modifyInfoButton = target.closest('.modify-button');
+      const deleteButton = target.closest('.follower-delete-button');
 
       if (deleteButton) {
         const nickname = (
-          this.$target.querySelector(".follower-info") as HTMLElement
+          deleteButton
+            .closest('li')
+            ?.querySelector('.follower-info') as HTMLElement
         ).dataset.nickname as string;
         const mode = this.$target.querySelector(
-          ".profile__contents-header"
+          '.profile__contents-header'
         )?.innerHTML;
 
-        mode === "팔로워"
+        mode === '팔로워'
           ? this.deleteFollower(nickname)
           : this.deleteFollowing(nickname);
         return;
       }
 
       if (postsSection) {
-        this.setState({ ...this.state, profileMode: "posts" });
+        this.setState({ ...this.state, profileMode: 'posts' });
         return;
       }
       if (followerSection) {
-        const profileMode = "follower";
+        const profileMode = 'follower';
         this.receiveFollowLists(profileMode);
-        this.setState({ ...this.state, profileMode: "follower" });
+        this.setState({ ...this.state, profileMode: 'follower' });
         return;
       }
       if (followingSection) {
-        const profileMode = "following";
+        const profileMode = 'following';
         this.receiveFollowLists(profileMode);
-        this.setState({ ...this.state, profileMode: "following" });
+        this.setState({ ...this.state, profileMode: 'following' });
         return;
       }
       if (followButton) {
@@ -175,9 +181,9 @@ export default class ProfilePage extends Component {
       }
       if (modifyInfoButton) {
         e.preventDefault();
-        const modal = this.$target.querySelector(".alert-modal") as HTMLElement;
-        const modifyModal = target.closest(".modify-modal") as HTMLElement;
-        if (modifyModal.classList.contains("nickname")) {
+        const modal = this.$target.querySelector('.alert-modal') as HTMLElement;
+        const modifyModal = target.closest('.modify-modal') as HTMLElement;
+        if (modifyModal.classList.contains('nickname')) {
           this.modifyNickname({
             alertModal: modal,
             modal: modifyModal,
@@ -185,15 +191,15 @@ export default class ProfilePage extends Component {
           });
           return;
         }
-        if (modifyModal.classList.contains("password")) {
+        if (modifyModal.classList.contains('password')) {
           this.modifyPassword({
             alertModal: modal,
             modal: modifyModal,
           });
           return;
         }
-        modal.classList.add("blue");
-        showErrorModal(modal, "회원정보가 변경되었습니다");
+        modal.classList.add('blue');
+        showErrorModal(modal, '회원정보가 변경되었습니다');
       }
     });
     this.mounted();
@@ -201,11 +207,11 @@ export default class ProfilePage extends Component {
 
   mounted(): void {
     const headerInfo = this.$target.querySelector(
-      ".header-info"
+      '.header-info'
     ) as HTMLElement;
 
     const header_contents = this.$target.querySelector(
-      ".header-contents"
+      '.header-contents'
     ) as HTMLElement;
 
     new HeaderInfo(headerInfo, {
@@ -221,13 +227,13 @@ export default class ProfilePage extends Component {
     });
 
     const profile_contents = this.$target.querySelector(
-      ".profile__contents"
+      '.profile__contents'
     ) as HTMLElement;
 
-    this.state.profileMode === "posts" &&
+    this.state.profileMode === 'posts' &&
       new PostLists(profile_contents, { images: this.state.images });
 
-    this.state.profileMode === "follower" &&
+    this.state.profileMode === 'follower' &&
       new Followlists(profile_contents, {
         profileMode: this.state.profileMode,
         isMyProfile: this.state.isMyProfile,
@@ -235,7 +241,7 @@ export default class ProfilePage extends Component {
         nickname: this.state.nickname,
       });
 
-    this.state.profileMode === "following" &&
+    this.state.profileMode === 'following' &&
       new Followlists(profile_contents, {
         profileMode: this.state.profileMode,
         isMyProfile: this.state.isMyProfile,
@@ -244,7 +250,7 @@ export default class ProfilePage extends Component {
       });
 
     const modifyModal = this.$target.querySelector(
-      ".modify-modal"
+      '.modify-modal'
     ) as HTMLElement;
     new ModifyModal(modifyModal);
   }
@@ -259,7 +265,7 @@ export default class ProfilePage extends Component {
     beforeNickname: string;
   }) {
     const newNicknameInput = modal.querySelector(
-      ".modify-modal-form-nickname input"
+      '.modify-modal-form-nickname input'
     ) as HTMLInputElement;
     const newNickname = newNicknameInput.value.trim();
 
@@ -293,13 +299,13 @@ export default class ProfilePage extends Component {
     modal: HTMLElement;
   }) {
     const beforePasswordInput = modal.querySelector(
-      ".modify-modal-form-password input"
+      '.modify-modal-form-password input'
     ) as HTMLInputElement;
     const afterPasswordInput = modal.querySelector(
-      ".modify-modal-form-modify-password input"
+      '.modify-modal-form-modify-password input'
     ) as HTMLInputElement;
     const afterPasswordConfirmInput = modal.querySelector(
-      ".modify-modal-form-password-confirm input"
+      '.modify-modal-form-password-confirm input'
     ) as HTMLInputElement;
 
     const beforePassword = beforePasswordInput.value.trim();
@@ -322,10 +328,10 @@ export default class ProfilePage extends Component {
         newPassword: afterPassword,
       })
       .then(() => {
-        showErrorModal(alertModal, "비밀번호 변경에 성공하셨습니다");
+        showErrorModal(alertModal, '비밀번호 변경에 성공하셨습니다');
       })
       .catch(() => {
-        showErrorModal(alertModal, "기존 비밀번호가 일치하지 않습니다");
+        showErrorModal(alertModal, '기존 비밀번호가 일치하지 않습니다');
       });
   }
 
@@ -391,7 +397,7 @@ function IsInvalidPassword({
   }
 
   if (beforePassword === afterPasswordConfirm) {
-    showErrorModal(alertModal, "기존 비밀번호와 일치합니다");
+    showErrorModal(alertModal, '기존 비밀번호와 일치합니다');
     return true;
   }
 
@@ -399,14 +405,14 @@ function IsInvalidPassword({
 }
 
 function showErrorModal(modal: HTMLElement, errorMessage: string): void {
-  if (modal.classList.contains("FadeInAndOut")) return;
+  if (modal.classList.contains('FadeInAndOut')) return;
   const mode =
-    errorMessage === "비밀번호 변경에 성공하셨습니다" ? "blue" : "pink";
+    errorMessage === '비밀번호 변경에 성공하셨습니다' ? 'blue' : 'pink';
   modal.innerHTML = errorMessage;
   modal.classList.add(mode);
-  modal.classList.toggle("FadeInAndOut");
+  modal.classList.toggle('FadeInAndOut');
   setTimeout(() => {
-    modal.classList.toggle("FadeInAndOut");
+    modal.classList.toggle('FadeInAndOut');
     modal.classList.remove(mode);
   }, 2000);
 }

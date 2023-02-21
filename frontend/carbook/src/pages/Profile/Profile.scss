@@ -1,4 +1,6 @@
-@import "@/styles/color.scss";
+@import '@/styles/color.scss';
+
+$home: '@/assets/icons/home.svg';
 
 .profile__container {
   min-width: 300px;
@@ -39,22 +41,33 @@
         margin-bottom: 8px;
 
         .user-nickname {
-          font-family: "LINESeedKR-Rg";
+          font-family: 'LINESeedKR-Rg';
           font-size: 24px;
           color: $main-white;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          .home {
+            margin-right: 8px;
+            background-image: url($home);
+            background-size: cover;
+            background-position: center;
+            width: 24px;
+            height: 24px;
+          }
         }
 
         .user-email {
           color: #dcdcdc;
           font-size: 14px;
-          font-family: "Pretendard Variable";
+          font-family: 'Pretendard Variable';
         }
 
         .follow-button {
           background-color: $main-pink;
           color: $main-white;
           font-size: 16px;
-          font-family: "LINESeedKR-Rg";
+          font-family: 'LINESeedKR-Rg';
           font-weight: 200;
         }
       }
@@ -62,7 +75,7 @@
       &-menu {
         width: 17px;
         height: 13px;
-        background-image: url("@/assets/icons/profile_menu.svg");
+        background-image: url('@/assets/icons/profile_menu.svg');
         background-size: cover;
         background-position: center;
         position: relative;
@@ -153,7 +166,7 @@
     align-items: center;
     padding: 24px 35px;
     gap: 30px;
-    font-family: "LINESeedKR-Rg";
+    font-family: 'LINESeedKR-Rg';
     position: relative;
 
     &-header {
@@ -206,7 +219,7 @@
             width: 40px;
             height: 40px;
             margin-right: 24px;
-            background-image: url("@/assets/icons/postdetail_profile.svg");
+            background-image: url('@/assets/icons/postdetail_profile.svg');
             background-size: cover;
             background-position: center;
           }
@@ -232,7 +245,7 @@
     z-index: 50;
     border-radius: 30px 30px 0px 0px;
     padding: 10% 10%;
-    font-family: "LINESeedKR-Rg";
+    font-family: 'LINESeedKR-Rg';
     transition: all ease-in-out 0.5s;
 
     .title {
@@ -245,7 +258,7 @@
         position: absolute;
         width: 15px;
         height: 15px;
-        background-image: url("@/assets/icons/xButton.svg");
+        background-image: url('@/assets/icons/xButton.svg');
         background-size: cover;
         background-position: center;
         top: 5px;
@@ -273,14 +286,14 @@
           right: 5%;
           width: 20px;
           height: 20px;
-          background-image: url("@/assets/icons/eye.png");
+          background-image: url('@/assets/icons/eye.png');
           filter: opacity(0.7);
           background-size: cover;
           background-position: center;
         }
 
         .slash {
-          background-image: url("@/assets/icons/eye-slash.png");
+          background-image: url('@/assets/icons/eye-slash.png');
           filter: opacity(0.4);
         }
       }
@@ -289,7 +302,7 @@
         width: 100%;
         height: 48px;
 
-        font-family: "LINESeedKR-Rg";
+        font-family: 'LINESeedKR-Rg';
         border: 1px solid $main-blue;
         border-radius: 4px;
         margin: 8px 0;
@@ -362,7 +375,7 @@
     visibility: hidden;
     min-width: 300px;
     height: 80%;
-    font-family: "LINESeedKR-Rg";
+    font-family: 'LINESeedKR-Rg';
     border-radius: 30px 30px 0px 0px;
     display: flex;
     align-items: center;
@@ -373,7 +386,7 @@
       width: 100%;
       height: 41%;
       margin-top: 0%;
-      background-image: url("@/assets/images/red.png");
+      background-image: url('@/assets/images/red.png');
       background-size: cover;
       background-position: center;
     }
@@ -387,7 +400,7 @@
       .alert-image {
         width: 39%;
         height: 32%;
-        background-image: url("@/assets/images/warning.png");
+        background-image: url('@/assets/images/warning.png');
         background-size: cover;
         background-position: center;
       }

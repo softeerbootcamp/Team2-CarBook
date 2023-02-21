@@ -1,47 +1,47 @@
-import { Component } from "@/core";
-import profile from "@/assets/icons/postdetail_profile.svg";
-import { push } from "@/utils/router/navigate";
-import { getClosest } from "@/utils";
-import { basicAPI } from "@/api";
+import { Component } from '@/core';
+import profile from '@/assets/icons/postdetail_profile.svg';
+import { push } from '@/utils/router/navigate';
+import { getClosest } from '@/utils';
+import { basicAPI } from '@/api';
 
 export default class InfoHeader extends Component {
   setup(): void {
     const { nickname } = this.props;
-    this.$target.addEventListener("click", (e: Event) => {
+    this.$target.addEventListener('click', (e: Event) => {
       const target = e.target as HTMLElement;
 
       console.log(target);
-      if (target.classList.contains("modify-post")) {
-        const postid = location.pathname.split("/").slice(-1)[0];
+      if (target.classList.contains('modify-post')) {
+        const postid = location.pathname.split('/').slice(-1)[0];
         push(`/post/${postid}/edit`);
         return;
       }
 
-      if (target.classList.contains("delete-post")) {
-        const postid = location.pathname.split("/").slice(-1)[0];
+      if (target.classList.contains('delete-post')) {
+        const postid = location.pathname.split('/').slice(-1)[0];
         this.deletePost(postid);
         return;
       }
 
-      if (getClosest(target, ".info-profile")) {
+      if (getClosest(target, '.info-profile')) {
         push(`/profile/${nickname}`);
       }
     });
   }
 
   async deletePost(postid: string) {
-    const modal = document.body.querySelector(".alert-modal") as HTMLElement;
+    const modal = document.body.querySelector('.alert-modal') as HTMLElement;
     await basicAPI
       .delete(`/api/post/${postid}`)
       .then((res) => {
         console.log(res.data.message);
-        showErrorModal(modal, "게시글 삭제에 성공했습니다");
+        showErrorModal(modal, '게시글 삭제에 성공했습니다');
         setTimeout(() => {
           push(`/`);
         }, 2300);
       })
       .catch(() => {
-        showErrorModal(modal, "게시글 삭제에 실패했습니다");
+        showErrorModal(modal, '게시글 삭제에 실패했습니다');
       });
   }
 
@@ -50,9 +50,9 @@ export default class InfoHeader extends Component {
     return /*html*/ `
     <div class='info-profile'>
       <img class ='user-img' src = "${profile}"/>
-      <h2 class = 'user-nickname'>${nickname}</h2>
+      <h2 class = 'user-nickname'>${nickname ?? ''}</h2>
     </div>
-    <div class ='info-menu ${isMyPost ? "" : "hidden"}'>
+    <div class ='info-menu ${isMyPost ? '' : 'hidden'}'>
       <ul class = 'info-menu-items'>
         <li>메뉴</li>
         <li class = 'modify-post'>수정</li>
@@ -64,13 +64,13 @@ export default class InfoHeader extends Component {
 }
 
 function showErrorModal(modal: HTMLElement, errorMessage: string): void {
-  if (modal.classList.contains("FadeInAndOut")) return;
-  const mode = errorMessage === "게시글 삭제에 성공했습니다" ? "blue" : "pink";
+  if (modal.classList.contains('FadeInAndOut')) return;
+  const mode = errorMessage === '게시글 삭제에 성공했습니다' ? 'blue' : 'pink';
   modal.innerHTML = errorMessage;
   modal.classList.add(mode);
-  modal.classList.toggle("FadeInAndOut");
+  modal.classList.toggle('FadeInAndOut');
   setTimeout(() => {
-    modal.classList.toggle("FadeInAndOut");
+    modal.classList.toggle('FadeInAndOut');
     modal.classList.add(mode);
   }, 2000);
 }
