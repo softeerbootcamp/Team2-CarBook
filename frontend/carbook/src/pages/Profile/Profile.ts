@@ -10,22 +10,21 @@ import {
 } from '@/components/Profile';
 
 import { basicAPI } from '@/api';
-import {
-  DUPPLICATEDNICKNAME,
-  EMPTYMODIFYCONFIRMPW,
-  EMPTYMODIFYPW,
-  EMPTYNICKNAME,
-  EMPTYPW,
-  NotMatchedPassword,
-} from '@/constants/errorMessage';
+import { POSTS, FOLLOWER, FOLLOWING } from '@/constants/profileMode';
 import { push, replace } from '@/utils/router/navigate';
 import isLogin from '@/utils/isLogin';
+
+import {
+  showErrorModal,
+  IsInvalidNickname,
+  IsInvalidPassword,
+} from '@/components/Profile/helper';
 
 export default class ProfilePage extends Component {
   setup(): void {
     const urlnickname = location.pathname.split('/').slice(-1)[0];
     this.state.nickname = urlnickname;
-    this.state.profileMode = 'posts';
+    this.state.profileMode = POSTS;
     this.state.isloading = true;
     this.fetchProfilePage(urlnickname);
   }
@@ -160,19 +159,19 @@ export default class ProfilePage extends Component {
       }
 
       if (postsSection) {
-        this.setState({ ...this.state, profileMode: 'posts' });
+        this.setState({ ...this.state, profileMode: POSTS });
         return;
       }
       if (followerSection) {
-        const profileMode = 'follower';
+        const profileMode = FOLLOWER;
         this.receiveFollowLists(profileMode);
-        this.setState({ ...this.state, profileMode: 'follower' });
+        this.setState({ ...this.state, profileMode: FOLLOWER });
         return;
       }
       if (followingSection) {
-        const profileMode = 'following';
+        const profileMode = FOLLOWING;
         this.receiveFollowLists(profileMode);
-        this.setState({ ...this.state, profileMode: 'following' });
+        this.setState({ ...this.state, profileMode: FOLLOWING });
         return;
       }
       if (followButton) {
@@ -197,8 +196,6 @@ export default class ProfilePage extends Component {
           });
           return;
         }
-        modal.classList.add('blue');
-        showErrorModal(modal, '회원정보가 변경되었습니다');
       }
     });
     this.mounted();
@@ -229,29 +226,28 @@ export default class ProfilePage extends Component {
       '.profile__contents'
     ) as HTMLElement;
 
-    this.state.profileMode === 'posts' &&
+    this.state.profileMode === POSTS &&
       new PostLists(profile_contents, { images: this.state.images });
 
-    this.state.profileMode === 'follower' &&
-      new Followlists(profile_contents, {
-        profileMode: this.state.profileMode,
-        isMyProfile: this.state.isMyProfile,
-        follows: this.state.follows,
-        nickname: this.state.nickname,
-      });
+    this.state.profileMode === FOLLOWER &&
+      this.makeFollowLists(profile_contents);
 
-    this.state.profileMode === 'following' &&
-      new Followlists(profile_contents, {
-        profileMode: this.state.profileMode,
-        isMyProfile: this.state.isMyProfile,
-        follows: this.state.follows,
-        nickname: this.state.nickname,
-      });
+    this.state.profileMode === FOLLOWING &&
+      this.makeFollowLists(profile_contents);
 
     const modifyModal = this.$target.querySelector(
       '.modify-modal'
     ) as HTMLElement;
     new ModifyModal(modifyModal);
+  }
+
+  makeFollowLists(profileContents: HTMLElement) {
+    new Followlists(profileContents, {
+      profileMode: this.state.profileMode,
+      isMyProfile: this.state.isMyProfile,
+      follows: this.state.follows,
+      nickname: this.state.nickname,
+    });
   }
 
   async modifyNickname({
@@ -285,8 +281,9 @@ export default class ProfilePage extends Component {
         this.setState({ ...this.state, nickname: newNickname });
         replace(`/profile/${newNickname}`);
       })
-      .catch(() => {
-        showErrorModal(alertModal, DUPPLICATEDNICKNAME);
+      .catch((err) => {
+        console.log(err);
+        push('/login');
       });
   }
 
@@ -341,77 +338,4 @@ export default class ProfilePage extends Component {
     });
     this.fetchProfilePage(this.state.nickname);
   }
-}
-
-function IsInvalidNickname({
-  alertModal,
-  beforeNickname,
-  newNickname,
-}: {
-  alertModal: HTMLElement;
-  beforeNickname: string;
-  newNickname: string;
-}) {
-  if (newNickname.length === 0) {
-    showErrorModal(alertModal, EMPTYNICKNAME);
-    return true;
-  }
-  if (newNickname === beforeNickname) {
-    showErrorModal(alertModal, DUPPLICATEDNICKNAME);
-    return true;
-  }
-
-  return false;
-}
-
-function IsInvalidPassword({
-  alertModal,
-  beforePassword,
-  afterPassword,
-  afterPasswordConfirm,
-}: {
-  alertModal: HTMLElement;
-  beforePassword: string;
-  afterPassword: string;
-  afterPasswordConfirm: string;
-}) {
-  if (beforePassword.length === 0) {
-    showErrorModal(alertModal, EMPTYPW);
-    return true;
-  }
-
-  if (afterPassword.length === 0) {
-    showErrorModal(alertModal, EMPTYMODIFYPW);
-    return true;
-  }
-
-  if (afterPasswordConfirm.length === 0) {
-    showErrorModal(alertModal, EMPTYMODIFYCONFIRMPW);
-    return true;
-  }
-
-  if (afterPassword !== afterPasswordConfirm) {
-    showErrorModal(alertModal, NotMatchedPassword);
-    return true;
-  }
-
-  if (beforePassword === afterPasswordConfirm) {
-    showErrorModal(alertModal, '기존 비밀번호와 일치합니다');
-    return true;
-  }
-
-  return false;
-}
-
-function showErrorModal(modal: HTMLElement, errorMessage: string): void {
-  if (modal.classList.contains('FadeInAndOut')) return;
-  const mode =
-    errorMessage === '비밀번호 변경에 성공하셨습니다' ? 'blue' : 'pink';
-  modal.innerHTML = errorMessage;
-  modal.classList.add(mode);
-  modal.classList.toggle('FadeInAndOut');
-  setTimeout(() => {
-    modal.classList.toggle('FadeInAndOut');
-    modal.classList.remove(mode);
-  }, 2000);
 }
