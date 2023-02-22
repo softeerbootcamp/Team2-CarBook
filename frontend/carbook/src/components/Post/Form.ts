@@ -4,7 +4,7 @@ import { qs, qsa, getHashTagsObj, isEmptyObj } from '@/utils';
 import { basicAPI, formAPI } from '@/api';
 import { push } from '@/utils/router/navigate';
 import { IPostIndex } from '@/interfaces';
-import { getInitialPost } from './helper/index';
+import { getInitialPost, getResponse } from './helper/index';
 
 export default class Form extends Component {
   imageForm: any;
@@ -183,14 +183,14 @@ export default class Form extends Component {
         await formAPI.patch('/api/post', formdata);
         alert('글이 수정되었습니다.');
         push(`/post/${postId}`);
-        return;
+      } else {
+        await formAPI.post('/api/post', formdata);
+        alert('글이 생성되었습니다.');
+        push('/');
       }
-      await formAPI.post('/api/post', formdata);
-      alert('글이 생성되었습니다.');
-      push('/');
-    } catch (error) {
-      console.error(error);
-      alert('다시 로그인 해주세요');
+    } catch (error: any) {
+      const status = error.response.status;
+      getResponse(status);
     }
   }
 
