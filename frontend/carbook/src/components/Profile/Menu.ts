@@ -77,7 +77,7 @@ export default class Menu extends Component {
       .then(() => {
         showErrorModal(modal, '로그아웃에 성공하셨습니다');
         setTimeout(() => {
-          localStorage.setItem('postlist', '{}');
+          localStorage.setItem('postList', '{}');
           push('/');
         }, LOGOUTDELAY);
       })

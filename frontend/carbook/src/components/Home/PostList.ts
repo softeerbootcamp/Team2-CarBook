@@ -15,7 +15,7 @@ export default class PostList extends Component {
     this.lastImg = null;
     tagStore.subscribe(this, () => {
       this.$target.innerHTML = '';
-      localStorage.setItem('images', JSON.stringify([]));
+      localStorage.setItem('postList', '{}');
       this.setState({ ...getInitPostList() });
     });
 

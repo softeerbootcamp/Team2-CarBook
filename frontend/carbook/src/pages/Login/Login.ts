@@ -88,7 +88,7 @@ async function sendUserInfo(
       const TRANSITIONDELAY = 2300;
       showErrorModal(modal, LOGINSUCCESS);
       setTimeout(() => {
-        localStorage.setItem('postlist', '{}');
+        localStorage.setItem('postList', '{}');
         push('/');
       }, TRANSITIONDELAY);
     })
