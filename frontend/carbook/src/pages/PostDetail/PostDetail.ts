@@ -38,8 +38,9 @@ export default class PostDetailPage extends Component {
         '.modal-content'
       ) as HTMLImageElement;
 
-      const backgroundURI =
-        getComputedStyle(header).getPropertyValue('background-image');
+      const backgroundURI = getComputedStyle(header)
+        .getPropertyValue('background-image')
+        .split(',')[8];
       modalContent.src = this.parseimgUrI(backgroundURI);
       imageModal.classList.toggle('FadeInAndOut');
     });
@@ -140,7 +141,7 @@ export default class PostDetailPage extends Component {
       '.postdetail-footer'
     ) as HTMLElement;
 
-    postImg.style.backgroundImage = `url(${this.state.imageUrl})`;
+    postImg.style.backgroundImage = `linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0) 100%), url(${this.state.imageUrl}) `;
     new Footer(footer, {
       like: this.state.like,
       likeCount: this.state.likeCount,
