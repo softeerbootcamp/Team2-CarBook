@@ -81,15 +81,15 @@ values (1,2,0),
        (2,4,0),
        (4,3,0);
 
-insert into POST (user_id, create_date, update_date, content, model_id, is_deleted)
-values (1,TIMESTAMPADD(DAY, -5, NOW()),'2023-02-07 11:24:24','1번 유저 첫글',1,0),
-       (1,TIMESTAMPADD(DAY, -6, NOW()),'2023-02-07 11:25:10','1번 유저 두번째글',2,0),
-       (2,TIMESTAMPADD(DAY, -4, NOW()),'2023-02-07 11:25:20','2번 유저 첫글',3,1),
-       (2,TIMESTAMPADD(DAY, -3, NOW()),'2023-02-07 11:25:33','2번 유저 두번째글',4,0),
-       (3,TIMESTAMPADD(DAY, -2, NOW()),'2023-02-07 11:25:35','3번 유저 첫글',5,0),
-       (3,TIMESTAMPADD(DAY, -1, NOW()),'2023-02-07 11:25:45','3번 유저 두번째글',6,1),
-       (4,NOW(),'2023-02-07 11:27:33','4번 유저 첫글',7,0),
-       (4,TIMESTAMPADD(DAY, 1, NOW()),'2023-02-07 11:28:33','4번 유저 두번째글',8,0);
+insert into POST (user_id, create_date, update_date, content, model_id, is_deleted, like_count)
+values (1,TIMESTAMPADD(DAY, -5, NOW()),'2023-02-07 11:24:24','1번 유저 첫글',1,0,3),
+       (1,TIMESTAMPADD(DAY, -6, NOW()),'2023-02-07 11:25:10','1번 유저 두번째글',2,0,0),
+       (2,TIMESTAMPADD(DAY, -4, NOW()),'2023-02-07 11:25:20','2번 유저 첫글',3,1,3),
+       (2,TIMESTAMPADD(DAY, -3, NOW()),'2023-02-07 11:25:33','2번 유저 두번째글',4,0,2),
+       (3,TIMESTAMPADD(DAY, -2, NOW()),'2023-02-07 11:25:35','3번 유저 첫글',5,0,0),
+       (3,TIMESTAMPADD(DAY, -1, NOW()),'2023-02-07 11:25:45','3번 유저 두번째글',6,1,0),
+       (4,NOW(),'2023-02-07 11:27:33','4번 유저 첫글',7,0,0),
+       (4,TIMESTAMPADD(DAY, 1, NOW()),'2023-02-07 11:28:33','4번 유저 두번째글',8,0,0);
 
 insert into IMAGE (post_id, image_url)
 values (1, 'https://team2-carbook.s3.ap-northeast-2.amazonaws.com/images/1_이미지.jpeg'),

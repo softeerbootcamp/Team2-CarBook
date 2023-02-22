@@ -42,6 +42,13 @@ public class ImageRepository {
                 imageRowMapper(),  postId, followerId, size);
     }
 
+    public List<Image> getImagesOfPopularPostsDuringWeek(int size, int postId, String lastWeekDay) {
+        return jdbcTemplate.query("SELECT img.post_id, img.image_url " +
+                "FROM POST p INNER JOIN IMAGE img " +
+                "ON p.id = img.post_id AND p.is_deleted = false AND p.id < ? AND p.create_date > '" + lastWeekDay + "' " +
+                "ORDER BY p.like_count DESC, p.create_date DESC LIMIT ?", imageRowMapper(), postId, size);
+    }
+
     public List<Image> findImagesByUserId(int id) {
         return jdbcTemplate.query(
                 "select IMAGE.post_id, IMAGE.image_url from POST INNER JOIN IMAGE " +
