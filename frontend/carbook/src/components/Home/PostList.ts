@@ -67,10 +67,10 @@ export default class PostList extends Component {
   }
 
   async fetchImages() {
-    const { index } = this.state;
+    const { index, isLike } = this.state;
     this.setState({ isLoading: true, isInit: false });
 
-    const url = getSearchUrl(index);
+    const url = getSearchUrl(index, isLike);
 
     try {
       const res = await basicAPI.get(url);
@@ -87,6 +87,11 @@ export default class PostList extends Component {
         index = lastImage.postId;
       }
       const end = images.length === 0;
+
+      if (isLike === false && end) {
+        this.setState({ ...getInitPostList(), isLike: true });
+        return;
+      }
 
       if (login) {
         this.props.setUserInfo(login, nickname);
