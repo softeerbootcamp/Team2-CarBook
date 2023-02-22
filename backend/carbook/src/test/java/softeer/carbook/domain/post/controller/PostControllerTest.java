@@ -100,6 +100,22 @@ class PostControllerTest {
     }
 
     @Test
+    @DisplayName("인기글 조회 테스트")
+    void getPopularPosts() throws Exception {
+        // given
+        LoginPostsResponse loginPostsResponse = new LoginPostsResponse.LoginPostsResponseBuilder()
+                .nickname("nickname")
+                .images(images)
+                .build();
+        given(postService.getPopularPostsDuringWeek(anyInt(), any())).willReturn(loginPostsResponse);
+
+        // when & then
+        mockMvc.perform(get("/posts/m/popular?index=0"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.login").value(true));
+    }
+
+    @Test
     @DisplayName("태그로 글 검색 테스트")
     void searchPostsByTags() throws Exception {
         // given
