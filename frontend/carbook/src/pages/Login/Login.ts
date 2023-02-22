@@ -1,14 +1,14 @@
-import { Component } from "@/core";
-import "./Login.scss";
-import car from "@/assets/images/car.svg";
-import { push } from "@/utils/router/navigate";
-import { EMPTYID, EMPTYPW } from "@/constants/errorMessage";
-import { basicAPI } from "@/api";
+import { Component } from '@/core';
+import './Login.scss';
+import car from '@/assets/images/car.svg';
+import { push } from '@/utils/router/navigate';
+import { EMPTYID, EMPTYPW } from '@/constants/errorMessage';
+import { basicAPI } from '@/api';
 import {
   NONEXISTENTID,
   NONEXISTENTPW,
   LOGINSUCCESS,
-} from "@/constants/errorMessage";
+} from '@/constants/errorMessage';
 
 export default class LoginPage extends Component {
   template(): string {
@@ -39,15 +39,15 @@ export default class LoginPage extends Component {
 
   setEvent(): void {
     const form = document.body.querySelector(
-      ".login__container .input-form"
+      '.login__container .input-form'
     ) as HTMLFormElement;
-    form?.addEventListener("submit", (e) => {
+    form?.addEventListener('submit', (e) => {
       e.preventDefault();
 
       const id = form.loginid.value.trim();
       const password = form.password.value.trim();
 
-      const modal = document.body.querySelector(".alert-modal") as HTMLElement;
+      const modal = document.body.querySelector('.alert-modal') as HTMLElement;
 
       if (isEmpty(id, password, modal)) return false;
 
@@ -56,14 +56,14 @@ export default class LoginPage extends Component {
     });
 
     const loginContainer = this.$target.querySelector(
-      ".login__container"
+      '.login__container'
     ) as HTMLElement;
 
-    loginContainer.addEventListener("click", (e: Event) => {
+    loginContainer.addEventListener('click', (e: Event) => {
       const target = e.target as HTMLElement;
-      const signupLink = target.closest(".register");
+      const signupLink = target.closest('.register');
       if (!signupLink) return;
-      push("/signup");
+      push('/signup');
     });
   }
 }
@@ -80,7 +80,7 @@ async function sendUserInfo(
   modal: HTMLElement
 ) {
   await basicAPI
-    .post("/api/login", {
+    .post('/api/login', {
       email,
       password,
     })
@@ -88,40 +88,41 @@ async function sendUserInfo(
       const TRANSITIONDELAY = 2300;
       showErrorModal(modal, LOGINSUCCESS);
       setTimeout(() => {
-        push("/");
+        localStorage.setItem('images', '[]');
+        push('/');
       }, TRANSITIONDELAY);
     })
     .catch((error) => {
       const ErrorMessage = error.response.data.message;
       console.log(ErrorMessage);
-      if (ErrorMessage.includes("Email")) showErrorModal(modal, NONEXISTENTID);
-      if (ErrorMessage.includes("Password"))
+      if (ErrorMessage.includes('Email')) showErrorModal(modal, NONEXISTENTID);
+      if (ErrorMessage.includes('Password'))
         showErrorModal(modal, NONEXISTENTPW);
     });
 }
 
 function showErrorModal(modal: HTMLElement, errorMessage: string): void {
   const FADEINOUTDELAY = 2000;
-  const ModalStatus = errorMessage === LOGINSUCCESS ? "success" : "fail";
+  const ModalStatus = errorMessage === LOGINSUCCESS ? 'success' : 'fail';
 
-  if (modal.classList.contains("FadeInAndOut")) return;
+  if (modal.classList.contains('FadeInAndOut')) return;
 
   modal.innerHTML = errorMessage;
   modal.classList.toggle(ModalStatus);
-  modal.classList.toggle("FadeInAndOut");
+  modal.classList.toggle('FadeInAndOut');
 
   setTimeout(() => {
-    modal.classList.toggle("FadeInAndOut");
+    modal.classList.toggle('FadeInAndOut');
     modal.classList.toggle(ModalStatus);
   }, FADEINOUTDELAY);
 }
 
 function isEmpty(id: string, password: string, modal: HTMLElement) {
-  if (id === "") {
+  if (id === '') {
     showErrorModal(modal, EMPTYID);
     return true;
   }
-  if (password === "") {
+  if (password === '') {
     showErrorModal(modal, EMPTYPW);
     return true;
   }
