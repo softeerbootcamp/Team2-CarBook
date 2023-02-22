@@ -75,10 +75,7 @@ export default class PostDetailPage extends Component {
         '.modal-content'
       ) as HTMLImageElement;
 
-      const backgroundURI = getComputedStyle(header)
-        .getPropertyValue('background-image')
-        .split(',')[8];
-      modalContent.src = this.parseimgUrI(backgroundURI);
+      modalContent.src = this.state.imageUrl;
       imageModal.classList.toggle('FadeInAndOut');
     });
   }
@@ -90,13 +87,6 @@ export default class PostDetailPage extends Component {
       type: actionType.ADD_TAG,
       payload: { id, category, tag },
     });
-  }
-
-  parseimgUrI(backgroundURI: string) {
-    return backgroundURI
-      .replace('url(', '')
-      .replace(')', '')
-      .replaceAll('"', '');
   }
 
   async fetchPostDefail(postId: string) {
