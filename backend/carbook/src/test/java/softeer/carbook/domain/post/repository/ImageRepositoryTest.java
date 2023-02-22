@@ -21,6 +21,8 @@ import softeer.carbook.domain.user.repository.UserRepository;
 import javax.sql.DataSource;
 import javax.xml.crypto.Data;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -72,7 +74,9 @@ class ImageRepositoryTest {
         List<Image> expectedImages = new ArrayList<>();
         expectedImages.add(new Image(5,"https://team2-carbook.s3.ap-northeast-2.amazonaws.com/images/5_이미지.jpeg"));
         expectedImages.add(new Image(4,"https://team2-carbook.s3.ap-northeast-2.amazonaws.com/images/4_이미지.jpeg"));
-        List<Image> resultImages = imageRepository.getImagesOfRecentFollowingPosts(size, index, followerId);
+        LocalDateTime lastWeek = LocalDateTime.now().minusWeeks(1);
+        String lastWeekDay = lastWeek.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        List<Image> resultImages = imageRepository.getImagesOfRecentFollowingPosts(size, index, followerId, lastWeekDay);
         assertThat(resultImages).usingRecursiveComparison().isEqualTo(expectedImages);
     }
 
