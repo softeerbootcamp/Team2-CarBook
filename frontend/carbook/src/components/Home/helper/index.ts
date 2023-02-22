@@ -4,7 +4,11 @@ import darkcar from '@/assets/icons/dark-car.svg';
 import whitecar from '@/assets/icons/white-car.svg';
 import { isEmptyObj } from '@/utils';
 
-export function getSearchUrl(index: string) {
+export function getSearchUrl(index: string, isLike: boolean) {
+  if (isLike) {
+    return `/api/posts/m/popular?index=${index}`;
+  }
+
   const tagState = tagStore.getState();
   if (isEmptyObj(tagState)) {
     return `/api/posts/m?index=${index}`;
@@ -59,5 +63,6 @@ export function getInitPostList() {
     length: 6,
     index: 0,
     tags: tagStore.getState(),
+    isLike: false,
   };
 }
