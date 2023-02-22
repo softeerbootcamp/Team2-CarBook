@@ -7,6 +7,7 @@ import isLogin from '@/utils/isLogin';
 import { push } from '@/utils/router/navigate';
 import { getInitPostList, getPostKey, getSearchUrl } from './helper';
 
+
 export default class PostList extends Component {
   observer: any;
   lastImg: Element | null = null;
