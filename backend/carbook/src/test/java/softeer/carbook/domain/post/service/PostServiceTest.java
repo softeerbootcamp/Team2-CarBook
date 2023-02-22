@@ -163,6 +163,25 @@ class PostServiceTest {
     }
 
     @Test
+    @DisplayName("인기글 조회 테스트")
+    void getPopularPostsDuringWeek() {
+        //given
+        int postId = 9;
+        String lastWeekDay = "2023-02-15";
+        User user = new User(15, "user15@exam.com", "15번유저", "pw15");
+        given(imageRepository.getImagesOfPopularPostsDuringWeek(POST_COUNT, postId, lastWeekDay)).willReturn(images);
+
+        //when
+        LoginPostsResponse loginPostsResponse = postService.getPopularPostsDuringWeek(postId, user);
+
+        //then
+        assertThat(loginPostsResponse.isLogin()).isTrue();
+        ///assertThat(loginPostsResponse.getImages()).isEqualTo(images);
+
+        //verify(imageRepository).getImagesOfPopularPostsDuringWeek(POST_COUNT, postId, lastWeekDay);
+    }
+
+    @Test
     @DisplayName("해시태그, 타입, 모델 태그로 게시물을 검색한 경우 테스트")
     void searchByTagsWithHashtagsAndTypeAndModel() {
         // given
