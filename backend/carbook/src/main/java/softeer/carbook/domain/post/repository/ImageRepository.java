@@ -35,11 +35,11 @@ public class ImageRepository {
         return jdbcTemplate.query("SELECT img.post_id, img.image_url " +
                         "FROM POST AS p, IMAGE AS img, FOLLOW AS f " +
                         "where f.is_deleted = false and p.is_deleted = false " +
-                        "and p.create_date > ? " +
+                        "and p.create_date > '"+ lastWeekDay + "' " +
                         "and p.id < ? and f.follower_id = ? and f.following_id = p.user_id " +
                         "and p.id = img.post_id " +
                         "ORDER BY p.create_date DESC LIMIT ?",
-                imageRowMapper(), lastWeekDay, postId, followerId, size);
+                imageRowMapper(),  postId, followerId, size);
     }
 
     public List<Image> findImagesByUserId(int id) {
