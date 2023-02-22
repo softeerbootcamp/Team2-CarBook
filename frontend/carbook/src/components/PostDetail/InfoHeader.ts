@@ -19,7 +19,7 @@ export default class InfoHeader extends Component {
       if (target.classList.contains('delete-post')) {
         const postid = location.pathname.split('/').slice(-1)[0];
         this.deletePost(postid);
-        localStorage.removeItem('images');
+        localStorage.removeItem('postList');
         return;
       }
 

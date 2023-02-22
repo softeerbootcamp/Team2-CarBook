@@ -37,7 +37,7 @@ export default class PostDetailPage extends Component {
       const hashTag = target.closest('.info-hashtag') as HTMLElement;
 
       if (typeTag || modelTag || hashTag) {
-        localStorage.setItem('images', '[]');
+        localStorage.setItem('postList', '{}');
 
         if (typeTag) {
           const category = 'type';

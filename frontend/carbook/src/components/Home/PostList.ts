@@ -16,7 +16,7 @@ export default class PostList extends Component {
     this.lastImg = null;
     tagStore.subscribe(this, () => {
       this.$target.innerHTML = '';
-      localStorage.setItem('images', JSON.stringify([]));
+      localStorage.setItem('postList', '{}');
       this.setState({ ...getInitPostList() });
     });
 
@@ -134,7 +134,6 @@ export default class PostList extends Component {
         this.$target.insertAdjacentHTML(
           'beforeend',
           ` <img class="gallery--image" src="${imageUrl}" data-id="${postId}" alt="img"></img>`
-
         );
       }
     });
@@ -150,7 +149,6 @@ export default class PostList extends Component {
       this.observer.observe(this.lastImg);
     }
   }
-
 
   setEvent(): void {
     this.$target.addEventListener('click', ({ target }) => {
