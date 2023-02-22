@@ -10,7 +10,6 @@ export default class InfoHeader extends Component {
     this.$target.addEventListener('click', (e: Event) => {
       const target = e.target as HTMLElement;
 
-      console.log(target);
       if (target.classList.contains('modify-post')) {
         const postid = location.pathname.split('/').slice(-1)[0];
         push(`/post/${postid}/edit`);

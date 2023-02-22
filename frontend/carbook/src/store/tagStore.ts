@@ -11,6 +11,7 @@ interface ITagObj {
 export const actionType = {
   ADD_TAG: 'ADD_TAG',
   DELETE_TAG: 'DELETE_TAG',
+  CLEAR_TAG: 'CLEAR_TAG',
 };
 
 async function reducer(state: ITagObj = {}, action: IAction) {
@@ -21,6 +22,8 @@ async function reducer(state: ITagObj = {}, action: IAction) {
     case actionType.DELETE_TAG:
       delete state[id];
       return { ...state };
+    case actionType.CLEAR_TAG:
+      return {};
     default:
       throw new Error('올바른 action type이 아닙니다');
   }
