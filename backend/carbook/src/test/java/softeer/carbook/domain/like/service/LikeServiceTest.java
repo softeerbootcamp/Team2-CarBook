@@ -54,7 +54,7 @@ class LikeServiceTest {
         // then
         assertThat(result.getMessage()).isEqualTo("UnLike Success");
         verify(likeRepository).findLikeByUserIdAndPostId(anyInt(), anyInt());
-        verify(likeRepository).unLike(anyInt());
+        verify(likeRepository).unLike(anyInt(), anyInt());
     }
 
 }

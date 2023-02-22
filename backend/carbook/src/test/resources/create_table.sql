@@ -81,6 +81,7 @@ create table POST
     content     varchar(500)                         null,
     model_id    int                                  not null,
     is_deleted  boolean default 0                 not null,
+    like_count  int        default 0                 not null,
     constraint post_model_id_fk
         foreign key (model_id) references MODEL (id)
             on update cascade on delete cascade,
