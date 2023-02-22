@@ -1,6 +1,6 @@
-import { basicAPI } from "@/api";
-import { Component } from "@/core";
-import { push } from "../../utils/router/navigate";
+import { basicAPI } from '@/api';
+import { Component } from '@/core';
+import { push } from '../../utils/router/navigate';
 
 export default class Menu extends Component {
   template(): string {
@@ -20,53 +20,53 @@ export default class Menu extends Component {
      * 1. 닉네임 변경 누르면 닉네임 변경 모달창
      * 2. 비밀번호 변경 누르면 비밀번호 변경 모달창
      */
-    this.$target.addEventListener("click", (e: Event) => {
+    this.$target.addEventListener('click', (e: Event) => {
       const target = e.target as HTMLElement;
-      const li = target.closest("li");
-      const modal = document.body.querySelector(".alert-modal") as HTMLElement;
+      const li = target.closest('li');
+      const modal = document.body.querySelector('.alert-modal') as HTMLElement;
 
       if (!li) return;
-      if (li.classList.contains("logout")) {
+      if (li.classList.contains('logout')) {
         this.doLogout(modal);
         return;
       }
 
       const modifyModal = document.body.querySelector(
-        ".modify-modal"
+        '.modify-modal'
       ) as HTMLElement;
 
-      if (li.classList.contains("modify-nickname")) {
+      if (li.classList.contains('modify-nickname')) {
         const nicknameInput = modifyModal.querySelector(
-          ".modify-modal-form-nickname input"
+          '.modify-modal-form-nickname input'
         ) as HTMLInputElement;
         nicknameInput.value = nickname;
         nicknameInput.focus();
-        modifyModal.classList.add("nickname");
+        modifyModal.classList.add('nickname');
       }
 
-      if (li.classList.contains("modify-password")) {
+      if (li.classList.contains('modify-password')) {
         const password = modifyModal.querySelector(
-          ".modify-modal-form-password input"
+          '.modify-modal-form-password input'
         ) as HTMLInputElement;
         const modifyPassword = modifyModal.querySelector(
-          ".modify-modal-form-modify-password input"
+          '.modify-modal-form-modify-password input'
         ) as HTMLInputElement;
         const modifyPasswordConfirm = modifyModal.querySelector(
-          ".modify-modal-form-password-confirm input"
+          '.modify-modal-form-password-confirm input'
         ) as HTMLInputElement;
 
         password.value =
           modifyPassword.value =
           modifyPasswordConfirm.value =
-            "";
-        modifyModal.classList.add("password");
+            '';
+        modifyModal.classList.add('password');
       }
 
-      modifyModal.classList.toggle("FadeInAndOut");
+      modifyModal.classList.toggle('FadeInAndOut');
       const menu = this.$target.querySelector(
-        ".info-menu-items"
+        '.info-menu-items'
       ) as HTMLElement;
-      menu.classList.toggle("FadeInAndOut");
+      menu.classList.toggle('FadeInAndOut');
     });
   }
 
@@ -75,30 +75,31 @@ export default class Menu extends Component {
     await basicAPI
       .post(`/api/profile/logout`)
       .then(() => {
-        showErrorModal(modal, "로그아웃에 성공하셨습니다");
+        showErrorModal(modal, '로그아웃에 성공하셨습니다');
         setTimeout(() => {
-          push("/");
+          localStorage.setItem('postlist', '{}');
+          push('/');
         }, LOGOUTDELAY);
       })
       .catch((error) => error);
   }
   setEvent(): void {
-    this.$target.addEventListener("click", (e: Event) => {
+    this.$target.addEventListener('click', (e: Event) => {
       const target = e.target as HTMLElement;
-      const menu = target.querySelector(".info-menu-items") as HTMLElement;
+      const menu = target.querySelector('.info-menu-items') as HTMLElement;
       if (!menu) return;
-      menu.classList.toggle("FadeInAndOut");
+      menu.classList.toggle('FadeInAndOut');
     });
   }
 }
 
 function showErrorModal(modal: HTMLElement, errorMessage: string): void {
-  if (modal.classList.contains("FadeInAndOut")) return;
+  if (modal.classList.contains('FadeInAndOut')) return;
   modal.innerHTML = errorMessage;
-  modal.classList.toggle("blue");
-  modal.classList.toggle("FadeInAndOut");
+  modal.classList.toggle('blue');
+  modal.classList.toggle('FadeInAndOut');
   setTimeout(() => {
-    modal.classList.toggle("FadeInAndOut");
-    modal.classList.toggle("blue");
+    modal.classList.toggle('FadeInAndOut');
+    modal.classList.toggle('blue');
   }, 2000);
 }
