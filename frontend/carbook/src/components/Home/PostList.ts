@@ -5,7 +5,8 @@ import { tagStore } from '@/store/tagStore';
 import { getClosest, qs } from '@/utils';
 import isLogin from '@/utils/isLogin';
 import { push } from '@/utils/router/navigate';
-import { getInitPostList, getSearchUrl } from './helper';
+import { getInitPostList, getPostKey, getSearchUrl } from './helper';
+
 
 export default class PostList extends Component {
   observer: any;
@@ -18,6 +19,8 @@ export default class PostList extends Component {
       localStorage.setItem('images', JSON.stringify([]));
       this.setState({ ...getInitPostList() });
     });
+
+    this.state = getInitPostList();
 
     this.observer = new IntersectionObserver(
       (entries) => {
@@ -32,8 +35,6 @@ export default class PostList extends Component {
         threshold: 0.5,
       }
     );
-
-    this.setPrevPost();
   }
 
   render(): void {
@@ -68,27 +69,28 @@ export default class PostList extends Component {
 
   async fetchImages() {
     const { index, isLike } = this.state;
+
+    const key = getPostKey(index, isLike);
+    const prevImage =
+      JSON.parse(localStorage.getItem('postList') as string) || {};
     this.setState({ isLoading: true, isInit: false });
 
     const url = getSearchUrl(index, isLike);
 
     try {
-      const res = await basicAPI.get(url);
+      const res = prevImage[key] || (await basicAPI.get(url));
       const { images, login, nickname } = res.data;
 
-      const localImages = (
-        JSON.parse(localStorage.getItem('images') as string) || []
-      ).concat(images);
-      localStorage.setItem('images', JSON.stringify(localImages));
+      const newKey = getPostKey(this.state.index, isLike);
+      prevImage[newKey] = res;
+      localStorage.setItem('postList', JSON.stringify(prevImage));
 
       const lastImage = images[images.length - 1];
-      let index = null;
-      if (images.length > 0) {
-        index = lastImage.postId;
-      }
+
+      const index = images.length > 0 ? lastImage.postId : null;
       const end = images.length === 0;
 
-      if (isLike === false && end) {
+      if (isLike === false && end && login) {
         this.setState({ ...getInitPostList(), isLike: true });
         return;
       }
@@ -131,7 +133,8 @@ export default class PostList extends Component {
       if (this.$target.querySelector(`img[data-id="${postId}"]`) === null) {
         this.$target.insertAdjacentHTML(
           'beforeend',
-          ` <img class="gallery--image" src="${imageUrl}" data-id="${postId}"></img>`
+          ` <img class="gallery--image" src="${imageUrl}" data-id="${postId}" alt="img"></img>`
+
         );
       }
     });
@@ -148,23 +151,6 @@ export default class PostList extends Component {
     }
   }
 
-  setPrevPost() {
-    const prevPostList =
-      JSON.parse(localStorage.getItem('images') as string) || [];
-    this.state = {
-      ...getInitPostList(),
-      images: prevPostList,
-      index:
-        prevPostList.length > 0
-          ? prevPostList[prevPostList.length - 1].postId
-          : 0,
-    };
-
-    if (prevPostList.length > 0) {
-      this.appendImages(this.state.images);
-      this.$target.scrollIntoView(false);
-    }
-  }
 
   setEvent(): void {
     this.$target.addEventListener('click', ({ target }) => {

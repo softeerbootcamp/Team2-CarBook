@@ -161,20 +161,24 @@ class PostServiceTest {
     @DisplayName("인기글 조회 테스트")
     void getPopularPostsDuringWeek() {
         //given
-        int postId = 9;
+        int postId = 0;
         User user = new User(15, "user15@exam.com", "15번유저", "pw15");
         LocalDateTime lastWeek = LocalDateTime.now().minusWeeks(1);
         String lastWeekDay = lastWeek.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        given(imageRepository.getImagesOfPopularPostsDuringWeek(POST_COUNT, postId, lastWeekDay)).willReturn(images);
+        given(postRepository.findPopularPostsDuringWeek(lastWeekDay)).willReturn(posts);
+        given(imageRepository.getImageByPostId(8)).willReturn(image1);
+        given(imageRepository.getImageByPostId(6)).willReturn(image2);
 
         //when
         LoginPostsResponse loginPostsResponse = postService.getPopularPostsDuringWeek(postId, user);
 
         //then
         assertThat(loginPostsResponse.isLogin()).isTrue();
-        assertThat(loginPostsResponse.getImages()).isEqualTo(images);
+        assertThat(loginPostsResponse.getImages()).usingRecursiveComparison().isEqualTo(imagesEightAndSix);
 
-        verify(imageRepository).getImagesOfPopularPostsDuringWeek(POST_COUNT, postId, lastWeekDay);
+        verify(postRepository).findPopularPostsDuringWeek(lastWeekDay);
+        verify(imageRepository).getImageByPostId(8);
+        verify(imageRepository).getImageByPostId(6);
     }
 
     @Test

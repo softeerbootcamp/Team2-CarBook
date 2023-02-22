@@ -10,7 +10,6 @@ import softeer.carbook.domain.post.exception.PostNotExistException;
 import softeer.carbook.domain.post.model.Post;
 
 import javax.sql.DataSource;
-import java.math.BigInteger;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;

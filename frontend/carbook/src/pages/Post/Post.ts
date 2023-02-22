@@ -50,7 +50,6 @@ export default class PostPage extends Component {
     });
   }
 
-
   getPostId() {
     return parseInt(location.pathname.split('/')[2]);
   }
