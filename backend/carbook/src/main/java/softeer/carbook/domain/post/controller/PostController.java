@@ -39,10 +39,15 @@ public class PostController {
         return new ResponseEntity<>(postService.getRecentPosts(index), HttpStatus.OK);
     }
 
-
     private ResponseEntity<LoginPostsResponse> getLoginPosts(int index, HttpServletRequest httpServletRequest){
         return new ResponseEntity<>(postService.getRecentFollowerPosts(index, userService.findLoginedUser(httpServletRequest)), HttpStatus.OK);
     }
+
+    @GetMapping("/posts/m/popular")
+    public ResponseEntity<LoginPostsResponse> getPopularPosts(@RequestParam int index, HttpServletRequest httpServletRequest) {
+        return new ResponseEntity<>(postService.getPopularPostsDuringWeek(index, userService.findLoginedUser(httpServletRequest)), HttpStatus.OK);
+    }
+
 
         // todo 로그인한 사람의 게시물 조회 ( 팔로우 )
             // mainpage url  + cookie
