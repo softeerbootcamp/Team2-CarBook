@@ -21,6 +21,8 @@ import {
 import { push, replace } from '@/utils/router/navigate';
 import isLogin from '@/utils/isLogin';
 
+const [POST, FOLLOWER, FOLLOWING] = ['posts', 'follower', 'following'];
+
 export default class ProfilePage extends Component {
   setup(): void {
     const urlnickname = location.pathname.split('/').slice(-1)[0];
@@ -234,25 +236,24 @@ export default class ProfilePage extends Component {
       new PostLists(profile_contents, { images: this.state.images });
 
     this.state.profileMode === 'follower' &&
-      new Followlists(profile_contents, {
-        profileMode: this.state.profileMode,
-        isMyProfile: this.state.isMyProfile,
-        follows: this.state.follows,
-        nickname: this.state.nickname,
-      });
+      this.makeFollowLists(profile_contents);
 
     this.state.profileMode === 'following' &&
-      new Followlists(profile_contents, {
-        profileMode: this.state.profileMode,
-        isMyProfile: this.state.isMyProfile,
-        follows: this.state.follows,
-        nickname: this.state.nickname,
-      });
+      this.makeFollowLists(profile_contents);
 
     const modifyModal = this.$target.querySelector(
       '.modify-modal'
     ) as HTMLElement;
     new ModifyModal(modifyModal);
+  }
+
+  makeFollowLists(profileContents: HTMLElement) {
+    new Followlists(profileContents, {
+      profileMode: this.state.profileMode,
+      isMyProfile: this.state.isMyProfile,
+      follows: this.state.follows,
+      nickname: this.state.nickname,
+    });
   }
 
   async modifyNickname({
