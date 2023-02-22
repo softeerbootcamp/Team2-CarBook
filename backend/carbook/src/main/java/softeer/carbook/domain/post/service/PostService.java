@@ -25,6 +25,8 @@ import softeer.carbook.global.dto.Message;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -68,7 +70,22 @@ public class PostService {
 
     public LoginPostsResponse getRecentFollowerPosts(int postId, User user) {
         postId = initPostId(postId);
-        List<Image> images = imageRepository.getImagesOfRecentFollowingPosts(POST_COUNT, postId, user.getId());
+        LocalDateTime lastWeek = LocalDateTime.now().minusWeeks(1);
+        String lastWeekDay = lastWeek.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        List<Image> images = imageRepository.getImagesOfRecentFollowingPosts(POST_COUNT, postId, user.getId(), lastWeekDay);
+        return new LoginPostsResponse.LoginPostsResponseBuilder()
+                .nickname(user.getNickname())
+                .images(images)
+                .build();
+    }
+
+    public LoginPostsResponse getPopularPostsDuringWeek(int postId, User user) {
+        postId = initPostId(postId);
+
+        LocalDateTime lastWeek = LocalDateTime.now().minusWeeks(1);
+        String lastWeekDay = lastWeek.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+        List<Image> images = imageRepository.getImagesOfPopularPostsDuringWeek(POST_COUNT, postId, lastWeekDay);
         return new LoginPostsResponse.LoginPostsResponseBuilder()
                 .nickname(user.getNickname())
                 .images(images)
@@ -202,7 +219,7 @@ public class PostService {
                 .nickname(userRepository.findUserById(post.getUserId()).getNickname())
                 .imageUrl(imageRepository.getImageByPostId(postId).getImageUrl())
                 .isLike(likeRepository.checkLike(user.getId(), postId))
-                .likeCount(likeRepository.findLikeCountByPostId(postId))
+                .likeCount(post.getLikeCount())
                 .createDate(dateToString(post.getCreateDate()))
                 .updateDate(dateToString(post.getUpdateDate()))
                 .hashtags(hashtags)

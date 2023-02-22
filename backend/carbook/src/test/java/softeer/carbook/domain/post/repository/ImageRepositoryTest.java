@@ -3,30 +3,19 @@ package softeer.carbook.domain.post.repository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit4.SpringRunner;
-import softeer.carbook.domain.follow.repository.FollowRepository;
 import softeer.carbook.domain.post.model.Image;
 import softeer.carbook.domain.post.model.Post;
-import softeer.carbook.domain.user.model.User;
-import softeer.carbook.domain.user.repository.UserRepository;
 
 import javax.sql.DataSource;
-import javax.xml.crypto.Data;
-
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @JdbcTest
 @Sql("classpath:create_table.sql")
@@ -72,7 +61,25 @@ class ImageRepositoryTest {
         List<Image> expectedImages = new ArrayList<>();
         expectedImages.add(new Image(5,"https://team2-carbook.s3.ap-northeast-2.amazonaws.com/images/5_이미지.jpeg"));
         expectedImages.add(new Image(4,"https://team2-carbook.s3.ap-northeast-2.amazonaws.com/images/4_이미지.jpeg"));
-        List<Image> resultImages = imageRepository.getImagesOfRecentFollowingPosts(size, index, followerId);
+        LocalDateTime lastWeek = LocalDateTime.now().minusWeeks(1);
+        String lastWeekDay = lastWeek.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        List<Image> resultImages = imageRepository.getImagesOfRecentFollowingPosts(size, index, followerId, lastWeekDay);
+        assertThat(resultImages).usingRecursiveComparison().isEqualTo(expectedImages);
+    }
+
+    @Test
+    @DisplayName("인기글 조회 테스트")
+    void getImagesOfPopularPostsDuringWeek() {
+        int size = 2;
+        int index = 9;
+        List<Image> expectedImages = new ArrayList<>();
+        expectedImages.add(new Image(1,"https://team2-carbook.s3.ap-northeast-2.amazonaws.com/images/1_이미지.jpeg"));
+        expectedImages.add(new Image(4,"https://team2-carbook.s3.ap-northeast-2.amazonaws.com/images/4_이미지.jpeg"));
+        LocalDateTime lastWeek = LocalDateTime.now().minusWeeks(1);
+        String lastWeekDay = lastWeek.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+        List<Image> resultImages = imageRepository.getImagesOfPopularPostsDuringWeek(size, index, lastWeekDay);
+
         assertThat(resultImages).usingRecursiveComparison().isEqualTo(expectedImages);
     }
 

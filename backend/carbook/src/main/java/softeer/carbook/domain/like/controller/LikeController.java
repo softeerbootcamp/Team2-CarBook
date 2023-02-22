@@ -1,5 +1,7 @@
 package softeer.carbook.domain.like.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -7,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import softeer.carbook.domain.like.dto.ModifyLikeInfoForm;
 import softeer.carbook.domain.like.service.LikeService;
+import softeer.carbook.domain.post.controller.PostController;
 import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.service.UserService;
 import softeer.carbook.global.dto.Message;
@@ -17,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 public class LikeController {
     private final LikeService likeService;
     private final UserService userService;
+    private static final Logger logger = LoggerFactory.getLogger(LikeController.class);
 
     @Autowired
     public LikeController(
@@ -34,6 +38,8 @@ public class LikeController {
             @RequestBody ModifyLikeInfoForm modifyLikeInfoForm,
             HttpServletRequest httpServletRequest
     ){
+        long startTime = System.currentTimeMillis();
+
         // 일단 로그인 확인 후 로그인한 유저 받아오기
         User loginUser = userService.findLoginedUser(httpServletRequest);
 
@@ -42,6 +48,9 @@ public class LikeController {
                 loginUser.getId(),
                 modifyLikeInfoForm.getPostId()
         );
+        long endTime = System.currentTimeMillis();
+        logger.info("Time in milliSeconds: {}", endTime - startTime);
+
         return Message.make200Response(resultMsg.getMessage());
 
     }

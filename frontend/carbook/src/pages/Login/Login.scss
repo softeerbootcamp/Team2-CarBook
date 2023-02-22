@@ -1,10 +1,11 @@
-@import "@/styles/color.scss";
+@import '@/styles/color.scss';
 
 .login__container {
   background: #ffffff;
   text-align: center;
   padding: 30% 0;
   width: 100%;
+  max-width: 500px;
   height: 100vh;
   margin: 0 auto;
 
@@ -22,19 +23,19 @@
       height: 50px;
     }
     .header-logo {
-      font-family: "netmarbleB";
+      font-family: 'netmarbleB';
       font-size: 30px;
       height: 30px;
     }
     .header-message {
-      font-family: "LINESeedKR-Rg";
+      font-family: 'LINESeedKR-Rg';
       font-size: 14px;
       height: 36px;
     }
   }
 
   .input-box {
-    font-family: "LINESeedKR-Rg";
+    font-family: 'LINESeedKR-Rg';
     width: 297px;
     height: 48px;
     border: 1px solid $main-blue;
@@ -50,13 +51,13 @@
 
     .login-id,
     .login-password {
-      font-family: "Pretendard-Regular";
+      font-family: 'Pretendard-Regular';
       padding-left: 8%;
       text-align: start;
     }
 
     .input-form-button {
-      font-family: "LINESeedKR-Rg";
+      font-family: 'LINESeedKR-Rg';
       width: 297px;
       height: 48px;
       background-color: $main-blue;
@@ -76,12 +77,12 @@
     }
 
     h3.register {
-      font-family: "LINESeedKR-Bd";
+      font-family: 'LINESeedKR-Bd';
       text-decoration: underline;
     }
 
     h3.footer-message {
-      font-family: "LINESeedKR-Rg";
+      font-family: 'LINESeedKR-Rg';
     }
   }
 

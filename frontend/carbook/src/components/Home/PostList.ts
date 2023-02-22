@@ -1,12 +1,11 @@
 import { basicAPI } from '@/api';
-import { POST_LIST_INIT } from '@/constants/post';
 import { Component } from '@/core';
 import { IImage } from '@/interfaces';
 import { tagStore } from '@/store/tagStore';
 import { getClosest, qs } from '@/utils';
 import isLogin from '@/utils/isLogin';
 import { push } from '@/utils/router/navigate';
-import { getSearchUrl } from './helper';
+import { getInitPostList, getSearchUrl } from './helper';
 
 export default class PostList extends Component {
   observer: any;
@@ -16,9 +15,9 @@ export default class PostList extends Component {
     this.lastImg = null;
     tagStore.subscribe(this, () => {
       this.$target.innerHTML = '';
-      this.setState({ ...POST_LIST_INIT });
+      localStorage.setItem('images', JSON.stringify([]));
+      this.setState({ ...getInitPostList() });
     });
-    this.state = POST_LIST_INIT;
 
     this.observer = new IntersectionObserver(
       (entries) => {
@@ -33,6 +32,8 @@ export default class PostList extends Component {
         threshold: 0.5,
       }
     );
+
+    this.setPrevPost();
   }
 
   render(): void {
@@ -54,6 +55,7 @@ export default class PostList extends Component {
         spinner.classList.remove('active');
 
         this.appendImages(images);
+        this.setObserveTarget();
       }
     } else {
       if (isLoading) {
@@ -65,20 +67,31 @@ export default class PostList extends Component {
   }
 
   async fetchImages() {
-    const { index } = this.state;
+    const { index, isLike } = this.state;
     this.setState({ isLoading: true, isInit: false });
 
-    const url = getSearchUrl(index);
+    const url = getSearchUrl(index, isLike);
 
     try {
       const res = await basicAPI.get(url);
       const { images, login, nickname } = res.data;
+
+      const localImages = (
+        JSON.parse(localStorage.getItem('images') as string) || []
+      ).concat(images);
+      localStorage.setItem('images', JSON.stringify(localImages));
+
       const lastImage = images[images.length - 1];
       let index = null;
       if (images.length > 0) {
         index = lastImage.postId;
       }
       const end = images.length === 0;
+
+      if (isLike === false && end) {
+        this.setState({ ...getInitPostList(), isLike: true });
+        return;
+      }
 
       if (login) {
         this.props.setUserInfo(login, nickname);
@@ -114,7 +127,6 @@ export default class PostList extends Component {
   }
 
   appendImages(images: []) {
-    // src 수정 예정
     images.forEach(({ postId, imageUrl }: IImage) => {
       if (this.$target.querySelector(`img[data-id="${postId}"]`) === null) {
         this.$target.insertAdjacentHTML(
@@ -123,7 +135,9 @@ export default class PostList extends Component {
         );
       }
     });
+  }
 
+  setObserveTarget() {
     const nextImg = this.$target.querySelector('img:last-child');
     if (nextImg !== null) {
       if (this.lastImg !== null) {
@@ -131,6 +145,24 @@ export default class PostList extends Component {
       }
       this.lastImg = nextImg;
       this.observer.observe(this.lastImg);
+    }
+  }
+
+  setPrevPost() {
+    const prevPostList =
+      JSON.parse(localStorage.getItem('images') as string) || [];
+    this.state = {
+      ...getInitPostList(),
+      images: prevPostList,
+      index:
+        prevPostList.length > 0
+          ? prevPostList[prevPostList.length - 1].postId
+          : 0,
+    };
+
+    if (prevPostList.length > 0) {
+      this.appendImages(this.state.images);
+      this.$target.scrollIntoView(false);
     }
   }
 

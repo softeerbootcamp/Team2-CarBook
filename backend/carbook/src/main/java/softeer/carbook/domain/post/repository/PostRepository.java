@@ -45,7 +45,7 @@ public class PostRepository {
      */
     public Post findPostById(int postId) {
         List<Post> post = jdbcTemplate.query(
-                "SELECT id, user_id, create_date, update_date, content, model_id " +
+                "SELECT id, user_id, create_date, update_date, content, model_id, like_count " +
                         "FROM POST " +
                         "WHERE id = ? AND is_deleted = false", postRowMapper(), postId);
         return post.stream().findAny().orElseThrow(
@@ -54,18 +54,18 @@ public class PostRepository {
     }
 
     public List<Post> searchByType(String type) {
-        return jdbcTemplate.query("SELECT p.id, p.user_id, p.create_date, p.update_date, p.content, p.model_id FROM TYPE t " +
+        return jdbcTemplate.query("SELECT p.id, p.user_id, p.create_date, p.update_date, p.content, p.model_id, p.like_count FROM TYPE t " +
                 "INNER JOIN MODEL m ON (t.id = m.type_id AND t.tag = ?) " +
                 "INNER JOIN POST p ON m.id = p.model_id  WHERE p.is_deleted = false ORDER BY p.create_date DESC", postRowMapper(), type);
     }
 
     public List<Post> searchByModel(String model) {
-        return jdbcTemplate.query("SELECT p.id, p.user_id, p.create_date, p.update_date, p.content, p.model_id FROM MODEL m " +
+        return jdbcTemplate.query("SELECT p.id, p.user_id, p.create_date, p.update_date, p.content, p.model_id, p.like_count FROM MODEL m " +
                 "INNER JOIN POST p ON (m.id = p.model_id AND m.tag = ?) WHERE p.is_deleted = false ORDER BY p.create_date DESC", postRowMapper(), model);
     }
 
     public List<Post> searchByHashtag(String tagName) {
-        return jdbcTemplate.query("SELECT p.id, p.user_id, p.create_date, p.update_date, p.content, p.model_id FROM POST p " +
+        return jdbcTemplate.query("SELECT p.id, p.user_id, p.create_date, p.update_date, p.content, p.model_id, p.like_count FROM POST p " +
                 "INNER JOIN POST_HASHTAG ph ON p.id = ph.post_id " +
                 "INNER JOIN HASHTAG h ON ph.tag_id = h.id AND h.tag = ? WHERE p.is_deleted = false ORDER BY p.create_date DESC", postRowMapper(), tagName);
     }
@@ -99,7 +99,8 @@ public class PostRepository {
                 rs.getTimestamp("create_date"),
                 rs.getTimestamp("update_date"),
                 rs.getString("content"),
-                rs.getInt("model_id")
+                rs.getInt("model_id"),
+                rs.getInt("like_count")
         );
     }
 }

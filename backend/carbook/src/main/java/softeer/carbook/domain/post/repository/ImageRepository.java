@@ -31,14 +31,22 @@ public class ImageRepository {
                 imageRowMapper(), postId, size);
     }
 
-    public List<Image> getImagesOfRecentFollowingPosts(int size, int postId, int followerId){
+    public List<Image> getImagesOfRecentFollowingPosts(int size, int postId, int followerId, String lastWeekDay){
         return jdbcTemplate.query("SELECT img.post_id, img.image_url " +
                         "FROM POST AS p, IMAGE AS img, FOLLOW AS f " +
                         "where f.is_deleted = false and p.is_deleted = false " +
+                        "and p.create_date > '"+ lastWeekDay + "' " +
                         "and p.id < ? and f.follower_id = ? and f.following_id = p.user_id " +
                         "and p.id = img.post_id " +
                         "ORDER BY p.create_date DESC LIMIT ?",
-                imageRowMapper(), postId, followerId, size);
+                imageRowMapper(),  postId, followerId, size);
+    }
+
+    public List<Image> getImagesOfPopularPostsDuringWeek(int size, int postId, String lastWeekDay) {
+        return jdbcTemplate.query("SELECT img.post_id, img.image_url " +
+                "FROM POST p INNER JOIN IMAGE img " +
+                "ON p.id = img.post_id AND p.is_deleted = false AND p.id < ? AND p.create_date > '" + lastWeekDay + "' " +
+                "ORDER BY p.like_count DESC, p.create_date DESC LIMIT ?", imageRowMapper(), postId, size);
     }
 
     public List<Image> findImagesByUserId(int id) {

@@ -7,10 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import softeer.carbook.domain.follow.repository.FollowRepository;
 import softeer.carbook.domain.like.repository.LikeRepository;
@@ -30,16 +27,16 @@ import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.repository.UserRepository;
 import softeer.carbook.global.dto.Message;
 
-import java.sql.Timestamp;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -76,8 +73,8 @@ class PostServiceTest {
     ));
 
     private final List<Post> posts = new ArrayList<>(List.of(
-            new Post(8, 8, null, null, null, 8),
-            new Post(6, 6, null, null, null, 6)
+            new Post(8, 8, null, null, null, 8, 24),
+            new Post(6, 6, null, null, null, 6, 25)
     ));
     private final Image image1 = new Image(8, "/eighth/image.jpg");
     private final Image image2 = new Image(6, "/sixth/image.jpg");
@@ -126,7 +123,9 @@ class PostServiceTest {
         //given
         int postId = 9;
         User user = new User(15, "user15@exam.com", "15번유저", "pw15");
-        given(imageRepository.getImagesOfRecentFollowingPosts(POST_COUNT, postId, user.getId())).willReturn(images);
+        LocalDateTime lastWeek = LocalDateTime.now().minusWeeks(1);
+        String lastWeekDay = lastWeek.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        given(imageRepository.getImagesOfRecentFollowingPosts(POST_COUNT, postId, user.getId(), lastWeekDay)).willReturn(images);
 
         //when
         LoginPostsResponse loginPostsResponse = postService.getRecentFollowerPosts(postId, user);
@@ -135,16 +134,18 @@ class PostServiceTest {
         assertThat(loginPostsResponse.isLogin()).isTrue();
         assertThat(loginPostsResponse.getImages()).isEqualTo(images);
 
-        verify(imageRepository).getImagesOfRecentFollowingPosts(POST_COUNT, postId, user.getId());
+        verify(imageRepository).getImagesOfRecentFollowingPosts(POST_COUNT, postId, user.getId(), lastWeekDay);
     }
 
     @Test
     @DisplayName("팔로잉중인 게시글이 없는 경우 테스트")
     void getNoFollowingPostsTest() {
+        LocalDateTime lastWeek = LocalDateTime.now().minusWeeks(1);
+        String lastWeekDay = lastWeek.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         //given
         int postId = 9;
         User user = new User(17, "user17@email.com", "사용자17", "pw17");
-        given(imageRepository.getImagesOfRecentFollowingPosts(POST_COUNT, postId, user.getId())).willReturn(new ArrayList<Image>());
+        given(imageRepository.getImagesOfRecentFollowingPosts(POST_COUNT, postId, user.getId(), lastWeekDay)).willReturn(new ArrayList<Image>());
 
         //when
         LoginPostsResponse loginPostsResponse = postService.getRecentFollowerPosts(postId, user);
@@ -153,7 +154,27 @@ class PostServiceTest {
         assertThat(loginPostsResponse.isLogin()).isTrue();
         assertThat(loginPostsResponse.getImages()).isEqualTo(new ArrayList<Image>());
 
-        verify(imageRepository).getImagesOfRecentFollowingPosts(POST_COUNT, postId, user.getId());
+        verify(imageRepository).getImagesOfRecentFollowingPosts(POST_COUNT, postId, user.getId(), lastWeekDay);
+    }
+
+    @Test
+    @DisplayName("인기글 조회 테스트")
+    void getPopularPostsDuringWeek() {
+        //given
+        int postId = 9;
+        User user = new User(15, "user15@exam.com", "15번유저", "pw15");
+        LocalDateTime lastWeek = LocalDateTime.now().minusWeeks(1);
+        String lastWeekDay = lastWeek.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        given(imageRepository.getImagesOfPopularPostsDuringWeek(POST_COUNT, postId, lastWeekDay)).willReturn(images);
+
+        //when
+        LoginPostsResponse loginPostsResponse = postService.getPopularPostsDuringWeek(postId, user);
+
+        //then
+        assertThat(loginPostsResponse.isLogin()).isTrue();
+        assertThat(loginPostsResponse.getImages()).isEqualTo(images);
+
+        verify(imageRepository).getImagesOfPopularPostsDuringWeek(POST_COUNT, postId, lastWeekDay);
     }
 
     @Test
@@ -372,7 +393,7 @@ class PostServiceTest {
     void getMyPostDetails() {
         // given
         User user = new User(17, "user17@email.com", "사용자17", "pw17");
-        Post post = new Post(1, 17, new Timestamp(12341241), new Timestamp(1231235), "asdf", 1);
+        Post post = new Post(1, 17, new Timestamp(12341241), new Timestamp(1231235), "asdf", 1, 23);
         Image image = images.get(0);
         List<Type> types = new ArrayList<>(List.of(
                 new Type(1, "승용"), new Type(2, "SUV")));
@@ -387,7 +408,6 @@ class PostServiceTest {
         given(tagRepository.findTypeById(anyInt())).willReturn(types);
         given(imageRepository.getImageByPostId(anyInt())).willReturn(image);
         given(likeRepository.checkLike(anyInt(), anyInt())).willReturn(true);
-        given(likeRepository.findLikeCountByPostId(anyInt())).willReturn(123);
         given(userRepository.findUserById(anyInt())).willReturn(user);
 
         // when
@@ -401,7 +421,6 @@ class PostServiceTest {
         verify(tagRepository).findTypeById(anyInt());
         verify(imageRepository).getImageByPostId(anyInt());
         verify(likeRepository).checkLike(anyInt(),anyInt());
-        verify(likeRepository).findLikeCountByPostId(anyInt());
         verify(userRepository).findUserById(anyInt());
     }
 
@@ -410,7 +429,7 @@ class PostServiceTest {
     void getOtherPostDetails() {
         // given
         User user = new User(17, "user17@email.com", "사용자17", "pw17");
-        Post post = new Post(1, 1, new Timestamp(12341241), new Timestamp(1231235), "asdf", 1);
+        Post post = new Post(1, 1, new Timestamp(12341241), new Timestamp(1231235), "asdf", 1, 23);
         Image image = images.get(0);
         List<Type> types = new ArrayList<>(List.of(
                 new Type(1, "승용"), new Type(2, "SUV")));
@@ -425,7 +444,6 @@ class PostServiceTest {
         given(tagRepository.findTypeById(anyInt())).willReturn(types);
         given(imageRepository.getImageByPostId(anyInt())).willReturn(image);
         given(likeRepository.checkLike(anyInt(), anyInt())).willReturn(true);
-        given(likeRepository.findLikeCountByPostId(anyInt())).willReturn(123);
         given(userRepository.findUserById(anyInt())).willReturn(user);
 
         // when
@@ -439,7 +457,6 @@ class PostServiceTest {
         verify(tagRepository).findTypeById(anyInt());
         verify(imageRepository).getImageByPostId(anyInt());
         verify(likeRepository).checkLike(anyInt(),anyInt());
-        verify(likeRepository).findLikeCountByPostId(anyInt());
         verify(userRepository).findUserById(anyInt());
     }
 
@@ -448,7 +465,7 @@ class PostServiceTest {
     void deletePost() {
         // given
         User user = new User(17, "user17@email.com", "사용자17", "pw17");
-        Post post = new Post(1, 17, new Timestamp(12341241), new Timestamp(1231235), "asdf", 1);
+        Post post = new Post(1, 17, new Timestamp(12341241), new Timestamp(1231235), "asdf", 1, 23);
         given(postRepository.findPostById(anyInt())).willReturn(post);
 
         // when
@@ -464,7 +481,7 @@ class PostServiceTest {
     void deleteOtherUserPost() {
         // given
         User user = new User(17, "user17@email.com", "사용자17", "pw17");
-        Post post = new Post(1, 1, new Timestamp(12341241), new Timestamp(1231235), "asdf", 1);
+        Post post = new Post(1, 1, new Timestamp(12341241), new Timestamp(1231235), "asdf", 1, 23);
         given(postRepository.findPostById(anyInt())).willReturn(post);
 
         // when
@@ -579,7 +596,7 @@ class PostServiceTest {
         ModifiedPostForm modifiedPostForm = new ModifiedPostForm(100, image, hashtagNames, "승용", "쏘나타", "테스트 쏘나타 게시글입니다");
 
         User user = new User(17, "user17@email.com", "사용자17", "pw17");
-        Post post = new Post(1, 1, new Timestamp(12341241), new Timestamp(1231235), "asdf", 1);
+        Post post = new Post(1, 1, new Timestamp(12341241), new Timestamp(1231235), "asdf", 1, 23);
         given(postRepository.findPostById(anyInt())).willReturn(post);
         // when
         Throwable exception = assertThrows(InvalidPostAccessException.class, () -> {

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import softeer.carbook.domain.user.model.User;
 
 import javax.sql.DataSource;
@@ -37,16 +38,22 @@ public class LikeRepository {
                 idRowMapper(), userId, postId).stream().findAny();
     }
 
-    public void unLike(int likeId) {
+    @Transactional
+    public void unLike(int likeId, int postId) {
         jdbcTemplate.update(
                 "update POST_LIKE set is_deleted = true where id = ?", likeId);
+        jdbcTemplate.update(
+                "update POST set like_count = like_count - 1 where id = ?", postId);
     }
 
+    @Transactional
     public void addLike(int userId, int postId) {
         jdbcTemplate.update(
         "insert into POST_LIKE(user_id, post_id) values (?, ?) " +
                 "on DUPLICATE KEY update is_deleted = false",
                 userId, postId);
+        jdbcTemplate.update(
+                "update POST set like_count = like_count + 1 where id = ?", postId);
     }
 
     private RowMapper<Integer> idRowMapper(){

@@ -3,6 +3,7 @@ import car from '@/assets/images/car.svg';
 import { isEmptyObj, qs } from '@/utils';
 import axios from 'axios';
 
+const MAX_FILE_SIZE = 10485760;
 export default class ImageForm extends Component {
   setup(): void {
     const { imageUrl, isInValid } = this.props;
@@ -45,14 +46,15 @@ export default class ImageForm extends Component {
 
     if (files?.length === 1) {
       const file = files[0];
-
+      if (file.size > MAX_FILE_SIZE) {
+        alert('파일 용량은 10MB미만이어야 합니다');
+        return;
+      }
       const reader = new FileReader();
       reader.onload = (e) => {
         const url = (<FileReader>e.target).result as string;
         this.setState({ imageUrl: url });
         this.props.setFormData(file);
-
-        console.log(file);
 
         this.setPreviewSrc(url);
       };
