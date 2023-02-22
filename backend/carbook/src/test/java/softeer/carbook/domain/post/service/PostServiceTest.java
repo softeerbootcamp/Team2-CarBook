@@ -7,10 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import softeer.carbook.domain.follow.repository.FollowRepository;
 import softeer.carbook.domain.like.repository.LikeRepository;
@@ -30,10 +27,9 @@ import softeer.carbook.domain.user.model.User;
 import softeer.carbook.domain.user.repository.UserRepository;
 import softeer.carbook.global.dto.Message;
 
-import java.sql.Timestamp;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -41,7 +37,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -167,8 +162,9 @@ class PostServiceTest {
     void getPopularPostsDuringWeek() {
         //given
         int postId = 9;
-        String lastWeekDay = "2023-02-15";
         User user = new User(15, "user15@exam.com", "15번유저", "pw15");
+        LocalDateTime lastWeek = LocalDateTime.now().minusWeeks(1);
+        String lastWeekDay = lastWeek.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         given(imageRepository.getImagesOfPopularPostsDuringWeek(POST_COUNT, postId, lastWeekDay)).willReturn(images);
 
         //when
@@ -176,9 +172,9 @@ class PostServiceTest {
 
         //then
         assertThat(loginPostsResponse.isLogin()).isTrue();
-        ///assertThat(loginPostsResponse.getImages()).isEqualTo(images);
+        assertThat(loginPostsResponse.getImages()).isEqualTo(images);
 
-        //verify(imageRepository).getImagesOfPopularPostsDuringWeek(POST_COUNT, postId, lastWeekDay);
+        verify(imageRepository).getImagesOfPopularPostsDuringWeek(POST_COUNT, postId, lastWeekDay);
     }
 
     @Test
