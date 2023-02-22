@@ -19,11 +19,12 @@ public class LikeService {
     }
 
     public Message modifyLikeInfo(int userId, int postId) {
+
         Optional<Integer> likeId = likeRepository.findLikeByUserIdAndPostId(userId, postId);
         // 좋아요 여부 판단
         if(likeId.isPresent()){
             // 좋아요 취소 진행
-            likeRepository.unLike(likeId.get());
+            likeRepository.unLike(likeId.get(), postId);
             return new Message("UnLike Success");
         }
 

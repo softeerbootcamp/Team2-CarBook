@@ -66,7 +66,7 @@ class LikeRepositoryTest {
     @DisplayName("좋아요 취소 테스트")
     void unLike() {
         // when
-        likeRepository.unLike(1);
+        likeRepository.unLike(1, 1);
         boolean isUnLike = likeRepository.findLikeByUserIdAndPostId(1, 1).isEmpty();
 
         // then
