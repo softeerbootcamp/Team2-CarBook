@@ -49,3 +49,15 @@ export function getTagIcon(type: string) {
       return;
   }
 }
+
+export function getInitPostList() {
+  return {
+    isInit: true,
+    isLoading: false,
+    idEnd: false,
+    images: [],
+    length: 6,
+    index: 0,
+    tags: tagStore.getState(),
+  };
+}
