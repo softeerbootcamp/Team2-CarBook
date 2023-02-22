@@ -34,6 +34,8 @@ import java.sql.Timestamp;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -126,7 +128,9 @@ class PostServiceTest {
         //given
         int postId = 9;
         User user = new User(15, "user15@exam.com", "15번유저", "pw15");
-        given(imageRepository.getImagesOfRecentFollowingPosts(POST_COUNT, postId, user.getId())).willReturn(images);
+        LocalDateTime lastWeek = LocalDateTime.now().minusWeeks(1);
+        String lastWeekDay = lastWeek.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        given(imageRepository.getImagesOfRecentFollowingPosts(POST_COUNT, postId, user.getId(), lastWeekDay)).willReturn(images);
 
         //when
         LoginPostsResponse loginPostsResponse = postService.getRecentFollowerPosts(postId, user);
@@ -135,16 +139,18 @@ class PostServiceTest {
         assertThat(loginPostsResponse.isLogin()).isTrue();
         assertThat(loginPostsResponse.getImages()).isEqualTo(images);
 
-        verify(imageRepository).getImagesOfRecentFollowingPosts(POST_COUNT, postId, user.getId());
+        verify(imageRepository).getImagesOfRecentFollowingPosts(POST_COUNT, postId, user.getId(), lastWeekDay);
     }
 
     @Test
     @DisplayName("팔로잉중인 게시글이 없는 경우 테스트")
     void getNoFollowingPostsTest() {
+        LocalDateTime lastWeek = LocalDateTime.now().minusWeeks(1);
+        String lastWeekDay = lastWeek.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         //given
         int postId = 9;
         User user = new User(17, "user17@email.com", "사용자17", "pw17");
-        given(imageRepository.getImagesOfRecentFollowingPosts(POST_COUNT, postId, user.getId())).willReturn(new ArrayList<Image>());
+        given(imageRepository.getImagesOfRecentFollowingPosts(POST_COUNT, postId, user.getId(), lastWeekDay)).willReturn(new ArrayList<Image>());
 
         //when
         LoginPostsResponse loginPostsResponse = postService.getRecentFollowerPosts(postId, user);
@@ -153,7 +159,7 @@ class PostServiceTest {
         assertThat(loginPostsResponse.isLogin()).isTrue();
         assertThat(loginPostsResponse.getImages()).isEqualTo(new ArrayList<Image>());
 
-        verify(imageRepository).getImagesOfRecentFollowingPosts(POST_COUNT, postId, user.getId());
+        verify(imageRepository).getImagesOfRecentFollowingPosts(POST_COUNT, postId, user.getId(), lastWeekDay);
     }
 
     @Test
