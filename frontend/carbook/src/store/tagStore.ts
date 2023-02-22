@@ -21,7 +21,6 @@ async function reducer(state: ITagObj = {}, action: IAction) {
       return { ...state, [id]: { category, tag } };
     case actionType.DELETE_TAG:
       delete state[id];
-      console.log(state);
       return { ...state };
     case actionType.CLEAR_TAG:
       return {};
