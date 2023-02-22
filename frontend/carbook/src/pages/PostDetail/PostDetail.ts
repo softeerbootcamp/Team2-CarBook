@@ -5,6 +5,7 @@ import { InfoContents, InfoHeader, Footer } from '@/components/PostDetail';
 import { basicAPI } from '@/api';
 import isLogin from '@/utils/isLogin';
 import { push } from '@/utils/router/navigate';
+import { actionType, tagStore } from '@/store/tagStore';
 
 export default class PostDetailPage extends Component {
   async setup() {
@@ -30,6 +31,42 @@ export default class PostDetailPage extends Component {
         return;
       }
 
+      //tag 클릭했을 때
+      const typeTag = target.closest('.info-type-card') as HTMLElement;
+      const modelTag = target.closest('.info-model-card') as HTMLElement;
+      const hashTag = target.closest('.info-hashtag') as HTMLElement;
+
+      if (typeTag || modelTag || hashTag) {
+        localStorage.setItem('images', '[]');
+
+        if (typeTag) {
+          const category = 'type';
+          const tag = typeTag.dataset.tag as string;
+          const id = (category + tag).replaceAll(' ', '');
+
+          this.addTag({ category, tag, id });
+        }
+
+        if (modelTag) {
+          const category = 'model';
+          const tag = modelTag.dataset.tag as string;
+          const id = (category + tag).replaceAll(' ', '');
+
+          this.addTag({ category, tag, id });
+        }
+
+        if (hashTag) {
+          const category = 'hashtag';
+          const tag = hashTag.dataset.tag as string;
+          const id = (category + tag).replaceAll(' ', '');
+
+          this.addTag({ category, tag, id });
+        }
+
+        push('/');
+        return;
+      }
+
       const header = target.closest('.header') as HTMLElement;
 
       if (!header) return;
@@ -43,6 +80,15 @@ export default class PostDetailPage extends Component {
         .split(',')[8];
       modalContent.src = this.parseimgUrI(backgroundURI);
       imageModal.classList.toggle('FadeInAndOut');
+    });
+  }
+
+  addTag({ id, category, tag }: { id: string; category: string; tag: string }) {
+    if (!(id && category && tag)) return;
+    tagStore.dispach({ type: actionType.CLEAR_TAG, payload: {} });
+    tagStore.dispach({
+      type: actionType.ADD_TAG,
+      payload: { id, category, tag },
     });
   }
 
