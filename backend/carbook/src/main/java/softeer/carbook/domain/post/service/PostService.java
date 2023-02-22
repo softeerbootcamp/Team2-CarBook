@@ -79,6 +79,19 @@ public class PostService {
                 .build();
     }
 
+    public LoginPostsResponse getPopularPostsDuringWeek(int postId, User user) {
+        postId = initPostId(postId);
+
+        LocalDateTime lastWeek = LocalDateTime.now().minusWeeks(1);
+        String lastWeekDay = lastWeek.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+        List<Image> images = imageRepository.getImagesOfPopularPostsDuringWeek(POST_COUNT, postId, lastWeekDay);
+        return new LoginPostsResponse.LoginPostsResponseBuilder()
+                .nickname(user.getNickname())
+                .images(images)
+                .build();
+    }
+
     public PostsSearchResponse searchByTags(String hashtags, String type, String model, int postId) {
         postId = initPostId(postId);
 
