@@ -54,7 +54,6 @@ class PostRepositoryTest {
     }
 
     @Test
-
     @DisplayName("인기글 조회 테스트")
     void getImagesOfPopularPostsDuringWeek() {
         LocalDateTime lastWeek = LocalDateTime.now().minusWeeks(1);
