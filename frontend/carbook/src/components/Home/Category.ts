@@ -1,7 +1,7 @@
 import { categoryMap } from '@/constants/category';
 import { Component } from '@/core';
 import { CategoryType } from '@/interfaces';
-import { qs } from '@/utils';
+import { getClosest, qs } from '@/utils';
 
 export default class Category extends Component {
   setup(): void {
@@ -31,21 +31,25 @@ export default class Category extends Component {
   }
 
   onHandleSearchCategory() {
-    const selections = qs(this.$target, '.selections');
-    const selected = qs(this.$target, '.selected');
+    this.$target.addEventListener('click', ({ target }) => {
+      const selections = getClosest(<HTMLElement>target, '.selections');
+      const selected = getClosest(<HTMLElement>target, '.selected');
 
-    selected?.addEventListener('click', () => {
-      this.onToggleClassName(selected, selections);
-    });
+      if (selections) {
+        const classname = (<HTMLElement>target).className as CategoryType;
 
-    selections?.addEventListener('click', ({ target }) => {
-      const classname = (<HTMLElement>target).className as CategoryType;
+        const koreaWord = categoryMap[classname];
+        if (koreaWord) {
+          this.setState({ option: classname });
+          this.props.setOption(classname);
 
-      const koreaWord = categoryMap[classname];
-      if (koreaWord) {
-        this.setState({ option: classname });
-        this.props.setOption(classname);
+          this.onToggleClassName(selected, selections);
+        }
+        return;
+      }
 
+      if (selected) {
+        const selections = qs(this.$target, '.selections');
         this.onToggleClassName(selected, selections);
       }
     });
