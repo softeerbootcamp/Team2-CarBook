@@ -11,6 +11,8 @@ import softeer.carbook.domain.post.model.Post;
 
 import javax.sql.DataSource;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -49,6 +51,17 @@ class PostRepositoryTest {
         assertThat(result.getUserId()).isEqualTo(userId);
         assertThat(result.getContent()).isEqualTo(content);
         assertThat(result.getModelId()).isEqualTo(modelId);
+    }
+
+    @Test
+    @DisplayName("인기글 조회 테스트")
+    void getImagesOfPopularPostsDuringWeek() {
+        LocalDateTime lastWeek = LocalDateTime.now().minusWeeks(1);
+        String lastWeekDay = lastWeek.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+        List<Post> result = postRepository.findPopularPostsDuringWeek(lastWeekDay);
+
+        assertThat(result.size()).isEqualTo(6);
     }
 
     @Test

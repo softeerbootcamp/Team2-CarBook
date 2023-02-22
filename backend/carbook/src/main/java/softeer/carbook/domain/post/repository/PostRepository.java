@@ -10,7 +10,6 @@ import softeer.carbook.domain.post.exception.PostNotExistException;
 import softeer.carbook.domain.post.model.Post;
 
 import javax.sql.DataSource;
-import java.math.BigInteger;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
@@ -51,6 +50,12 @@ public class PostRepository {
         return post.stream().findAny().orElseThrow(
                 PostNotExistException::new
         );
+    }
+
+    public List<Post> findPopularPostsDuringWeek(String lastWeekDay) {
+        return jdbcTemplate.query("SELECT p.id, p.user_id, p.create_date, p.update_date, p.content, p.model_id, p.like_count FROM POST p " +
+                "WHERE p.is_deleted = false AND p.create_date > '" + lastWeekDay + "' " +
+                "ORDER BY p.like_count DESC, p.create_date DESC", postRowMapper());
     }
 
     public List<Post> searchByType(String type) {

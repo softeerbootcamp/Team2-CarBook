@@ -68,22 +68,6 @@ class ImageRepositoryTest {
     }
 
     @Test
-    @DisplayName("인기글 조회 테스트")
-    void getImagesOfPopularPostsDuringWeek() {
-        int size = 2;
-        int index = 9;
-        List<Image> expectedImages = new ArrayList<>();
-        expectedImages.add(new Image(1,"https://team2-carbook.s3.ap-northeast-2.amazonaws.com/images/1_이미지.jpeg"));
-        expectedImages.add(new Image(4,"https://team2-carbook.s3.ap-northeast-2.amazonaws.com/images/4_이미지.jpeg"));
-        LocalDateTime lastWeek = LocalDateTime.now().minusWeeks(1);
-        String lastWeekDay = lastWeek.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-
-        List<Image> resultImages = imageRepository.getImagesOfPopularPostsDuringWeek(size, index, lastWeekDay);
-
-        assertThat(resultImages).usingRecursiveComparison().isEqualTo(expectedImages);
-    }
-
-    @Test
     @DisplayName("User Id로 이미지 조회 테스트")
     void findImagesByUserId() {
         int userId = 1;

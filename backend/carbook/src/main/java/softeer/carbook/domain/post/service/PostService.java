@@ -80,16 +80,40 @@ public class PostService {
     }
 
     public LoginPostsResponse getPopularPostsDuringWeek(int postId, User user) {
-        postId = initPostId(postId);
-
         LocalDateTime lastWeek = LocalDateTime.now().minusWeeks(1);
         String lastWeekDay = lastWeek.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-        List<Image> images = imageRepository.getImagesOfPopularPostsDuringWeek(POST_COUNT, postId, lastWeekDay);
+        List<Post> popularPosts = postRepository.findPopularPostsDuringWeek(lastWeekDay);
+
+        List<Image> images = findImagesOfPopularPostsFromPostId(popularPosts, postId);
         return new LoginPostsResponse.LoginPostsResponseBuilder()
                 .nickname(user.getNickname())
                 .images(images)
                 .build();
+    }
+
+    private List<Image> findImagesOfPopularPostsFromPostId(List<Post> posts, int postId) {
+        int idx, curIdx;
+
+        if (postId == 0) {
+            idx = curIdx = 0;
+        }
+        else {
+            for (idx = 0; idx < posts.size(); idx++) {
+                if (posts.get(idx).getId() == postId) {
+                    break;
+                }
+            }
+            curIdx = ++idx;
+        }
+
+        List<Image> images = new ArrayList<>();
+        for (; idx < curIdx + POST_COUNT && idx < posts.size(); idx++) {
+            Image image = imageRepository.getImageByPostId(posts.get(idx).getId());
+            images.add(image);
+        }
+
+        return images;
     }
 
     public PostsSearchResponse searchByTags(String hashtags, String type, String model, int postId) {
