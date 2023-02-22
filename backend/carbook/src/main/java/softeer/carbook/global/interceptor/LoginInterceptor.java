@@ -18,9 +18,9 @@ public class LoginInterceptor implements HandlerInterceptor {
     private static final Logger logger = LoggerFactory.getLogger(LoginInterceptor.class);
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        logger.info("인터셉터 진입");
+        logger.debug("인터셉터 진입");
         checkLoginException(request.getSession(false));
-        logger.info("예외 없음");
+        logger.debug("예외 없음");
         return true;
         //return HandlerInterceptor.super.preHandle(request, response, handler);
     }

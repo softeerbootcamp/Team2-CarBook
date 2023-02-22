@@ -202,7 +202,7 @@ public class PostService {
                 .nickname(userRepository.findUserById(post.getUserId()).getNickname())
                 .imageUrl(imageRepository.getImageByPostId(postId).getImageUrl())
                 .isLike(likeRepository.checkLike(user.getId(), postId))
-                .likeCount(likeRepository.findLikeCountByPostId(postId))
+                .likeCount(post.getLikeCount())
                 .createDate(dateToString(post.getCreateDate()))
                 .updateDate(dateToString(post.getUpdateDate()))
                 .hashtags(hashtags)

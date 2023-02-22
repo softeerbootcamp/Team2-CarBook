@@ -76,8 +76,8 @@ class PostServiceTest {
     ));
 
     private final List<Post> posts = new ArrayList<>(List.of(
-            new Post(8, 8, null, null, null, 8),
-            new Post(6, 6, null, null, null, 6)
+            new Post(8, 8, null, null, null, 8, 24),
+            new Post(6, 6, null, null, null, 6, 25)
     ));
     private final Image image1 = new Image(8, "/eighth/image.jpg");
     private final Image image2 = new Image(6, "/sixth/image.jpg");
@@ -372,7 +372,7 @@ class PostServiceTest {
     void getMyPostDetails() {
         // given
         User user = new User(17, "user17@email.com", "사용자17", "pw17");
-        Post post = new Post(1, 17, new Timestamp(12341241), new Timestamp(1231235), "asdf", 1);
+        Post post = new Post(1, 17, new Timestamp(12341241), new Timestamp(1231235), "asdf", 1, 23);
         Image image = images.get(0);
         List<Type> types = new ArrayList<>(List.of(
                 new Type(1, "승용"), new Type(2, "SUV")));
@@ -387,7 +387,6 @@ class PostServiceTest {
         given(tagRepository.findTypeById(anyInt())).willReturn(types);
         given(imageRepository.getImageByPostId(anyInt())).willReturn(image);
         given(likeRepository.checkLike(anyInt(), anyInt())).willReturn(true);
-        given(likeRepository.findLikeCountByPostId(anyInt())).willReturn(123);
         given(userRepository.findUserById(anyInt())).willReturn(user);
 
         // when
@@ -401,7 +400,6 @@ class PostServiceTest {
         verify(tagRepository).findTypeById(anyInt());
         verify(imageRepository).getImageByPostId(anyInt());
         verify(likeRepository).checkLike(anyInt(),anyInt());
-        verify(likeRepository).findLikeCountByPostId(anyInt());
         verify(userRepository).findUserById(anyInt());
     }
 
@@ -410,7 +408,7 @@ class PostServiceTest {
     void getOtherPostDetails() {
         // given
         User user = new User(17, "user17@email.com", "사용자17", "pw17");
-        Post post = new Post(1, 1, new Timestamp(12341241), new Timestamp(1231235), "asdf", 1);
+        Post post = new Post(1, 1, new Timestamp(12341241), new Timestamp(1231235), "asdf", 1, 23);
         Image image = images.get(0);
         List<Type> types = new ArrayList<>(List.of(
                 new Type(1, "승용"), new Type(2, "SUV")));
@@ -425,7 +423,6 @@ class PostServiceTest {
         given(tagRepository.findTypeById(anyInt())).willReturn(types);
         given(imageRepository.getImageByPostId(anyInt())).willReturn(image);
         given(likeRepository.checkLike(anyInt(), anyInt())).willReturn(true);
-        given(likeRepository.findLikeCountByPostId(anyInt())).willReturn(123);
         given(userRepository.findUserById(anyInt())).willReturn(user);
 
         // when
@@ -439,7 +436,6 @@ class PostServiceTest {
         verify(tagRepository).findTypeById(anyInt());
         verify(imageRepository).getImageByPostId(anyInt());
         verify(likeRepository).checkLike(anyInt(),anyInt());
-        verify(likeRepository).findLikeCountByPostId(anyInt());
         verify(userRepository).findUserById(anyInt());
     }
 
@@ -448,7 +444,7 @@ class PostServiceTest {
     void deletePost() {
         // given
         User user = new User(17, "user17@email.com", "사용자17", "pw17");
-        Post post = new Post(1, 17, new Timestamp(12341241), new Timestamp(1231235), "asdf", 1);
+        Post post = new Post(1, 17, new Timestamp(12341241), new Timestamp(1231235), "asdf", 1, 23);
         given(postRepository.findPostById(anyInt())).willReturn(post);
 
         // when
@@ -464,7 +460,7 @@ class PostServiceTest {
     void deleteOtherUserPost() {
         // given
         User user = new User(17, "user17@email.com", "사용자17", "pw17");
-        Post post = new Post(1, 1, new Timestamp(12341241), new Timestamp(1231235), "asdf", 1);
+        Post post = new Post(1, 1, new Timestamp(12341241), new Timestamp(1231235), "asdf", 1, 23);
         given(postRepository.findPostById(anyInt())).willReturn(post);
 
         // when
@@ -579,7 +575,7 @@ class PostServiceTest {
         ModifiedPostForm modifiedPostForm = new ModifiedPostForm(100, image, hashtagNames, "승용", "쏘나타", "테스트 쏘나타 게시글입니다");
 
         User user = new User(17, "user17@email.com", "사용자17", "pw17");
-        Post post = new Post(1, 1, new Timestamp(12341241), new Timestamp(1231235), "asdf", 1);
+        Post post = new Post(1, 1, new Timestamp(12341241), new Timestamp(1231235), "asdf", 1, 23);
         given(postRepository.findPostById(anyInt())).willReturn(post);
         // when
         Throwable exception = assertThrows(InvalidPostAccessException.class, () -> {

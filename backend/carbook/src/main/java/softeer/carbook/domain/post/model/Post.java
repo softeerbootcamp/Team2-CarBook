@@ -10,6 +10,7 @@ public class Post {
     private Timestamp updateDate;
     private String content;
     private int modelId;
+    private int likeCount;
 
     public Post(int userId, String content, int modelId) {
         this.userId = userId;
@@ -24,19 +25,27 @@ public class Post {
         this.modelId = modelId;
     }
 
-    public Post(int id, int userId, Timestamp createDate, Timestamp updateDate, String content, int modelId) {
+    public Post(
+            int id, int userId,
+            Timestamp createDate, Timestamp updateDate,
+            String content, int modelId,
+            int likeCount) {
         this.id = id;
         this.userId = userId;
         this.createDate = createDate;
         this.updateDate = updateDate;
         this.content = content;
         this.modelId = modelId;
+        this.likeCount = likeCount;
     }
 
     public int getId() {
         return id;
     }
 
+    public int getLikeCount() {
+        return likeCount;
+    }
 
     public int getUserId() {
         return userId;
