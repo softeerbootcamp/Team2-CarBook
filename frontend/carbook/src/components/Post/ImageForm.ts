@@ -86,9 +86,12 @@ export default class ImageForm extends Component {
   }
 
   async convertUrltoFile(url: string) {
-    const response = await axios.get<Blob>(url, {
-      responseType: 'blob',
-    });
+    const response = await axios.get<Blob>(
+      url + '?r=' + Math.floor(Math.random() * 100000),
+      {
+        responseType: 'blob',
+      }
+    );
     const newData = response.data;
     const ext = url.split('.').pop();
     const filename = url.split('/').pop();
