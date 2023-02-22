@@ -52,12 +52,6 @@ public class PostRepository {
         );
     }
 
-    public List<Post> findPopularPostsDuringWeek(String lastWeekDay) {
-        return jdbcTemplate.query("SELECT p.id, p.user_id, p.create_date, p.update_date, p.content, p.model_id, p.like_count FROM POST p " +
-                "WHERE p.is_deleted = false AND p.create_date > '" + lastWeekDay + "' " +
-                "ORDER BY p.like_count DESC, p.create_date DESC", postRowMapper());
-    }
-
     public List<Post> searchByType(String type) {
         return jdbcTemplate.query("SELECT p.id, p.user_id, p.create_date, p.update_date, p.content, p.model_id, p.like_count FROM TYPE t " +
                 "INNER JOIN MODEL m ON (t.id = m.type_id AND t.tag = ?) " +

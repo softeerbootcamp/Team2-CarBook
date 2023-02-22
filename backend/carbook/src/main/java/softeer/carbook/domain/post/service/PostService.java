@@ -86,11 +86,13 @@ public class PostService {
         List<Post> popularPosts = postRepository.findPopularPostsDuringWeek(lastWeekDay);
 
         List<Image> images = findImagesOfPopularPostsFromPostId(popularPosts, postId);
+
         return new LoginPostsResponse.LoginPostsResponseBuilder()
                 .nickname(user.getNickname())
                 .images(images)
                 .build();
     }
+
 
     private List<Image> findImagesOfPopularPostsFromPostId(List<Post> posts, int postId) {
         int idx, curIdx;
@@ -115,6 +117,7 @@ public class PostService {
 
         return images;
     }
+
 
     public PostsSearchResponse searchByTags(String hashtags, String type, String model, int postId) {
         postId = initPostId(postId);

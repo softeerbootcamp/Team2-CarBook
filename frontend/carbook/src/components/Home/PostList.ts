@@ -7,6 +7,7 @@ import isLogin from '@/utils/isLogin';
 import { push } from '@/utils/router/navigate';
 import { getInitPostList, getPostKey, getSearchUrl } from './helper';
 
+
 export default class PostList extends Component {
   observer: any;
   lastImg: Element | null = null;
@@ -133,6 +134,7 @@ export default class PostList extends Component {
         this.$target.insertAdjacentHTML(
           'beforeend',
           ` <img class="gallery--image" src="${imageUrl}" data-id="${postId}" alt="img"></img>`
+
         );
       }
     });
@@ -148,6 +150,7 @@ export default class PostList extends Component {
       this.observer.observe(this.lastImg);
     }
   }
+
 
   setEvent(): void {
     this.$target.addEventListener('click', ({ target }) => {

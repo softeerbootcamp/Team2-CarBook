@@ -42,6 +42,7 @@ public class ImageRepository {
                 imageRowMapper(),  postId, followerId, size);
     }
 
+
     public List<Image> findImagesByUserId(int id) {
         return jdbcTemplate.query(
                 "select IMAGE.post_id, IMAGE.image_url from POST INNER JOIN IMAGE " +
