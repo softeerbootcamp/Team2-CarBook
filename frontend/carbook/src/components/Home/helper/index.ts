@@ -66,3 +66,7 @@ export function getInitPostList() {
     isLike: false,
   };
 }
+
+export function getPostKey(index: number, isLike: boolean) {
+  return `${index}${isLike ? '+P' : ''}`;
+}
