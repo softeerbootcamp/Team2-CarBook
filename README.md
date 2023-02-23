@@ -62,7 +62,7 @@
 ## 📌 API 명세서
 [API 명세서 POSTMAN](https://documenter.getpostman.com/view/25607734/2s935kPm4y)
 
-![image](https://user-images.githubusercontent.com/46276276/220031559-e9d1dbba-c467-4cf4-9062-8fadda7ab0bf.png)
+<img width="1162" alt="스크린샷 2023-02-23 오전 11 04 42" src="https://user-images.githubusercontent.com/63943319/220806076-517646ac-6648-4c5e-8e65-5179424848b1.png">
  <br />
 
 
