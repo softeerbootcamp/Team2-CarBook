@@ -5,7 +5,7 @@ import { tagStore } from '@/store/tagStore';
 import { getClosest, qs } from '@/utils';
 import isLogin from '@/utils/isLogin';
 import { push } from '@/utils/router/navigate';
-import { getInitPostList, getPostKey, getSearchUrl } from './helper';
+import { getInitPostList, getSearchUrl } from './helper';
 
 export default class PostList extends Component {
   observer: any;

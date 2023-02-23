@@ -92,6 +92,7 @@ export default class ImageForm extends Component {
         responseType: 'blob',
       }
     );
+
     const newData = response.data;
     const ext = url.split('.').pop();
     const filename = url.split('/').pop();

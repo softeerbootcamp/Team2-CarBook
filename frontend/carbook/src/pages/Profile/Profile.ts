@@ -26,7 +26,6 @@ export default class ProfilePage extends Component {
     this.state.nickname = urlnickname;
     this.state.profileMode = POSTS;
     this.state.isloading = true;
-
     this.fetchProfilePage(urlnickname);
   }
 
@@ -280,7 +279,6 @@ export default class ProfilePage extends Component {
       })
       .then(() => {
         this.setState({ ...this.state, nickname: newNickname });
-        localStorage.setItem('nickname', newNickname);
         replace(`/profile/${newNickname}`);
       })
       .catch((err) => {
