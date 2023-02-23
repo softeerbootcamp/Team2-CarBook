@@ -69,20 +69,20 @@ export default class PostList extends Component {
   async fetchImages() {
     const { index, isLike } = this.state;
 
-    const key = getPostKey(index, isLike);
-    const prevImage =
-      JSON.parse(localStorage.getItem('postList') as string) || {};
+    // const key = getPostKey(index, isLike);
+    // const prevImage =
+    //   JSON.parse(localStorage.getItem('postList') as string) || {};
     this.setState({ isLoading: true, isInit: false });
 
     const url = getSearchUrl(index, isLike);
 
     try {
-      const res = prevImage[key] || (await basicAPI.get(url));
+      const res = await basicAPI.get(url);
       const { images, login, nickname } = res.data;
 
-      const newKey = getPostKey(this.state.index, isLike);
-      prevImage[newKey] = res;
-      localStorage.setItem('postList', JSON.stringify(prevImage));
+      // const newKey = getPostKey(this.state.index, isLike);
+      // prevImage[newKey] = res;
+      // localStorage.setItem('postList', JSON.stringify(prevImage));
 
       const lastImage = images[images.length - 1];
 

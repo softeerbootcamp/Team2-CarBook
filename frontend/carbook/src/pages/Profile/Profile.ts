@@ -280,6 +280,7 @@ export default class ProfilePage extends Component {
       })
       .then(() => {
         this.setState({ ...this.state, nickname: newNickname });
+        localStorage.setItem('nickname', newNickname);
         replace(`/profile/${newNickname}`);
       })
       .catch((err) => {
